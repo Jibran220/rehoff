@@ -19,6 +19,7 @@ import DualTone from '../views/dashboard/icons/dual-tone';
 import FormElement from '../views/dashboard/from/form-element';
 import FormValidation from '../views/dashboard/from/form-validation';
 import FormWizard from '../views/dashboard/from/form-wizard';
+import Rfqform from '../views/dashboard/from/Rfqform';
 // table
 import BootstrapTable from '../views/dashboard/table/bootstrap-table';
 import TableData from '../views/dashboard/table/table-data';
@@ -68,7 +69,8 @@ const DefaultRouter = () => {
                      {/* From */}
                      <Route path="/dashboard/form/form-element"    exact component={FormElement}/>
                      <Route path="/dashboard/form/form-validation" exact component={FormValidation}/>
-                     <Route path="/dashboard/form/form-wizard"     exact component={FormWizard}/>
+                     <Route path="/dashboard/form/form-wizard"     exact component={FormWizard}/>Rfqform
+                     <Route path="/dashboard/form/Rfqform"     exact component={Rfqform}/>
                      {/* table */}
                      <Route path="/dashboard/table/bootstrap-table" exact component={BootstrapTable}/>
                      <Route path="/dashboard/table/table-data"      exact component={TableData}/>
