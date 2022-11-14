@@ -5,6 +5,7 @@ import {Switch,Route} from 'react-router-dom'
 import UserProfile from '../views/dashboard/app/user-profile';
 import UserAdd from '../views/dashboard/app/user-add';
 import UserList from '../views/dashboard/app/user-list';
+import Rfqmanges from '../views/dashboard/app/Rfqmanges';
 import userProfileEdit from '../views/dashboard/app/user-privacy-setting';
 // widget
 import Widgetbasic from '../views/dashboard/widget/widgetbasic';
@@ -53,7 +54,8 @@ const DefaultRouter = () => {
                     {/* user */}
                     <Route path="/dashboard/app/user-profile"     exact component={UserProfile} />
                     <Route path="/dashboard/app/user-add"         exact component={UserAdd}/>
-                    <Route path="/dashboard/app/user-list"        exact component={UserList}/>
+                    <Route path="/dashboard/app/user-list"        exact component={UserList}/>Rfqmanges
+                    <Route path="/dashboard/app/Rfqmanges"        exact component={Rfqmanges}/>
                     <Route path="/dashboard/app/user-privacy-setting" exact component={userProfileEdit}/>
                      {/* widget */}
                      <Route path="/dashboard/widget/widgetbasic"   exact component={Widgetbasic}/>
