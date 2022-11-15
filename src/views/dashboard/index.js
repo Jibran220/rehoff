@@ -1,6 +1,6 @@
-import React, {useEffect} from 'react'
+import React, {useEffect,useState} from 'react'
 import { Row,Col,Dropdown,Button} from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link ,useHistory} from 'react-router-dom'
 
 import {bindActionCreators} from "redux"
 //circular
@@ -70,6 +70,22 @@ const mapDispatchToProps = dispatch => ({
 
 
 const Index = (props) => {
+    let history =useHistory()
+
+
+const [CurrentUser, setCurrentUser] = useState('')
+
+          useEffect(async () => {
+      if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+        history.push("/auth/sign-in");
+      } else {
+        setCurrentUser(
+          await JSON.parse(
+            localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+          )
+        );
+      }
+    }, []);
     useEffect(() => {
     AOS.init({
         startEvent: 'DOMContentLoaded',

@@ -1,7 +1,7 @@
 import Card from '../../../components/Card'
 import React, { useEffect, useState } from "react";
 import {
-  useNavigate,
+  useHistory,
   Link,
   BrowserRouter,
   Route,
@@ -17,9 +17,10 @@ import shap3 from '../../../assets/images/shapes/03.png'
 import shap4 from '../../../assets/images/shapes/04.png'
 import shap5 from '../../../assets/images/shapes/05.png'
 import shap6 from '../../../assets/images/shapes/06.png'
-
-
-
+import {BsArrowRightShort} from 'react-icons/bs'
+import {AiOutlineFileExcel}from 'react-icons/ai'
+import {MdPersonAddAlt1}from 'react-icons/md'
+import Button from 'react-bootstrap/Button';
 const UserList =() =>{
    
   
@@ -27,6 +28,7 @@ const UserList =() =>{
     useEffect(() => {
       getproducts();
     }, []);
+    let history =useHistory()
   
     const getproducts = async () => {
       let result = await fetch("http://localhost:5005/rfqmanagers");
@@ -45,6 +47,10 @@ const UserList =() =>{
         getproducts();
       }
     };
+    
+    const asd=()=>{
+      history.push("/dashboard/form/Rfqform")
+   }
   return(
      <>
        <div>
@@ -53,7 +59,7 @@ const UserList =() =>{
                <Card>
                   <Card.Header className="d-flex justify-content-between">
                      <div className="header-title">
-                        <h4 className="card-title">User List</h4>
+                     <Button    onClick={asd}       variant="btn btn-primary">Add New <BsArrowRightShort size="25px"/></Button>{' '}
                      </div>
                   </Card.Header>
                   <Card.Body className="px-0">
@@ -63,6 +69,7 @@ const UserList =() =>{
                               <tr className="ligth">
                               <th>Name</th>
                         <th>Description</th>
+                        <th></th>
                                  <th min-width= "100px">Action</th>
                               </tr>
                            </thead>
@@ -72,14 +79,19 @@ const UserList =() =>{
                               <tr>
                                 
                                 <td>
-                            <Link to={"/Listrfquser/" + item._id}>
+                            <Link to={"/dashboard/app/Userrfq/" + item._id}>
                               {item.name}
                             </Link>
                           </td>
 
                           <td>{item.description}</td>
+                       <Link   to={"/dashboard/form/Userrfq/" + item._id}>   <td>   < MdPersonAddAlt1 size="30px"/> </td>
+                       </Link>
                                  <td>
                                     <div className="flex align-items-center list-user-action">
+                                      
+                                
+                                      
                                        <Link className="btn btn-sm btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add" to="#">
                                           <span className="btn-inner">
                                              <svg width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" >

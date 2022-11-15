@@ -12,12 +12,17 @@ import DualHorizontal from '../layouts/dashboard/dual-horizontal'
 import DualCompact from '../layouts/dashboard/dual-compact'
 import BoxedFancy from "../layouts/dashboard/boxed-fancy"
 import Simple from '../layouts/dashboard/simple'
+import Vendor from '../layouts/dashboard/Vendor'
+import Athvend from '../layouts/dashboard/Athvend'
 
 const IndexRouters = () => {
     return (
         <>
             <Switch>
-                <Route exact path="/" component={Default}></Route>
+            <Route exact path="/" component={Default}></Route>
+                <Route exact path="/ath" component={Vendor}></Route>
+                <Route exact path="/athpro/:id" component={Athvend}></Route>
+
                 <Route  path="/dashboard" component={Default}></Route>
                 <Route  path="/boxed" component={Boxed}></Route>
                 <Route  path="/horizontal" component={Horizontal}></Route>

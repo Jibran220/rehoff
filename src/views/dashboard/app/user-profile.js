@@ -1,12 +1,4 @@
-import React, {useState}from 'react'
-import FsLightbox from 'fslightbox-react';
-
-import {Row,Col,Image,Form,Nav,Dropdown,Tab} from 'react-bootstrap'
 import Card from '../../../components/Card'
-
-import {Link} from 'react-router-dom'
-// img
-
 import avatars11 from '../../../assets/images/avatars/01.png'
 import avatars22 from '../../../assets/images/avatars/avtar_1.png'
 import avatars33 from '../../../assets/images/avatars/avtar_2.png'
@@ -17,8 +9,7 @@ import avatars2 from '../../../assets/images/avatars/02.png'
 import avatars3 from '../../../assets/images/avatars/03.png'
 import avatars4 from '../../../assets/images/avatars/04.png'
 import avatars5 from '../../../assets/images/avatars/05.png'
-
-
+import chopp from '../../../assets/images/avatars/av.jpg'
 import icon1 from '../../../assets/images/icons/01.png'
 import icon2 from '../../../assets/images/icons/02.png'
 import icon3 from '../../../assets/images/icons/03.png'
@@ -26,16 +17,205 @@ import icon4 from '../../../assets/images/icons/04.png'
 import icon8 from '../../../assets/images/icons/08.png'
 import icon6 from '../../../assets/images/icons/06.png'
 import icon7 from '../../../assets/images/icons/07.png'
-
 import icon5 from '../../../assets/images/icons/05.png'
 import shap2 from '../../../assets/images/shapes/02.png'
 import shap4 from '../../../assets/images/shapes/04.png'
 import shap6 from '../../../assets/images/shapes/06.png'
 import pages2 from '../../../assets/images/pages/02-page.png'
-
 import ShareOffcanvas from '../../../components/partials/components/shareoffcanvas'
+import React, { useEffect, useState, useRef } from "react";
+import FsLightbox from "fslightbox-react";
+import { allUsersRoute, host } from "../utils/APIRoutes";
+import axios from "axios";
+import { jsPDF } from "jspdf";
+import Base64Downloader from 'react-base64-downloader';
+import { io } from "socket.io-client";
+import styled from "styled-components";
+import { Row, Col, Image, Form, Nav, Dropdown, Tab } from "react-bootstrap";
+import { useHistory, Link, useParams, useLocation } from "react-router-dom";
+import { BsFillArrowRightSquareFill } from "react-icons/bs";
+import Button from 'react-bootstrap/Button';
+import ChatContainer from "../MessagesForAdmin.js/ComponentsForAdmin";
+import Contacts from "../MessagesForAdmin.js/Contacts";
+import Welcome from "../MessagesForAdmin.js/Welcome";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UserProfile =() =>{
+
+   const navigate = useHistory();
+   const socket = useRef();
+   const params = useParams();
+   const [user, setUser] = useState(JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)));
+   const location = useLocation();
+   const [currentUser, setCurrentUser] = useState(user);
+   const [data, setData] = useState([]);
+   const [com, setcom] = useState([]);
+   const [att, setatt] = useState([]);
+   const [data1, setData1] = useState([]);
+   const [comment, setcomment] = useState("");
+   const [attchdfile, setattchdfile] = useState("");
+   const [userid, setuserid] = useState(params.id);
+   const [vendorid, setvendorid] = useState(params.id);
+   const [userattachments, setuserattachments] = useState("");
+   const [contacts, setContacts] = useState([]);
+   const [currentChat, setCurrentChat] = useState(contacts);
+   const [currentaUser, setCurrentaUser] = useState(undefined);
+
+   const [sendpo, setsendpo] = useState({
+      file: '',
+      body: '',
+      to: '',
+      subject: '',
+    })
+
+    const inputhandeler =  (e) => { setsendpo({ ...sendpo, [e.target.name]: e.target.value }) }
+   
+   
+    const handleattachments =  (e) => {
+      console.log(e.target.files[0])
+      setsendpo({ ...sendpo, file:e.target.files[0]})
+      console.log("==",sendpo.file,"===",sendpo.file.name)
+    };
+  
+    const getcomments = async () => {
+      console.log("clclclclclcclcl",params.id)
+      let result = await fetch(`http://localhost:5005/commentrouter/search/${params.id}`);
+      result = await result.json();
+      setcom(result);
+    };
+  
+
+    const sendEmail = async () => {
+      const formdata = new FormData()
+      formdata.append('file',sendpo.file,sendpo.file.name)
+      formdata.append('to', sendpo.to)
+      formdata.append('subject', sendpo.subject)
+      formdata.append('body', sendpo.body)
+  
+      const result = await axios.post(`http://localhost:5005/po`, formdata)
+  
+      
+      if (result.status == 200) {alert("Email sent Succesfully!");}
+  
+      console.warn(result);
+    };
+    const AddComment = async () => {
+      const result = await fetch(`http://localhost:5005/CommentRouter`, {
+        method: "post",
+        body: JSON.stringify({ comment,userid }),
+        headers: { "Content-Type": "application/json" },
+      });
+      // result = await result.json();
+      if (result) {
+        toast.info("Comment added Succesfully!");
+        setcomment("");
+      }
+      console.warn(result);
+    };
+    const SendAttachments = async () => {
+      const result = await fetch(`http://localhost:5005/attachments`, {
+        method: "post",
+        body: JSON.stringify({ userattachments,vendorid }),
+        headers: { "Content-Type": "application/json" },
+      });
+      // result = await result.json();
+      if (result) {
+        setuserattachments(" ");
+      }
+      console.warn(result);
+    };
+    // useEffect(async () => {
+    //   if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+    //     navigate("/authv");
+    //   } else {
+    //     setCurrentaUser(
+    //       await JSON.parse(
+    //         localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+    //       )
+    //     );
+    //   }
+    // }, []);
+    useEffect(() => {
+      if (currentaUser) {
+        socket.current = io(host);
+        socket.current.emit("add-user", currentaUser._id);
+      }
+    }, [currentaUser]);
+    useEffect(async () => {
+      if (currentaUser) {
+        if (currentaUser.isAvatarImageSet) {
+          const data = await axios.get(`${allUsersRoute}/${currentaUser._id}`);
+          setContacts(data.data);
+        } else {
+       
+          const data = await axios.get(`${allUsersRoute}/${currentaUser._id}`);
+          setContacts(data.data);
+        }
+      }
+    }, [currentUser]);
+    useEffect(() => {
+      getproducts();
+      getcomments();
+      getattacments()
+  
+      // getrfqdetail();
+    }, []);
+  
+    const handleChatChange = (chat) => {
+      setCurrentChat(chat);
+      console.log("current_chat",chat);
+    };
+    const handleSubmit = async () => {
+      const result = fetch("http://localhost:5005/commentrouter", {
+        method: "post",
+        body: JSON.stringify({ comment, userid }),
+        headers: { "Content-Type": "application/json" },
+      });
+      setcomment("");
+  
+      result = await result.json();
+      if (result) {
+        setcomment("");
+        
+      }
+    };
+  
+    const getproducts = async () => {
+      console.log("i love toooooooooooooooooooooooooooooooo",params.id)
+      let result = await fetch(`http://localhost:5005/userRFQ/view/${params.id}`);
+      result = await result.json();
+      setData(result);
+      console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", data._id);
+  
+      let result1 = await fetch(
+        `http://localhost:5005/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
+      );
+      result1 = await result1.json();
+      setData1(result1);
+      console.log(data1);
+    };
+    console.log(data.map((tn) => tn.rfq_id));
+    console.log("i love to work",data.map((tn) => tn.rfq_id));
+    const getattacments = async () => {
+      console.log("clclclclclcclcl",params.id)
+      let result = await fetch(`http://localhost:5005/attachments/search/${params.id}`);
+      result = await result.json();
+      setatt(result);
+      console.log(att)
+    };
+    const pdfGenerator=()=>{
+      const doc = new jsPDF({
+        orientation: "landscape",
+        unit: "in",
+        format: [4, 2]
+      });
+      
+      doc.text('name', 1, 1);
+    
+      doc.save("PO");
+    }
+   
    const [toggler, setToggler] = useState(false);
   return(
       <>
@@ -59,9 +239,14 @@ const UserProfile =() =>{
                                     <Image className="theme-color-pink-img img-fluid rounded-pill avatar-100" src={avatars44} alt="profile-pic"/>
                                  </div>
                                  <div className="d-flex flex-wrap align-items-center mb-3 mb-sm-0">
-                                    <h4 className="me-2 h4">Austin Robertson</h4>
-                                    <span> - Web Developer</span>
-                                 </div>
+                                 {data.map((item) => (
+                        <h4 className="me-2 h4">{item.rfq_name}</h4>
+                      ))}                                   
+                      
+                      
+                      {data.map((item) => (
+                        <span> - {item.Name}</span>
+                      ))}                                 </div>
                               </div>
                               <Nav as="ul" className="d-flex nav-pills mb-0 text-center profile-tab" data-toggle="slider-tab" id="profile-pills-tab" role="tablist">
                                  <Nav.Item as="li">
@@ -70,11 +255,9 @@ const UserProfile =() =>{
                                  <Nav.Item as="li">
                                     <Nav.Link eventKey="second">Activity</Nav.Link>
                                  </Nav.Item>
+                              
                                  <Nav.Item as="li">
-                                    <Nav.Link eventKey="third">Friends</Nav.Link>
-                                 </Nav.Item>
-                                 <Nav.Item as="li">
-                                    <Nav.Link eventKey="fourth">Profile</Nav.Link>
+                                    <Nav.Link eventKey="fourth">P.O</Nav.Link>
                                  </Nav.Item>
                               </Nav>
                            </div>
@@ -85,10 +268,11 @@ const UserProfile =() =>{
                   <Card>
                      <Card.Header>
                         <div className="header-title">
-                           <h4 className="card-title">News</h4>
+                           <h4 className="card-title">Announcments</h4>
                         </div>
                      </Card.Header>
                      <Card.Body>
+                     {com.map((item)=>(
                         <ul className="list-inline m-0 p-0">
                            <li className="d-flex mb-2">
                               <div className="news-icon me-3">
@@ -96,138 +280,33 @@ const UserProfile =() =>{
                                     <path fill="currentColor" d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4C22,2.89 21.1,2 20,2Z" />
                                  </svg>
                               </div>
-                              <p className="news-detail mb-0">there is a meetup in your city on fryday at 19:00. <Link to="#">see details</Link></p>
-                           </li>
-                           <li className="d-flex">
-                              <div className="news-icon me-3">
-                                 <svg width="20" viewBox="0 0 24 24">
-                                    <path fill="currentColor" d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4C22,2.89 21.1,2 20,2Z" />
-                                 </svg>
-                              </div>
-                              <p className="news-detail mb-0">20% off coupon on selected items at pharmaprix </p>
-                           </li>
+                              <p className="news-detail mb-0">{item.comment}</p>
+                              </li>
+                         
                         </ul>
+                              ))}
+                        <Form className="comment-text d-flex align-items-center mt-3" >
+                                    <Form.Control type="text" className="rounded" placeholder="Type here!"    value={comment}
+                            onChange={(e) => {
+                              setcomment(e.target.value);
+                            }} />
+                                    <div className="comment-attagement d-flex">
+                                          <Link to="#" className="me-2 text-body" onClick={AddComment}>
+                                                    <svg width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                       <path fillRule  ="evenodd" clipRule="evenodd"
+                                                d="M21.25 16.334V7.665C21.25 4.645 19.111 2.75 16.084 2.75H7.916C4.889 2.75 2.75 4.635 2.75 7.665L2.75 16.334C2.75 19.364 4.889 21.25 7.916 21.25H16.084C19.111 21.25 21.25 19.364 21.25 16.334Z"
+                                                stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                   <path d="M16.0861 12H7.91406" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M12.3223 8.25205L16.0863 12L12.3223 15.748" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+                                                strokeLinejoin="round" />
+                                        </svg>
+                                          </Link>
+                                         
+                                    </div>
+                                 </Form>
                      </Card.Body>
                   </Card>
-                  <Card>
-                     <Card.Header className="d-flex align-items-center justify-content-between">
-                        <div className="header-title">
-                           <h4 className="card-title">Gallery</h4>
-                        </div>
-                        <span>132 pics</span>
-                     </Card.Header>
-                     <Card.Body>
-                        <div className="d-grid gap-card grid-cols-3">
-                           <Link onClick={ () => setToggler(!toggler) }  to="#">
-                           <Image  src={icon4} className="img-fluid bg-soft-info rounded" alt="profile-image"/>
-                           </Link>
-                           <Link onClick={ () => setToggler(!toggler) } to="#">
-                           <Image   src={shap2} className="img-fluid bg-soft-primary rounded" alt="profile-image"/>
-                           </Link>
-                           <Link onClick={ () => setToggler(!toggler) } to="#">
-                           <Image   src={icon8} className="img-fluid bg-soft-info rounded" alt="profile-image"/>
-                           </Link>
-                           <Link onClick={ () => setToggler(!toggler) } to="#">
-                           <Image   src={shap4} className="img-fluid bg-soft-primary rounded" alt="profile-image"/>
-                           </Link>
-                           <Link onClick={ () => setToggler(!toggler) } to="#">
-                           <Image   src={icon2} className="img-fluid bg-soft-warning rounded" alt="profile-image"/>
-                           </Link>
-                           <Link  onClick={ () => setToggler(!toggler) }  to="#">
-                           <Image src={shap6} className="img-fluid bg-soft-primary rounded" alt="profile-image"/>
-                           </Link>
-                           <Link to="#">
-                              <Image  onClick={ () => setToggler(!toggler) } src={icon5} className="img-fluid bg-soft-danger rounded" alt="profile-image"/>
-                           </Link>
-                           <Link onClick={ () => setToggler(!toggler) }  to="#">
-                              <Image  src={shap4} className="img-fluid bg-soft-primary rounded" alt="profile-image"/>
-                           </Link>
-                           <Link onClick={ () => setToggler(!toggler) } to="#">
-                              <Image src={icon1} className="img-fluid bg-soft-success rounded" alt="profile-image"/>
-                           </Link>
-                        </div>
-                     </Card.Body>
-                  </Card>
-                  <Card>
-                     <Card.Header>
-                        <div className="header-title">
-                           <h4 className="card-title">Twitter Feeds</h4>
-                        </div>
-                     </Card.Header>
-                     <Card.Body>
-                        <div className="twit-feed">
-                           <div className="d-flex align-items-center mb-2">
-                              <Image className="rounded-pill img-fluid avatar-50 me-3 p-1 bg-soft-danger ps-2" src={icon3} alt=""/>
-                              <div className="media-support-info">
-                                 <h6 className="mb-0">Figma Community</h6>
-                                 <p className="mb-0">@figma20 
-                                    <span className="text-primary">
-                                       <svg width="15" viewBox="0 0 24 24">
-                                          <path fill="currentColor" d="M10,17L5,12L6.41,10.58L10,14.17L17.59,6.58L19,8M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
-                                       </svg>
-                                    </span>
-                                 </p>
-                              </div>
-                           </div>
-                           <div className="media-support-body">
-                              <p className="mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
-                              <div className="d-flex flex-wrap">
-                                 <Link to="#" className="twit-meta-tag pe-2">#Html</Link>
-                                 <Link to="#" className="twit-meta-tag pe-2">#Bootstrap</Link>
-                              </div>
-                              <div className="twit-date">07 Jan 2021</div>
-                           </div>
-                        </div>
-                        <hr className="my-4"/>
-                        <div className="twit-feed">
-                           <div className="d-flex align-items-center mb-2">
-                              <Image className="rounded-pill img-fluid avatar-50 me-3 p-1 bg-soft-primary" src={icon4} alt=""/>
-                              <div className="media-support-info">
-                                 <h6 className="mb-0">Flutter</h6>
-                                 <p className="mb-0">@jane59
-                                    <span className="text-primary">
-                                       <svg width="15" viewBox="0 0 24 24">
-                                          <path fill="currentColor" d="M10,17L5,12L6.41,10.58L10,14.17L17.59,6.58L19,8M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
-                                       </svg>
-                                    </span>
-                                 </p>
-                              </div>
-                           </div>
-                           <div className="media-support-body">
-                              <p className="mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
-                              <div className="d-flex flex-wrap">
-                                 <Link to="#" className="twit-meta-tag pe-2">#Js</Link>
-                                 <Link to="#" className="twit-meta-tag pe-2">#Bootstrap</Link>
-                              </div>
-                              <div className="twit-date">18 Feb 2021</div>
-                           </div>
-                        </div>
-                        <hr className="my-4"/>
-                        <div className="twit-feed">
-                           <div className="d-flex align-items-center mb-2">
-                                 <Image className="rounded-pill img-fluid avatar-50 me-3 p-1 bg-soft-warning pt-2" src={icon2} alt=""/>
-                              <div className="mt-2">
-                                 <h6 className="mb-0">Blender</h6>
-                                 <p className="mb-0">@blender59
-                                    <span className="text-primary">
-                                       <svg width="15" viewBox="0 0 24 24">
-                                          <path fill="currentColor" d="M10,17L5,12L6.41,10.58L10,14.17L17.59,6.58L19,8M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
-                                       </svg>
-                                    </span>
-                                 </p>
-                              </div>
-                           </div>
-                           <div className="media-support-body">
-                              <p className="mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
-                              <div className="d-flex flex-wrap">
-                                 <Link to="#" className="twit-meta-tag pe-2">#Html</Link>
-                                 <Link to="#" className="twit-meta-tag pe-2">#CSS</Link>
-                              </div>
-                              <div className="twit-date">15 Mar 2021</div>
-                           </div>
-                        </div>
-                     </Card.Body>
-                  </Card>
+                 
                </Col>
                <Col lg="6">
                   <Tab.Content className="profile-content">
@@ -240,183 +319,39 @@ const UserProfile =() =>{
                                        <Image className="rounded-pill img-fluid avatar-60 bg-soft-danger p-1 ps-2" src={avatars2} alt=""/>
                                     </div>
                                     <div className="media-support-info mt-2">
-                                       <h5 className="mb-0">Anna Sthesia</h5>
-                                       <p className="mb-0 text-primary">colleages</p>
+                                       <h5 className="mb-0">Description</h5>
+                                       <p className="mb-0 text-primary"></p>
                                     </div>
                                  </div>
                               </div>                        
-                              <Dropdown >
-                                 <Dropdown.Toggle as="span"  id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                 29 mins 
-                                 </Dropdown.Toggle>
-                                 <Dropdown.Menu className="dropdown-menu-end" aria-labelledby="dropdownMenuButton7">
-                                    <Dropdown.Item  href="#">Action</Dropdown.Item>
-                                    <Dropdown.Item  href="#">Another action</Dropdown.Item>
-                                    <Dropdown.Item  href="#">Something else here</Dropdown.Item>
-                                 </Dropdown.Menu>
-                              </Dropdown>
+                        
                            </Card.Header>
                            <Card.Body className="p-0">
-                              <div className="user-post">
-                                 <Link to="#"><Image src={pages2} alt="post-image" className="img-fluid"/></Link>
-                              </div>
+                             
                               <div className="comment-area p-3">
-                                 <div className="d-flex flex-wrap justify-content-between align-items-center">
-                                    <div className="d-flex align-items-center">
-                                       <div className="d-flex align-items-center message-icon me-3">                                          
-                                          <svg width="20" height="20" viewBox="0 0 24 24">
-                                             <path fill="currentColor" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-                                          </svg>
-                                          <span className="ms-1">140</span>
-                                       </div>
-                                       <div className="d-flex align-items-center feather-icon">
-                                          <svg width="20" height="20" viewBox="0 0 24 24">
-                                             <path fill="currentColor" d="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M10,16V19.08L13.08,16H20V4H4V16H10Z" />
-                                          </svg>
-                                          <span className="ms-1">140</span>
-                                       </div>
-                                    </div>
-                                    <div className="share-block d-flex align-items-center feather-icon">
-                                       <ShareOffcanvas />
-                                    </div>
-                                 </div>
+                                 
+                               
+                              {data.map((item) => (
+                        <p>{item.description}</p>
+                      ))}
                                  <hr/>
-                                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nulla dolor, ornare at commodo non, feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus</p>
-                                 <hr/>
-                                 <ul className="list-inline p-0 m-0">
-                                    <li className="mb-2">
-                                       <div className="d-flex">
-                                          <Image src={avatars3} alt="userimg" className="avatar-50 p-1 pt-2 bg-soft-primary rounded-pill img-fluid"/>
-                                          <div className="ms-3">
-                                             <h6 className="mb-1">Monty Carlo</h6>
-                                             <p className="mb-1">Lorem ipsum dolor sit amet</p>
-                                             <div className="d-flex flex-wrap align-items-center mb-1">
-                                                <Link to="#" className="me-3">
-                                                   <svg width="20" height="20" className="text-body me-1" viewBox="0 0 24 24">
-                                                      <path fill="currentColor" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-                                                   </svg>
-                                                   like
-                                                </Link>
-                                                <Link to="#" className="me-3">
-                                                   <svg width="20" height="20" className="me-1" viewBox="0 0 24 24">
-                                                      <path fill="currentColor" d="M8,9.8V10.7L9.7,11C12.3,11.4 14.2,12.4 15.6,13.7C13.9,13.2 12.1,12.9 10,12.9H8V14.2L5.8,12L8,9.8M10,5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9" />
-                                                   </svg>
-                                                   reply
-                                                </Link>
-                                                <Link to="#" className="me-3">translate</Link>
-                                                <span> 5 min </span>
-                                             </div>
-                                          </div>
-                                       </div>
-                                    </li>
-                                    <li>
-                                       <div className="d-flex">
-                                          <Image src={avatars4} alt="userimg" className="avatar-50 p-1 bg-soft-danger rounded-pill img-fluid"/>
-                                          <div className="ms-3">
-                                             <h6 className="mb-1">Paul Molive</h6>
-                                             <p className="mb-1">Lorem ipsum dolor sit amet</p>
-                                             <div className="d-flex flex-wrap align-items-center">
-                                                <Link to="#" className="me-3">
-                                                   <svg width="20" height="20" className="text-body me-1" viewBox="0 0 24 24">
-                                                      <path fill="currentColor" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-                                                   </svg>
-                                                   like
-                                                </Link>
-                                                <Link to="#" className="me-3">
-                                                   <svg width="20" height="20" className="me-1" viewBox="0 0 24 24">
-                                                      <path fill="currentColor" d="M8,9.8V10.7L9.7,11C12.3,11.4 14.2,12.4 15.6,13.7C13.9,13.2 12.1,12.9 10,12.9H8V14.2L5.8,12L8,9.8M10,5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9" />
-                                                   </svg>
-                                                   reply
-                                                </Link>
-                                                <Link to="#" className="me-3">translate</Link>
-                                                <span> 5 min </span>
-                                             </div>
-                                          </div>
-                                       </div>
-                                    </li>
-                                 </ul>
-                                 <Form className="comment-text d-flex align-items-center mt-3" action="">
-                                    <Form.Control type="text" className="rounded" placeholder="Lovely!"/>
-                                    <div className="comment-attagement d-flex">
-                                          <Link to="#" className="me-2 text-body">
-                                             <svg width="20" height="20" viewBox="0 0 24 24">
-                                                <path fill="currentColor" d="M20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12M22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12M10,9.5C10,10.3 9.3,11 8.5,11C7.7,11 7,10.3 7,9.5C7,8.7 7.7,8 8.5,8C9.3,8 10,8.7 10,9.5M17,9.5C17,10.3 16.3,11 15.5,11C14.7,11 14,10.3 14,9.5C14,8.7 14.7,8 15.5,8C16.3,8 17,8.7 17,9.5M12,17.23C10.25,17.23 8.71,16.5 7.81,15.42L9.23,14C9.68,14.72 10.75,15.23 12,15.23C13.25,15.23 14.32,14.72 14.77,14L16.19,15.42C15.29,16.5 13.75,17.23 12,17.23Z" />
-                                             </svg>
-                                          </Link>
-                                          <Link to="#" className="text-body">
-                                             <svg width="20" height="20" viewBox="0 0 24 24">
-                                                <path fill="currentColor" d="M20,4H16.83L15,2H9L7.17,4H4A2,2 0 0,0 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6A2,2 0 0,0 20,4M20,18H4V6H8.05L9.88,4H14.12L15.95,6H20V18M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15Z" />
-                                             </svg>
-                                          </Link>
-                                    </div>
-                                 </Form>
+                            
                               </div>                              
                            </Card.Body>
                         </Card>
-                        <Card>
-                           <Card.Header className="d-flex align-items-center justify-content-between pb-4">
-                              <div className="header-title">
-                                 <div className="d-flex flex-wrap">
-                                    <div className="media-support-user-img me-3">
-                                       <Image className="rounded-pill img-fluid avatar-60 p-1 bg-soft-info" src={avatars5} alt=""/>
-                                    </div>
-                                    <div className="media-support-info mt-2">
-                                       <h5 className="mb-0">Wade Warren</h5>
-                                       <p className="mb-0 text-primary">colleages</p>
-                                    </div>
-                                 </div>
-                              </div>                        
-                              <Dropdown>
-                                 <Dropdown.Toggle as="span" id="dropdownMenuButton07" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                 1 Hr
-                                 </Dropdown.Toggle>
-                                 <Dropdown.Menu className="dropdown-menu-end" aria-labelledby="dropdownMenuButton07">
-                                    <Dropdown.Item  href="#">Action</Dropdown.Item >
-                                    <Dropdown.Item  href="#">Another action</Dropdown.Item >
-                                    <Dropdown.Item  href="#">Something else here</Dropdown.Item >
-                                 </Dropdown.Menu>
-                              </Dropdown>
-                           </Card.Header>
-                           <Card.Body className="p-0">
-                                 <p className="p-3 mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nulla dolor, ornare at commodo non, feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus</p>
-                                 <div className="comment-area p-3"><hr className="mt-0"/>
-                                 <div className="d-flex flex-wrap justify-content-between align-items-center">
-                                    <div className="d-flex align-items-center">
-                                       <div className="d-flex align-items-center message-icon me-3">                                          
-                                          <svg width="20" height="20" viewBox="0 0 24 24">
-                                             <path fill="currentColor" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" />
-                                          </svg>
-                                          <span className="ms-1">140</span>
-                                       </div>
-                                       <div className="d-flex align-items-center feather-icon">
-                                          <svg width="20" height="20" viewBox="0 0 24 24">
-                                             <path fill="currentColor" d="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M10,16V19.08L13.08,16H20V4H4V16H10Z" />
-                                          </svg>
-                                          <span className="ms-1">140</span>
-                                       </div>
-                                    </div>
-                                    <div className="share-block d-flex align-items-center feather-icon">
-                                    <ShareOffcanvas />
-                                    </div>
-                                 </div>
-                                 <Form className="comment-text d-flex align-items-center mt-3" action="">
-                                    <Form.Control type="text" className="rounded" placeholder="Lovely!"/>
-                                    <div className="comment-attagement d-flex">
-                                       <Link to="#" className="me-2 text-body">
-                                          <svg width="20" height="20" viewBox="0 0 24 24">
-                                             <path fill="currentColor" d="M20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12M22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12M10,9.5C10,10.3 9.3,11 8.5,11C7.7,11 7,10.3 7,9.5C7,8.7 7.7,8 8.5,8C9.3,8 10,8.7 10,9.5M17,9.5C17,10.3 16.3,11 15.5,11C14.7,11 14,10.3 14,9.5C14,8.7 14.7,8 15.5,8C16.3,8 17,8.7 17,9.5M12,17.23C10.25,17.23 8.71,16.5 7.81,15.42L9.23,14C9.68,14.72 10.75,15.23 12,15.23C13.25,15.23 14.32,14.72 14.77,14L16.19,15.42C15.29,16.5 13.75,17.23 12,17.23Z" />
-                                          </svg>
-                                       </Link>
-                                       <Link to="#" className="text-body">
-                                          <svg width="20" height="20" viewBox="0 0 24 24">
-                                             <path fill="currentColor" d="M20,4H16.83L15,2H9L7.17,4H4A2,2 0 0,0 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6A2,2 0 0,0 20,4M20,18H4V6H8.05L9.88,4H14.12L15.95,6H20V18M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15Z" />
-                                          </svg>
-                                       </Link>
-                                    </div>
-                                 </Form>
-                              </div>                              
-                           </Card.Body>
-                        </Card>
+                        <Container>
+              
+                             <div className="container">
+                       <Contacts contacts={contacts} changeChat={handleChatChange} />
+                        {currentChat === undefined ? (
+                          <Welcome />
+                        ) : (
+                          <ChatContainer currentChat={currentChat} socket={socket} />
+                        )}
+                      </div>
+                  </Container>                     
+                             
+                        
                      </Tab.Pane>
                      <Tab.Pane eventKey="second" id="profile-activity">
                         <Card>
@@ -426,61 +361,26 @@ const UserProfile =() =>{
                               </div>
                            </Card.Header>
                            <Card.Body>
+                                       {att.map((asd) => (
                               <div className="iq-timeline0 m-0 d-flex align-items-center justify-content-between position-relative">
                                  <ul className="list-inline p-0 m-0">
                                     <li>
+                                     
                                        <div className="timeline-dots timeline-dot1 border-primary text-primary"></div>
-                                       <h6 className="float-left mb-1">Client Login</h6>
-                                       <small className="float-right mt-1">24 November 2019</small>
+                                       
+                                     <a href={asd.files}download>   <h6 className="float-left mb-1">{asd.title}</h6></a>
+                                    
+
+                                       <small className="float-right mt-1">{asd.Dates}</small>
                                        <div className="d-inline-block w-100">
-                                          <p>Bonbon macaroon jelly beans gummi bears jelly lollipop apple</p>
+                                          <p></p>
                                        </div>
                                     </li>
-                                    <li>
-                                       <div className="timeline-dots timeline-dot1 border-success text-success"></div>
-                                       <h6 className="float-left mb-1">Scheduled Maintenance</h6>
-                                       <small className="float-right mt-1">23 November 2019</small>
-                                       <div className="d-inline-block w-100">
-                                          <p>Bonbon macaroon jelly beans gummi bears jelly lollipop apple</p>
-                                       </div>
-                                    </li>
-                                    <li>
-                                       <div className="timeline-dots timeline-dot1 border-danger text-danger"></div>
-                                       <h6 className="float-left mb-1">Dev Meetup</h6>
-                                       <small className="float-right mt-1">20 November 2019</small>
-                                       <div className="d-inline-block w-100">
-                                          <p>Bonbon macaroon jelly beans <Link to="#">gummi bears</Link>gummi bears jelly lollipop apple</p>
-                                          <div className="iq-media-group iq-media-group-1">
-                                             <Link to="#" className="iq-media-1">
-                                                <div className="icon iq-icon-box-3 rounded-pill">SP</div>
-                                             </Link>
-                                             <Link to="#" className="iq-media-1">
-                                                <div className="icon iq-icon-box-3 rounded-pill">PP</div>
-                                             </Link>
-                                             <Link to="#" className="iq-media-1">
-                                                <div className="icon iq-icon-box-3 rounded-pill">MM</div>
-                                             </Link>
-                                          </div>
-                                       </div>
-                                    </li>
-                                    <li>
-                                       <div className="timeline-dots timeline-dot1 border-primary text-primary"></div>
-                                       <h6 className="float-left mb-1">Client Call</h6>
-                                       <small className="float-right mt-1">19 November 2019</small>
-                                       <div className="d-inline-block w-100">
-                                          <p>Bonbon macaroon jelly beans gummi bears jelly lollipop apple</p>
-                                       </div>
-                                    </li>
-                                    <li>
-                                       <div className="timeline-dots timeline-dot1 border-warning text-warning"></div>
-                                       <h6 className="float-left mb-1">Mega event</h6>
-                                       <small className="float-right mt-1">15 November 2019</small>
-                                       <div className="d-inline-block w-100">
-                                          <p>Bonbon macaroon jelly beans gummi bears jelly lollipop apple</p>
-                                       </div>
-                                    </li>
+                                 
                                  </ul>
                               </div>
+                                       ))}
+
                            </Card.Body>
                         </Card>
                      </Tab.Pane >
@@ -697,192 +597,27 @@ const UserProfile =() =>{
                         </div>
                      </Card.Header>
                      <Card.Body>
-                        <p>Lorem ipsum dolor sit amet, contur adipiscing elit.</p>
-                        <div className="mb-1">Email: <Link to="#" className="ms-3">nikjone@demoo.com</Link></div>
-                        <div className="mb-1">Phone: <Link to="#" className="ms-3">001 2351 256 12</Link></div>
+                        <p></p>
+                        <div className="mb-1">Email: 
+               {data.map((item) => (
+                       
+                        <Link to="#" className="ms-3">{item.to}</Link>
+                        ))}
+                        
+                                    
+                        </div>
+               {data.map((item) => (
+
+                        <div className="mb-1">Phone: <Link to="#" className="ms-3">{item.Work_Phone}</Link></div>
+                      
+                        ))}
                         <div>Location: <span className="ms-3">USA</span></div>
                      </Card.Body>
                   </Card>
-                  <Card>
-                     <Card.Header>
-                        <div className="header-title">
-                           <h4 className="card-title">Stories</h4>
-                        </div>
-                     </Card.Header>
-                     <Card.Body>
-                        <ul className="list-inline m-0 p-0">
-                           <li className="d-flex mb-4 align-items-center active">
-                              <Image src={icon6} alt="story-img" className="rounded-pill avatar-70 p-1 border bg-soft-light img-fluid"/>
-                              <div className="ms-3">
-                                 <h5>Web Design</h5>
-                                 <p className="mb-0">1 hour ago</p>
-                              </div>
-                           </li>
-                           <li className="d-flex mb-4 align-items-center">
-                              <Image src={icon3} alt="story-img" className="rounded-pill avatar-70 p-1 border img-fluid bg-soft-danger"/>
-                              <div className="ms-3">
-                                 <h5>App Design</h5>
-                                 <p className="mb-0">4 hour ago</p>
-                              </div>
-                           </li>
-                           <li className="d-flex align-items-center">
-                              <Image src={icon7} alt="story-img" className="rounded-pill avatar-70 p-1 border bg-soft-primary img-fluid"/>
-                              <div className="ms-3">
-                                 <h5>Abstract Design</h5>
-                                 <p className="mb-0">9 hour ago</p>
-                              </div>
-                           </li>
-                        </ul>
-                     </Card.Body>
-                  </Card>
-                  <Card>
-                     <Card.Header>
-                        <div className="header-title">
-                           <h4 className="card-title">Suggestions</h4>
-                        </div>
-                     </Card.Header>
-                     <Card.Body>
-                        <ul className="list-inline m-0 p-0">
-                           <li className="d-flex mb-4 align-items-center">
-                              <div className="img-fluid bg-soft-warning rounded-pill"><Image src={icon5} alt="story-img" className="rounded-pill avatar-40"/></div>
-                              <div className="ms-3 flex-grow-1">
-                                 <h6>Paul Molive</h6>
-                                 <p className="mb-0">4 mutual friends</p>
-                              </div>
-                              <Link to="#" className="btn btn-outline-primary rounded-circle btn-icon btn-sm p-2">
-                                 <span className="btn-inner">
-                                    <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" currentcolor="#3a57e8">
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.87651 15.2063C6.03251 15.2063 2.74951 15.7873 2.74951 18.1153C2.74951 20.4433 6.01251 21.0453 9.87651 21.0453C13.7215 21.0453 17.0035 20.4633 17.0035 18.1363C17.0035 15.8093 13.7415 15.2063 9.87651 15.2063Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.8766 11.886C12.3996 11.886 14.4446 9.841 14.4446 7.318C14.4446 4.795 12.3996 2.75 9.8766 2.75C7.3546 2.75 5.3096 4.795 5.3096 7.318C5.3006 9.832 7.3306 11.877 9.8456 11.886H9.8766Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M19.2036 8.66919V12.6792" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M21.2497 10.6741H17.1597" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                 
-                                    </svg> 
-                                 </span>                            
-                              </Link>
-                           </li>
-                           <li className="d-flex mb-4 align-items-center">
-                              <div className="img-fluid bg-soft-danger rounded-pill"><Image src={icon3} alt="story-img" className="rounded-pill avatar-40"/></div>
-                              <div className="ms-3 flex-grow-1">
-                                 <h6>Robert Fox</h6>
-                                 <p className="mb-0">4 mutual friends</p>
-                              </div>
-                              <Link to="#" className="btn btn-outline-primary rounded-circle btn-icon btn-sm p-2">
-                                 <span className="btn-inner">
-                                    <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" currentcolor="#3a57e8">
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.87651 15.2063C6.03251 15.2063 2.74951 15.7873 2.74951 18.1153C2.74951 20.4433 6.01251 21.0453 9.87651 21.0453C13.7215 21.0453 17.0035 20.4633 17.0035 18.1363C17.0035 15.8093 13.7415 15.2063 9.87651 15.2063Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.8766 11.886C12.3996 11.886 14.4446 9.841 14.4446 7.318C14.4446 4.795 12.3996 2.75 9.8766 2.75C7.3546 2.75 5.3096 4.795 5.3096 7.318C5.3006 9.832 7.3306 11.877 9.8456 11.886H9.8766Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M19.2036 8.66919V12.6792" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M21.2497 10.6741H17.1597" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                 
-                                    </svg> 
-                                 </span>                            
-                              </Link>
-                           </li>
-                           <li className="d-flex mb-4 align-items-center">
-                              <div className="img-fluid bg-soft-dark rounded-pill"><Image src={icon6} alt="story-img" className="rounded-pill avatar-40"/></div>
-                              <div className="ms-3 flex-grow-1">
-                                 <h6>Jenny Wilson</h6>
-                                 <p className="mb-0">6 mutual friends</p>
-                              </div>
-                              <Link to="#" className="btn btn-outline-primary rounded-circle btn-icon btn-sm p-2">
-                                 <span className="btn-inner">
-                                    <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" currentcolor="#3a57e8">
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.87651 15.2063C6.03251 15.2063 2.74951 15.7873 2.74951 18.1153C2.74951 20.4433 6.01251 21.0453 9.87651 21.0453C13.7215 21.0453 17.0035 20.4633 17.0035 18.1363C17.0035 15.8093 13.7415 15.2063 9.87651 15.2063Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.8766 11.886C12.3996 11.886 14.4446 9.841 14.4446 7.318C14.4446 4.795 12.3996 2.75 9.8766 2.75C7.3546 2.75 5.3096 4.795 5.3096 7.318C5.3006 9.832 7.3306 11.877 9.8456 11.886H9.8766Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M19.2036 8.66919V12.6792" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M21.2497 10.6741H17.1597" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                 
-                                    </svg> 
-                                 </span>                            
-                              </Link>
-                           </li>
-                           <li className="d-flex mb-4 align-items-center">
-                              <div className="img-fluid bg-soft-primary rounded-pill"><Image src={icon7} alt="story-img" className="rounded-pill avatar-40"/></div>
-                              <div className="ms-3 flex-grow-1">
-                                 <h6>Cody Fisher</h6>
-                                 <p className="mb-0">8 mutual friends</p>
-                              </div>
-                              <Link to="#" className="btn btn-outline-primary rounded-circle btn-icon btn-sm p-2">
-                                 <span className="btn-inner">
-                                    <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" currentcolor="#3a57e8">
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.87651 15.2063C6.03251 15.2063 2.74951 15.7873 2.74951 18.1153C2.74951 20.4433 6.01251 21.0453 9.87651 21.0453C13.7215 21.0453 17.0035 20.4633 17.0035 18.1363C17.0035 15.8093 13.7415 15.2063 9.87651 15.2063Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.8766 11.886C12.3996 11.886 14.4446 9.841 14.4446 7.318C14.4446 4.795 12.3996 2.75 9.8766 2.75C7.3546 2.75 5.3096 4.795 5.3096 7.318C5.3006 9.832 7.3306 11.877 9.8456 11.886H9.8766Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M19.2036 8.66919V12.6792" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M21.2497 10.6741H17.1597" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                 
-                                    </svg> 
-                                 </span>                            
-                              </Link>
-                           </li>
-                           <li className="d-flex mb-4 align-items-center">
-                              <div className="img-fluid bg-soft-info rounded-pill"><Image src={icon4} alt="story-img" className="rounded-pill avatar-40"/></div>
-                              <div className="ms-3 flex-grow-1">
-                                 <h6>Bessie Cooper</h6>
-                                 <p className="mb-0">1 mutual friends</p>
-                              </div>
-                              <Link to="#" className="btn btn-outline-primary rounded-circle btn-icon btn-sm p-2">
-                                 <span className="btn-inner">
-                                    <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" currentcolor="#3a57e8">
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.87651 15.2063C6.03251 15.2063 2.74951 15.7873 2.74951 18.1153C2.74951 20.4433 6.01251 21.0453 9.87651 21.0453C13.7215 21.0453 17.0035 20.4633 17.0035 18.1363C17.0035 15.8093 13.7415 15.2063 9.87651 15.2063Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.8766 11.886C12.3996 11.886 14.4446 9.841 14.4446 7.318C14.4446 4.795 12.3996 2.75 9.8766 2.75C7.3546 2.75 5.3096 4.795 5.3096 7.318C5.3006 9.832 7.3306 11.877 9.8456 11.886H9.8766Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M19.2036 8.66919V12.6792" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M21.2497 10.6741H17.1597" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                 
-                                    </svg> 
-                                 </span>                            
-                              </Link>
-                           </li>
-                           <li className="d-flex mb-4 align-items-center">
-                              <div className="img-fluid bg-soft-warning rounded-pill"><Image src={icon2} alt="story-img" className="rounded-pill avatar-40"/></div>
-                              <div className="ms-3 flex-grow-1">
-                                 <h6>Wade Warren</h6>
-                                 <p className="mb-0">3 mutual friends</p>
-                              </div>
-                              <Link to="#" className="btn btn-outline-primary rounded-circle btn-icon btn-sm p-2">
-                                 <span className="btn-inner">
-                                    <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" currentcolor="#3a57e8">
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.87651 15.2063C6.03251 15.2063 2.74951 15.7873 2.74951 18.1153C2.74951 20.4433 6.01251 21.0453 9.87651 21.0453C13.7215 21.0453 17.0035 20.4633 17.0035 18.1363C17.0035 15.8093 13.7415 15.2063 9.87651 15.2063Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.8766 11.886C12.3996 11.886 14.4446 9.841 14.4446 7.318C14.4446 4.795 12.3996 2.75 9.8766 2.75C7.3546 2.75 5.3096 4.795 5.3096 7.318C5.3006 9.832 7.3306 11.877 9.8456 11.886H9.8766Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M19.2036 8.66919V12.6792" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M21.2497 10.6741H17.1597" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                 
-                                    </svg> 
-                                 </span>                            
-                              </Link>
-                           </li>
-                           <li className="d-flex mb-4 align-items-center">
-                              <div className="img-fluid bg-soft-success rounded-pill"><Image src={icon1} alt="story-img" className="rounded-pill avatar-40"/></div>
-                              <div className="ms-3 flex-grow-1">
-                                 <h6>Guy Hawkins</h6>
-                                 <p className="mb-0">12 mutual friends</p>
-                              </div>                        
-                              <Link to="#" className="btn btn-outline-primary rounded-circle btn-icon btn-sm p-2">
-                                 <span className="btn-inner">
-                                    <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" currentcolor="#3a57e8">
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.87651 15.2063C6.03251 15.2063 2.74951 15.7873 2.74951 18.1153C2.74951 20.4433 6.01251 21.0453 9.87651 21.0453C13.7215 21.0453 17.0035 20.4633 17.0035 18.1363C17.0035 15.8093 13.7415 15.2063 9.87651 15.2063Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.8766 11.886C12.3996 11.886 14.4446 9.841 14.4446 7.318C14.4446 4.795 12.3996 2.75 9.8766 2.75C7.3546 2.75 5.3096 4.795 5.3096 7.318C5.3006 9.832 7.3306 11.877 9.8456 11.886H9.8766Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M19.2036 8.66919V12.6792" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M21.2497 10.6741H17.1597" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                 
-                                    </svg> 
-                                 </span>                            
-                              </Link>
-                           </li>
-                           <li className="d-flex align-items-center">
-                              <div className="img-fluid bg-soft-info rounded-pill"><Image src={icon8} alt="story-img" className="rounded-pill avatar-40"/></div>
-                              <div className="ms-3 flex-grow-1">
-                                 <h6>Floyd Miles</h6>
-                                 <p className="mb-0">2 mutual friends</p>
-                              </div>
-                              <Link to="#" className="btn btn-outline-primary rounded-circle btn-icon btn-sm p-2">
-                                 <span className="btn-inner">
-                                    <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" currentcolor="#3a57e8">
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.87651 15.2063C6.03251 15.2063 2.74951 15.7873 2.74951 18.1153C2.74951 20.4433 6.01251 21.0453 9.87651 21.0453C13.7215 21.0453 17.0035 20.4633 17.0035 18.1363C17.0035 15.8093 13.7415 15.2063 9.87651 15.2063Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path fillRule="evenodd" clipRule="evenodd" d="M9.8766 11.886C12.3996 11.886 14.4446 9.841 14.4446 7.318C14.4446 4.795 12.3996 2.75 9.8766 2.75C7.3546 2.75 5.3096 4.795 5.3096 7.318C5.3006 9.832 7.3306 11.877 9.8456 11.886H9.8766Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M19.2036 8.66919V12.6792" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                                    
-                                       <path d="M21.2497 10.6741H17.1597" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>                 
-                                    </svg> 
-                                 </span>                            
-                              </Link>
-                           </li>
-                        </ul>
-                     </Card.Body>
-                  </Card>
+               
+               
                </Col>
+               
             </Row>
          </Tab.Container>
       </>
@@ -891,3 +626,84 @@ const UserProfile =() =>{
 }
 
 export default UserProfile;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const Container = styled.div`
+  height: 70vh;
+  width: 35vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.1rem;
+  align-items: center;
+  background-color:  white;
+  .container {
+    height: 65vh;
+    width: 40vw; 
+    background-color: ;
+    display: grid;
+    grid-template-columns: 96%;
+    @media screen and (min-width: 720px) and (max-width: 1080px) {
+      grid-template-columns: 35% 65%;
+    }
+  }
+`;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

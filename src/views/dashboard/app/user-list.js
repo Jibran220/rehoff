@@ -1,7 +1,7 @@
 import Card from '../../../components/Card'
 import React, { useEffect, useState } from "react";
 import {
-  useNavigate,
+  useHistory,
   Link,
   BrowserRouter,
   Route,
@@ -9,7 +9,8 @@ import {
 } from "react-router-dom";
 import { ExternalLink } from "react-external-link";
 import { Row, Col, Image } from "react-bootstrap";
-
+import {BsArrowRightShort} from 'react-icons/bs'
+import {AiOutlineFileExcel}from 'react-icons/ai'
 // img
 import shap1 from '../../../assets/images/shapes/01.png'
 import shap2 from '../../../assets/images/shapes/02.png'
@@ -18,9 +19,11 @@ import shap4 from '../../../assets/images/shapes/04.png'
 import shap5 from '../../../assets/images/shapes/05.png'
 import shap6 from '../../../assets/images/shapes/06.png'
 
-
+import Button from 'react-bootstrap/Button';
 
 const UserList =() =>{
+   let history =useHistory()
+
    
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -43,6 +46,9 @@ const UserList =() =>{
       getproducts();
     }
   };
+   const asd=()=>{
+      history.push("/dashboard/form/form-wizard")
+   }
   return(
      <>
        <div>
@@ -51,8 +57,13 @@ const UserList =() =>{
                <Card>
                   <Card.Header className="d-flex justify-content-between">
                      <div className="header-title">
-                        <h4 className="card-title">User List</h4>
-                     </div>
+                    <Button    onClick={asd}       variant="btn btn-primary">Add New <BsArrowRightShort size="25px"/></Button>{' '}
+                         </div>
+                         <div className="header-title">
+                     <Button            variant="btn btn-primary">Attach<AiOutlineFileExcel size="25px"/></Button>{' '}{' '}
+                         </div>
+                         <div className="header-title">
+                         </div>
                   </Card.Header>
                   <Card.Body className="px-0">
                      <div className="table-responsive">

@@ -3,9 +3,11 @@ import Index from '../views/dashboard/index'
 import {Switch,Route} from 'react-router-dom'
 // user
 import UserProfile from '../views/dashboard/app/user-profile';
+import VendorProfile from '../views/dashboard/app/VendorProfile';
 import UserAdd from '../views/dashboard/app/user-add';
 import UserList from '../views/dashboard/app/user-list';
 import Rfqmanges from '../views/dashboard/app/Rfqmanges';
+import Userrfq from '../views/dashboard/app/Userrfq';
 import userProfileEdit from '../views/dashboard/app/user-privacy-setting';
 // widget
 import Widgetbasic from '../views/dashboard/widget/widgetbasic';
@@ -20,6 +22,7 @@ import FormElement from '../views/dashboard/from/form-element';
 import FormValidation from '../views/dashboard/from/form-validation';
 import FormWizard from '../views/dashboard/from/form-wizard';
 import Rfqform from '../views/dashboard/from/Rfqform';
+import Userrfqf from '../views/dashboard/from/Userrfq';
 // table
 import BootstrapTable from '../views/dashboard/table/bootstrap-table';
 import TableData from '../views/dashboard/table/table-data';
@@ -48,15 +51,17 @@ import Admin from '../views/dashboard/admin/admin';
 const DefaultRouter = () => {
     return (
         <TransitionGroup>
-            <CSSTransition classNames="fadein" timeout={300}>
+            <CSSTransition classNames="fadein" timeout={500}>
                 <Switch>
                     <Route path="/" exact component={Index} />
                     <Route path="/dashboard/post" exact component={Post} />
                     {/* user */}
-                    <Route path="/dashboard/app/user-profile"     exact component={UserProfile} />
+                    <Route path="/dashboard/app/user-profile/:id"     exact component={UserProfile} />
+                    <Route path="/dashboard/app/VendorProfile/:id"     exact component={VendorProfile} />
                     <Route path="/dashboard/app/user-add"         exact component={UserAdd}/>
-                    <Route path="/dashboard/app/user-list"        exact component={UserList}/>Rfqmanges
+                    <Route path="/dashboard/app/user-list"        exact component={UserList}/>
                     <Route path="/dashboard/app/Rfqmanges"        exact component={Rfqmanges}/>
+                    <Route path="/dashboard/app/Userrfq/:id"        exact component={Userrfq}/>
                     <Route path="/dashboard/app/user-privacy-setting" exact component={userProfileEdit}/>
                      {/* widget */}
                      <Route path="/dashboard/widget/widgetbasic"   exact component={Widgetbasic}/>
@@ -69,8 +74,10 @@ const DefaultRouter = () => {
                      {/* From */}
                      <Route path="/dashboard/form/form-element"    exact component={FormElement}/>
                      <Route path="/dashboard/form/form-validation" exact component={FormValidation}/>
-                     <Route path="/dashboard/form/form-wizard"     exact component={FormWizard}/>Rfqform
+                     <Route path="/dashboard/form/form-wizard"     exact component={FormWizard}/>
                      <Route path="/dashboard/form/Rfqform"     exact component={Rfqform}/>
+                     <Route path="/dashboard/form/Userrfq/:id"     exact component={Userrfqf}/>
+
                      {/* table */}
                      <Route path="/dashboard/table/bootstrap-table" exact component={BootstrapTable}/>
                      <Route path="/dashboard/table/table-data"      exact component={TableData}/>

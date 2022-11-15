@@ -7,11 +7,11 @@ import Header from '../../components/partials/dashboard/HeaderStyle/header'
 //subheader
 import SubHeader from '../../components/partials/dashboard/HeaderStyle/sub-header'
 //sidebar
-import Sidebar from '../../components/partials/dashboard/SidebarStyle/sidebar'
+import Sidebar from '../../components/partials/dashboard/SidebarStyle/SidebarVendor'
 //footer
 import Footer from '../../components/partials/dashboard/FooterStyle/footer'
 //default 
-import DefaultRouter from '../../router/default-router'
+import DefaultRouter from '../../views/dashboard/app/rfqbyvendor'
 
 import SettingOffcanvas from '../../components/partials/components/settingoffcanvas'
 import Loader from '../../components/Loader'
