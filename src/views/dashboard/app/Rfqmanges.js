@@ -70,6 +70,7 @@ const UserList =() =>{
                               <th>Name</th>
                         <th>Description</th>
                         <th></th>
+                     
                                  <th min-width= "100px">Action</th>
                               </tr>
                            </thead>
@@ -137,3 +138,22 @@ const UserList =() =>{
 }
 
 export default UserList;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
