@@ -31,7 +31,7 @@ const UserList =() =>{
     let history =useHistory()
   
     const getproducts = async () => {
-      let result = await fetch("http://localhost:5005/rfqmanagers");
+      let result = await fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers");
       result = await result.json();
       setData(result);
     };
@@ -39,7 +39,7 @@ const UserList =() =>{
   
     const goto = async (id) => {};
     const deleteproduct = async (id) => {
-      let result = await fetch(`http://localhost:5005/rfqmanagers/${id} `, {
+      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${id} `, {
         method: "Delete",
       });
       result = await result.json();

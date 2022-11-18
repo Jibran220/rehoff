@@ -31,14 +31,14 @@ const UserList =() =>{
   }, []);
 
   const getproducts = async () => {
-    let result = await fetch("http://localhost:5005/products");
+    let result = await fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/products");
     result = await result.json();
     setData(result);
   };
   console.warn("results", data);
 
   const deleteproduct = async (id) => {
-    let result = await fetch(`http://localhost:5005/products/${id} `, {
+    let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/products/${id} `, {
       method: "Delete",
     });
     result = await result.json();

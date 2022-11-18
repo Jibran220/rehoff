@@ -31,7 +31,7 @@
 
   // const getproductdetail = async () => {
   //   console.warn(params);
-  //   let result = await fetch(`http://localhost:5005/userRFQ/${params.id}`);
+  //   let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ/${params.id}`);
   //   result = await result.json();
   //   setData(result);
   //   console.warn(result);
@@ -58,7 +58,7 @@
   //     });
   
   //   const getproducts = async () => {
-  //     let result = await fetch("http://localhost:5005/rfqmanagers");
+  //     let result = await fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers");
   //     result = await result.json();
   //     setData(result);
   //   };
@@ -66,7 +66,7 @@
   
   //   const goto = async (id) => {};
   //   const deleteproduct = async (id) => {
-  //     let result = await fetch(`http://localhost:5005/rfqmanagers/${id} `, {
+  //     let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${id} `, {
   //       method: "Delete",
   //     });
   //     result = await result.json();
@@ -352,7 +352,7 @@ const Userrfq =() =>{
 
   const getproductdetail = async () => {
     console.warn(params);
-    let result = await fetch(`http://localhost:5005/userRFQ/${params.id}`);
+    let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ/${params.id}`);
     result = await result.json();
     setData(result);
     console.warn(result);
@@ -375,7 +375,7 @@ const Userrfq =() =>{
       });
   
     const getproducts = async () => {
-      let result = await fetch("http://localhost:5005/rfqmanagers");
+      let result = await fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers");
       result = await result.json();
       setData(result);
     };
@@ -383,7 +383,7 @@ const Userrfq =() =>{
   
     const goto = async (id) => {};
     const deleteproduct = async (id) => {
-      let result = await fetch(`http://localhost:5005/rfqmanagers/${id} `, {
+      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${id} `, {
         method: "Delete",
       });
       result = await result.json();

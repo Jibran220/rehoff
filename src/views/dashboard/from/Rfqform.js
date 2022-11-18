@@ -26,7 +26,7 @@ const FormWizard = () => {
       const navigate = useHistory();
 
       const handleSubmit = async () => {
-        const result = fetch("http://localhost:5005/rfqmanagers", {
+        const result = fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers", {
           method: "post",
           body: JSON.stringify(postData),
           headers: { "Content-Type": "application/json" },

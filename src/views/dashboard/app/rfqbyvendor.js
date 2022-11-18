@@ -111,7 +111,7 @@ const UserList =() =>{
         console.warn("fjfhjhgjrhgjrthgirthjgkrhgjrhkjgh", params.id);
         params.id = id;
     
-        let result = await fetch(`http://localhost:5005/rfqmanagers/${id}`);
+        let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${id}`);
     
         result = await result.json();
   
@@ -138,7 +138,7 @@ const UserList =() =>{
         console.log("the user isjhjhjhjhjhj ", userName);
     
         let result = await fetch(
-          `http://localhost:5005/userrfq/search/${user.email}`
+          `https://hjhjkjkjkkjhjhi.herokuapp.com/userrfq/search/${user.email}`
         );
         result = await result.json();
         setData(result);
@@ -147,7 +147,7 @@ const UserList =() =>{
              
     
       const deleteproduct = async (id) => {
-        let result = await fetch(`http://localhost:5005/rfqmanagers/${id} `, {
+        let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${id} `, {
           method: "Delete",
         });
     
@@ -398,7 +398,7 @@ export default UserList;
 //   //     },[]);
 //   //     const getproductdetailbyemail=async()=>{
 //   //         console.warn(params)
-//   //         let result=await fetch (`http://localhost:5005/rfqmanagers/search/"muhammadjibran890@gmail.com"`)
+//   //         let result=await fetch (`https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/search/"muhammadjibran890@gmail.com"`)
 
 //   //         result =await result.json()
 //   //         console.warn(result)
@@ -473,7 +473,7 @@ export default UserList;
 //     console.warn("fjfhjhgjrhgjrthgirthjgkrhgjrhkjgh", params.id);
 //     params.id = id;
 
-//     let result = await fetch(`http://localhost:5005/rfqmanagers/${id}`);
+//     let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${id}`);
 
 //     result = await result.json();
 //     console.warn(result);
@@ -502,7 +502,7 @@ export default UserList;
 //     console.log("the user isjhjhjhjhjhj ", userName);
 
 //     let result = await fetch(
-//       `http://localhost:5005/userrfq/search/${user.email}`
+//       `https://hjhjkjkjkkjhjhi.herokuapp.com/userrfq/search/${user.email}`
 //     );
 //     result = await result.json();
 //     setData(result);
@@ -523,7 +523,7 @@ export default UserList;
 //   //  if (result) { getproducts() }hbhbbbbbbbbbbbbbbbbbbbbh b                    [[[[]]]]
 
 //   const deleteproduct = async (id) => {
-//     let result = await fetch(`http://localhost:5005/rfqmanagers/${id} `, {
+//     let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${id} `, {
 //       method: "Delete",
 //     });
 
@@ -950,7 +950,7 @@ export default UserList;
 // //   }, []);
 // //   const getproductdetail = async () => {
 // //     console.warn(params);
-// //     let result = await fetch(`http://localhost:5005/userRFQ/${params.id}`);
+// //     let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ/${params.id}`);
 
 // //     result = await result.json();
 // //     setData(result);

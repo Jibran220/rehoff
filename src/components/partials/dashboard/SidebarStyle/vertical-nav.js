@@ -65,7 +65,7 @@ const VerticalNav = () => {
                     <Accordion.Collapse eventKey="sidebar-special" >
                         <ul className="sub-nav">
                             <li className="nav-item">
-                                <Link className={`${location.pathname === '/dashboard/special-pages/billing' ? 'active' : ''} nav-link`} to="/dashboard/special-pages/billing">
+                                <Link className={`${location.pathname === '/ ' ? 'active' : ''} nav-link`} to="/ ">
                                 <i className="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -74,11 +74,11 @@ const VerticalNav = () => {
                                         </svg>
                                     </i>
                                 <i className="sidenav-mini-icon"> B </i>
-                                <span className="item-name">Billing</span>
+                                <span className="item-name">brick</span>
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className={`${location.pathname === '/dashboard/special-pages/calender' ? 'active' : ''} nav-link`} to="/dashboard/special-pages/calender">
+                                <Link className={`${location.pathname === '/'? 'active' : ''} nav-link`} to="/">
                                     <i className="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -91,7 +91,7 @@ const VerticalNav = () => {
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className={`${location.pathname === '/dashboard/special-pages/kanban' ? 'active' : '' } nav-link`} to="/dashboard/special-pages/kanban">
+                                <Link className={`${location.pathname === '/' ? 'active' : '' } nav-link`} to="/">
                                     <i className="icon">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                                 <g>
@@ -104,7 +104,7 @@ const VerticalNav = () => {
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className={`${location.pathname === '/dashboard/special-pages/pricing' ? 'active' : ''} nav-link`} to="/dashboard/special-pages/pricing">
+                                <Link className={`${location.pathname === '/' ? 'active' : ''} nav-link`} to="/">
                                     <i className="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -117,7 +117,7 @@ const VerticalNav = () => {
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className={`${location.pathname === '/dashboard/special-pages/timeline' ? 'active' : ''} nav-link`} to="/dashboard/special-pages/timeline">
+                                <Link className={`${location.pathname === '/' ? 'active' : ''} nav-link`} to="/">
                                     <i className="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>

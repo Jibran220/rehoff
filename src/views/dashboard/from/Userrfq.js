@@ -19,7 +19,7 @@ const Userrfq = () => {
 
   const getproductdetail = async () => {
     console.warn(params);
-    let result = await fetch(`http://localhost:5005/rfqmanagers/${params.id}`);
+    let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${params.id}`);
     result = await result.json();
     setData(result);
     Setrfq_name(result.name);
@@ -70,7 +70,7 @@ const Userrfq = () => {
     // e.preventDefault();
     // dispatch(createRFQ({ Name, Work_Phone, status }));
     // console.warn(Name, Work_Phone, status);
-    const result = fetch("http://localhost:5005/userRFQ", {
+    const result = fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ", {
       method: "post",
       body: JSON.stringify({
         status,
