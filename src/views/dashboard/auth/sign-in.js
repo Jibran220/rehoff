@@ -31,15 +31,11 @@ const SignIn = () => {
      theme: "dark",
    };
    useEffect(() => {
-     if (user){
       
-
-   history.push("/")
-     }
-     
- 
-
-   }, []);
+  if( localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) 
+       
+      toast.info("you are already login")
+    }, []);
  
    const handleChange = (event) => {
      setValues({ ...values, [event.target.name]: event.target.value });
@@ -58,35 +54,37 @@ const SignIn = () => {
    };
  
    const handleSubmit = async (event) => {
-     event.preventDefault();
-     if (validateForm()) {
-       const { username, password } = values;
-       const { data } = await axios.post(loginRoute, {
-         username,
-         password,
-       });
-       if (data.status === false) {
-         toast.error(data.msg, toastOptions);
-       }
-       if (data.status === true) {
-         localStorage.setItem(
-           process.env.REACT_APP_LOCALHOST_KEY,
-           JSON.stringify(data.user)
-         );
- 
-         if (data.user.username==="abcd"){
-      
-
-            history.push("/")
-              }
-          else{
-            history.push("/ath")
-
-          }
-       }
-     }
-   };
-
+      event.preventDefault();
+      if (validateForm()) {
+        const { username, password } = values;
+        const { data } = await axios.post(loginRoute, {
+          username,
+          password,
+        });
+        if (data.status === false) {
+          toast.error(data.msg, toastOptions);
+        }
+        if (data.status === true) {
+          localStorage.setItem(
+            process.env.REACT_APP_LOCALHOST_KEY,
+            JSON.stringify(data.user)
+          );
+  if(username==="Admin")
+  {
+     history.push("/");
+  }
+  if(username==="Admin1")
+  {
+     history.push("/approver");
+  }
+  if(username!=="Admin" &&username!=="Admin1")
+  {
+     history.push("/ath");
+  }
+   
+        }
+      }
+    };
 
 
 
@@ -131,33 +129,13 @@ const SignIn = () => {
                                        </Form.Group>
                                     </Col>
                                     <Col lg="12" className="d-flex justify-content-between">
-                                       <Form.Check className="form-check mb-3">
-                                          <Form.Check.Input type="checkbox"  id="customCheck1"/>
-                                          <Form.Check.Label htmlFor="customCheck1">Remember Me</Form.Check.Label>
-                                       </Form.Check>
-                                       <Link to="/auth/recoverpw">Forgot Password?</Link>
+                                     
                                     </Col>
                                  </Row>
                                  <div className="d-flex justify-content-center">
                                     <Button type="submit" variant="btn btn-primary">Sign In</Button>
                                  </div>
-                                 <p className="text-center my-3">or sign in with other accounts?</p>
-                                 <div className="d-flex justify-content-center">
-                                    <ListGroup as="ul" className="list-group-horizontal list-group-flush">
-                                       <ListGroup.Item as="li"  className="border-0 pb-0">
-                                          <Link to="#"><Image src={facebook} alt="fb"/></Link>
-                                       </ListGroup.Item>
-                                       <ListGroup.Item as="li"  className="border-0 pb-0">
-                                          <Link to="#"><Image src={google} alt="gm"/></Link>
-                                       </ListGroup.Item>
-                                       <ListGroup.Item as="li"  className="border-0 pb-0">
-                                          <Link to="#"><Image src={instagram} alt="im"/></Link>
-                                       </ListGroup.Item>
-                                       <ListGroup.Item as="li"  className="border-0 pb-0">
-                                          <Link to="#"><Image src={linkedin} alt="li"/></Link>
-                                       </ListGroup.Item>
-                                    </ListGroup>
-                                 </div>
+                                
                                  <p className="mt-3 text-center">
                                     Don’t have an account? <Link to="/auth/sign-up" className="text-underline">Click here to sign up.</Link>
                                  </p>
@@ -182,6 +160,7 @@ const SignIn = () => {
                </Col>
             </Row>
          </section>
+         <ToastContainer/>
         </>
     )
 }

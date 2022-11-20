@@ -8,7 +8,7 @@ import {
   Routes,
 } from "react-router-dom";
 import { ExternalLink } from "react-external-link";
-import { Row, Col, Image } from "react-bootstrap";
+import { Row, Col, Image ,Form} from "react-bootstrap";
 import {BsArrowRightShort} from 'react-icons/bs'
 import {AiOutlineFileExcel}from 'react-icons/ai'
 // img
@@ -18,12 +18,12 @@ import shap3 from '../../../assets/images/shapes/03.png'
 import shap4 from '../../../assets/images/shapes/04.png'
 import shap5 from '../../../assets/images/shapes/05.png'
 import shap6 from '../../../assets/images/shapes/06.png'
+import axios from "axios";
 
 import Button from 'react-bootstrap/Button';
 
 const UserList =() =>{
    let history =useHistory()
-
    
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -31,14 +31,14 @@ const UserList =() =>{
   }, []);
 
   const getproducts = async () => {
-    let result = await fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/products");
+    let result = await fetch("http://localhost:5005/products");
     result = await result.json();
     setData(result);
   };
   console.warn("results", data);
 
   const deleteproduct = async (id) => {
-    let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/products/${id} `, {
+    let result = await fetch(`http://localhost:5005/products/${id} `, {
       method: "Delete",
     });
     result = await result.json();
@@ -46,9 +46,48 @@ const UserList =() =>{
       getproducts();
     }
   };
+
    const asd=()=>{
       history.push("/dashboard/form/form-wizard")
    }
+
+   const [sendpo, setsendpo] = useState({
+      file: '',
+   })
+
+   const [name, setname] = useState('')
+
+   const handleattachments = (e) => {
+      console.log(e.target.files[0])
+      setsendpo({ ...sendpo, file: e.target.files[0] })
+      console.log("==", sendpo.file, "===", sendpo.file.name)
+   };
+
+   const sendEmail = async () => {
+
+      const formdata = new FormData()
+      formdata.append('file', sendpo.file, sendpo.file.name)
+      const result = await axios.post(`http://localhost:5005/uploadfile`, formdata)
+
+      if (result.status == 200) { alert("Email sent to the Vendor!"); }
+
+      console.warn(result);
+   };
+   
+   const [user, setUser] = useState(JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)));
+
+   const navigate = useHistory();
+
+   useEffect(async () => {if(! localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) navigate.push('/auth/sign-in') }, []);
+
+   useEffect(() => {
+     if(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)){
+         if (user.username==="Admin1") {navigate.push('/approver')}
+         else if(user.username!=="Admin"){navigate.push('/ath')}
+     }
+     else{
+       navigate.push('/auth/sign-in')}},[])
+
   return(
      <>
        <div>
@@ -60,7 +99,20 @@ const UserList =() =>{
                     <Button    onClick={asd}       variant="btn btn-primary">Add New <BsArrowRightShort size="25px"/></Button>{' '}
                          </div>
                          <div className="header-title">
-                     <Button            variant="btn btn-primary">Attach<AiOutlineFileExcel size="25px"/></Button>{' '}{' '}
+                         <Form>
+                                    <Row>
+                                        <Col>
+                                        <Form.Group>
+                                          <Form.Control type="file" id="customFile1" onChange={handleattachments} name="file" /> 
+                                       </Form.Group>
+                                        </Col>
+                                        <Col>
+                     <Button variant="btn btn-primary" type="button" onClick={sendEmail}>Attach<AiOutlineFileExcel size="25px"/></Button>{' '}
+
+                                        </Col>
+                                    </Row>
+                                </Form>
+                        
                          </div>
                          <div className="header-title">
                          </div>

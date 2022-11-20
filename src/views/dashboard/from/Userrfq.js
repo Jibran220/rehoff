@@ -6,7 +6,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useHistory, Link, useParams } from "react-router-dom";
 
 const Userrfq = () => {
-  const user = JSON.parse(localStorage.getItem("profile"));
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)));
   const navigate = useHistory();
   const params = useParams();
   const [data, setData] = useState([]);
@@ -100,7 +100,14 @@ const Userrfq = () => {
 
   const base64 =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjEuNv1OCegAAAAMSURBVBhXY/jPYAwAAzQBM849AKsAAAAASUVORK5CYII=";
-
+     useEffect(async () => {if(! localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) navigate.push('/auth/sign-in') }, []);
+    useEffect(() => {
+      if(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)){
+          if (user.username==="Admin1") {navigate.push('/approver')}
+          else if(user.username!=="Admin"){navigate.push('/ath')}
+      }
+      else{
+        navigate.push('/auth/sign-in')}},[])
   const [show, AccountShow] = useState("A");
   return (
     <>

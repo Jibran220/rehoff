@@ -22,7 +22,7 @@ const FormWizard = () => {
     });
 
       const dispatch = useDispatch();
-      const user = JSON.parse(localStorage.getItem("profile"));
+      const [user, setUser] = useState(JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)));
       const navigate = useHistory();
 
       const handleSubmit = async () => {
@@ -39,7 +39,14 @@ const FormWizard = () => {
         }
     
       };
-    
+       useEffect(async () => {if(! localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) navigate.push('/auth/sign-in') }, []);
+      useEffect(() => {
+        if(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)){
+            if (user.username==="Admin1") {navigate.push('/approver')}
+            else if(user.username!=="Admin"){navigate.push('/ath')}
+        }
+        else{
+          navigate.push('/auth/sign-in')}},[])
     const [show, AccountShow] = useState('A');
     return (
         <>

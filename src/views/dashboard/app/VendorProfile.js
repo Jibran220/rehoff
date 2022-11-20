@@ -73,25 +73,19 @@ const UserProfile =() =>{
    
   
   
-    useEffect(async () => {
-      if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-        navigate("/authv");
-      } else {
-        setCurrentaUser(
-          await JSON.parse(
-            localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-          )
-        );
-      }
-    }, []);
+     
     useEffect(() => {
       if (currentaUser) {
         socket.current = io(host);
         socket.current.emit("add-user", currentaUser._id);
+      console.log('this is from use eeeeeeeeeeeee',user.username)
+
       }
     }, [currentaUser]);
     useEffect(async () => {
       if (currentaUser) {
+      console.log('this is from use eeeeeeeeeeeee',user.username)
+
         if (currentaUser.isAvatarImageSet) {
           const data = await axios.get(`${allUsersRoute}/${currentaUser._id}`);
           setContacts(data.data);
@@ -105,6 +99,8 @@ const UserProfile =() =>{
     useEffect(() => {
       getproducts();
       getcomments();
+      console.log('this is from use eeeeeeeeeeeee',user.username)
+
       console.log("clclclclclcclcl",params.id)
   
   
@@ -119,7 +115,7 @@ const UserProfile =() =>{
     console.log("clclclclclcclcl",params.id)
     const handleSubmit = async (e) => {
       e.preventDefault();
-      const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/attachments`, {
+      const result = await fetch(`http://localhost:5005/attachments`, {
         method: "post",
         body: JSON.stringify(postData),
         headers: { "Content-Type": "application/json" },
@@ -136,13 +132,13 @@ const UserProfile =() =>{
       console.warn(result);
     };
     const getproducts = async () => {
-      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ/view/${params.id}`);
+      let result = await fetch(`http://localhost:5005/userRFQ/view/${params.id}`);
       result = await result.json();
       setData(result);
       console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", result._id);
   
       let result1 = await fetch(
-        `https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
+        `http://localhost:5005/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
       );
       result1 = await result1.json();
       setData1(result1);
@@ -152,13 +148,14 @@ const UserProfile =() =>{
     console.log("i love to work",data.map((tn) => tn.rfq_id));
     const getcomments = async () => {
       console.log("clclclclclcclcl",params.id)
-      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/commentrouter/search/${params.id}`);
+      let result = await fetch(`http://localhost:5005/commentrouter/search/${params.id}`);
       result = await result.json();
       setcom(result);
     };
   
    
    const [toggler, setToggler] = useState(false);
+     
   return(
       <>
          <FsLightbox
@@ -769,7 +766,7 @@ const Container = styled.div`
 
  
 //   // const AddComment = async () => {
-//   //   const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/CommentRouter`, {
+//   //   const result = await fetch(`http://localhost:5005/CommentRouter`, {
 //   //     method: "post",
 //   //     body: JSON.stringify({ postData }),
 //   //     headers: { "Content-Type": "application/json" },
@@ -781,7 +778,7 @@ const Container = styled.div`
 //   //   console.warn(result);
 //   // };
 //   // const SendAttachments = async () => {
-//   //   const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userattachments`, {
+//   //   const result = await fetch(`http://localhost:5005/userattachments`, {
 //   //     method: "post",
 //   //     body: JSON.stringify({ userattachments,vendorid }),
 //   //     headers: { "Content-Type": "application/json" },
@@ -839,7 +836,7 @@ const Container = styled.div`
 //   console.log("clclclclclcclcl",params.id)
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
-//     const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/attachments`, {
+//     const result = await fetch(`http://localhost:5005/attachments`, {
 //       method: "post",
 //       body: JSON.stringify(postData),
 //       headers: { "Content-Type": "application/json" },
@@ -856,13 +853,13 @@ const Container = styled.div`
 //     console.warn(result);
 //   };
 //   const getproducts = async () => {
-//     let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ/view/${params.id}`);
+//     let result = await fetch(`http://localhost:5005/userRFQ/view/${params.id}`);
 //     result = await result.json();
 //     setData(result);
 //     console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", result._id);
 
 //     let result1 = await fetch(
-//       `https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
+//       `http://localhost:5005/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
 //     );
 //     result1 = await result1.json();
 //     setData1(result1);
@@ -872,7 +869,7 @@ const Container = styled.div`
 //   console.log("i love to work",data.map((tn) => tn.rfq_id));
 //   const getcomments = async () => {
 //     console.log("clclclclclcclcl",params.id)
-//     let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/commentrouter/search/${params.id}`);
+//     let result = await fetch(`http://localhost:5005/commentrouter/search/${params.id}`);
 //     result = await result.json();
 //     setcom(result);
 //   };
@@ -886,7 +883,7 @@ const Container = styled.div`
 
 //   // const getrfqdetail = async () => {
 //   //   let result1 = await fetch(
-//   //     `https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/6359625314acd9c45ba7afbb`
+//   //     `http://localhost:5005/rfqmanagers/6359625314acd9c45ba7afbb`
 //   //   );
 
 //   //   result1 = await result1.json();

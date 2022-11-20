@@ -31,7 +31,7 @@ const UserList =() =>{
     let history =useHistory()
   
     const getproducts = async () => {
-      let result = await fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers");
+      let result = await fetch("http://localhost:5005/rfqmanagers");
       result = await result.json();
       setData(result);
     };
@@ -39,7 +39,7 @@ const UserList =() =>{
   
     const goto = async (id) => {};
     const deleteproduct = async (id) => {
-      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${id} `, {
+      let result = await fetch(`http://localhost:5005/rfqmanagers/${id} `, {
         method: "Delete",
       });
       result = await result.json();
@@ -51,6 +51,17 @@ const UserList =() =>{
     const asd=()=>{
       history.push("/dashboard/form/Rfqform")
    }
+   const [user, setUser] = useState(JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)));
+   const navigate = useHistory();
+   useEffect(async () => {if(! localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) navigate.push('/auth/sign-in') }, []);
+   useEffect(() => {
+     if(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)){
+         if (user.username==="Admin1") {navigate.push('/approver')}
+         else if(user.username!=="Admin"){navigate.push('/ath')}
+     }
+     else{
+       navigate.push('/auth/sign-in')}},[])
+
   return(
      <>
        <div>

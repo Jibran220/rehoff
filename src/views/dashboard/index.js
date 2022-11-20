@@ -40,6 +40,9 @@ import {connect} from "react-redux"
 // install Swiper modules
 SwiperCore.use([Navigation]);
 
+
+
+
 const mapStateToProps = (state) => {
     return {
         darkMode: getDarkMode(state),
@@ -67,25 +70,9 @@ const mapDispatchToProps = dispatch => ({
     )
 })
 
-
-
+      
 const Index = (props) => {
-    let history =useHistory()
-
-
-const [CurrentUser, setCurrentUser] = useState('')
-
-          useEffect(async () => {
-      if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-        history.push("/auth/sign-in");
-      } else {
-        setCurrentUser(
-          await JSON.parse(
-            localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-          )
-        );
-      }
-    }, []);
+    
     useEffect(() => {
     AOS.init({
         startEvent: 'DOMContentLoaded',
@@ -288,6 +275,17 @@ const [CurrentUser, setCurrentUser] = useState('')
             data: [40, 50, 55, 50, 30, 80, 30, 40, 50, 55]
         }]
     }
+    const navigate=useHistory()
+  useEffect(async () => {if(! localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) navigate.push('/auth/sign-in') }, []);
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)));
+      useEffect(() => {
+        if(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)){
+            if (user.username==="Admin1") {navigate.push('/approver')}
+            else if(user.username!=="Admin"){navigate.push('/ath')}
+        }
+        else{
+          navigate.push('/auth/sign-in')}},[])
+      console.log(user)
         return (
             <>
                 <Row>

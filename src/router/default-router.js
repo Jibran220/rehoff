@@ -1,6 +1,6 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import Index from '../views/dashboard/index'
-import {Switch,Route} from 'react-router-dom'
+import {Switch,Route,useHistory} from 'react-router-dom'
 // user
 import UserProfile from '../views/dashboard/app/user-profile';
 import VendorProfile from '../views/dashboard/app/VendorProfile';
@@ -8,6 +8,12 @@ import UserAdd from '../views/dashboard/app/user-add';
 import UserList from '../views/dashboard/app/user-list';
 import Rfqmanges from '../views/dashboard/app/Rfqmanges';
 import Userrfq from '../views/dashboard/app/Userrfq';
+import MASproduct_Category from '../views/dashboard/app/MASproduct Category';
+import MASproduct_Category_Update from '../views/dashboard/app/MASproduct_Category_Update';
+import MASApplicableStandards from '../views/dashboard/app/MASApplicableStandards';
+import MASApplicableStandards_Update from '../views/dashboard/app/MASApplicableStandards_Update';
+import MASW_x_D_x_H from '../views/dashboard/app/MASW x D x H';
+import MASW_x_D_x_H_Update from '../views/dashboard/app/MASW x D x H_Update';
 import userProfileEdit from '../views/dashboard/app/user-privacy-setting';
 // widget
 import Widgetbasic from '../views/dashboard/widget/widgetbasic';
@@ -48,11 +54,16 @@ import Post from '../components/Posts/Post';
 //admin
 import Admin from '../views/dashboard/admin/admin';
 
+
 const DefaultRouter = () => {
+    const history=useHistory()
+   
+     
     return (
         <TransitionGroup>
             <CSSTransition classNames="fadein" timeout={500}>
                 <Switch>
+
                     <Route path="/" exact component={Index} />
                     <Route path="/dashboard/post" exact component={Post} />
                     {/* user */}
@@ -61,7 +72,13 @@ const DefaultRouter = () => {
                     <Route path="/dashboard/app/user-add"         exact component={UserAdd}/>
                     <Route path="/dashboard/app/user-list"        exact component={UserList}/>
                     <Route path="/dashboard/app/Rfqmanges"        exact component={Rfqmanges}/>
-                    <Route path="/dashboard/app/Userrfq/:id"        exact component={Userrfq}/>
+                    <Route path="/dashboard/app/Userrfq/:id"        exact component={Userrfq}/> 
+                    <Route path="/dashboard/app/MASproduct_Category"        exact component={MASproduct_Category}/>
+                    <Route path="/dashboard/app/MASproduct_Category_Update/:id"        exact component={MASproduct_Category_Update}/>
+                    <Route path="/dashboard/app/MASApplicableStandards"        exact component={MASApplicableStandards}/>
+                    <Route path="/dashboard/app/MASApplicableStandards_Update/:id"        exact component={MASApplicableStandards_Update}/>        
+                    <Route path="/dashboard/app/MASW_x_D_x_H"        exact component={MASW_x_D_x_H}/>
+                    <Route path="/dashboard/app/MASW_x_D_x_H_Update/:id"        exact component={MASW_x_D_x_H_Update}/>     
                     <Route path="/dashboard/app/user-privacy-setting" exact component={userProfileEdit}/>
                      {/* widget */}
                      <Route path="/dashboard/widget/widgetbasic"   exact component={Widgetbasic}/>

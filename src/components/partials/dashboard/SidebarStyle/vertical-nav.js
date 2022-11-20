@@ -65,7 +65,7 @@ const VerticalNav = () => {
                     <Accordion.Collapse eventKey="sidebar-special" >
                         <ul className="sub-nav">
                             <li className="nav-item">
-                                <Link className={`${location.pathname === '/ ' ? 'active' : ''} nav-link`} to="/ ">
+                                <Link className={`${location.pathname === '/dashboard/app/MASproduct_Category' ? 'active' : ''} nav-link`} to="/dashboard/app/MASproduct_Category">
                                 <i className="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -74,11 +74,11 @@ const VerticalNav = () => {
                                         </svg>
                                     </i>
                                 <i className="sidenav-mini-icon"> B </i>
-                                <span className="item-name">brick</span>
+                                <span className="item-name">Product Category</span>
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className={`${location.pathname === '/'? 'active' : ''} nav-link`} to="/">
+                                <Link className={`${location.pathname === '/dashboard/app/MASApplicableStandards'? 'active' : ''} nav-link`} to="/dashboard/app/MASApplicableStandards">
                                     <i className="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -87,24 +87,12 @@ const VerticalNav = () => {
                                         </svg>
                                     </i>
                                     <i className="sidenav-mini-icon"> C </i>
-                                    <span className="item-name">Calender</span>
+                                    <span className="item-name">Applicable Standards</span>
                                 </Link>
                             </li>
+                             
                             <li className="nav-item">
-                                <Link className={`${location.pathname === '/' ? 'active' : '' } nav-link`} to="/">
-                                    <i className="icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
-                                                <g>
-                                                <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
-                                                </g>
-                                            </svg>
-                                        </i>
-                                    <i className="sidenav-mini-icon"> K </i>
-                                    <span className="item-name">kanban</span>
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className={`${location.pathname === '/' ? 'active' : ''} nav-link`} to="/">
+                                <Link className={`${location.pathname === '/dashboard/app/MASW_x_D_x_H' ? 'active' : ''} nav-link`} to="/dashboard/app/MASW_x_D_x_H">
                                     <i className="icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
                                             <g>
@@ -113,22 +101,10 @@ const VerticalNav = () => {
                                         </svg>
                                     </i>
                                     <i className="sidenav-mini-icon"> P </i>
-                                    <span className="item-name">Pricing</span>
+                                    <span className="item-name">W x D x H</span>
                                 </Link>
                             </li>
-                            <li className="nav-item">
-                                <Link className={`${location.pathname === '/' ? 'active' : ''} nav-link`} to="/">
-                                    <i className="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" viewBox="0 0 24 24" fill="currentColor">
-                                            <g>
-                                            <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
-                                            </g>
-                                        </svg>
-                                    </i>
-                                    <i className="sidenav-mini-icon"> T </i>
-                                    <span className="item-name">Timeline</span>
-                                </Link>
-                            </li>
+                            
                         </ul>
                     </Accordion.Collapse>
                 </Accordion.Item>

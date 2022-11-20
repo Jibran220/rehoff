@@ -5,8 +5,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Base64Downloader from "react-base64-downloader";
 import { useHistory, Link } from "react-router-dom";
-
+import FileBase from "react-file-base64";
 const FormWizard = () => {
+useEffect(() => {
+  getproducts()
+  getwdh()
+  getapplicationstandard()
+}, [])
     const [Regulatory_Model_Name, setRegulatory_Model_Name] = useState('')
     const [postData, setPostData] = useState({
         Regulatory_Model_Name: "",
@@ -77,8 +82,28 @@ const FormWizard = () => {
       });
 
       const dispatch = useDispatch();
-      const user = JSON.parse(localStorage.getItem("profile"));
+      const [user, setUser] = useState(JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)));
       const navigate = useHistory();
+
+      const [productcategory, setproductcategory] = useState([])
+      const [Applicable_Standards, setApplicable_Standards] = useState([])
+      const [wxdxh, setwxdxh] = useState([])
+
+      const getproducts = async () => {
+        let result = await fetch(`http://localhost:5005/MASproductCategory`);
+        result = await result.json();
+        setproductcategory(result)
+    };
+    const getapplicationstandard = async () => {
+      let result = await fetch(`http://localhost:5005/MASapplicationStandard`);
+      result = await result.json();
+      setApplicable_Standards(result)
+  };
+  const getwdh = async () => {
+    let result = await fetch(`http://localhost:5005/MAS_WDH`);
+    result = await result.json();
+    setwxdxh(result)
+};
 
       const handleSubmit = async () => {
         const result = fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/products", {
@@ -94,7 +119,14 @@ const FormWizard = () => {
         }
     
       };
-    
+       useEffect(async () => {if(! localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) navigate.push('/auth/sign-in') }, []);
+      useEffect(() => {
+        if(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)){
+            if (user.username==="Admin1") {navigate.push('/approver')}
+            else if(user.username!=="Admin"){navigate.push('/ath')}
+        }
+        else{
+          navigate.push('/auth/sign-in')}},[])
     const [show, AccountShow] = useState('A');
     return (
         <>
@@ -235,14 +267,12 @@ const FormWizard = () => {
                                     Product_Category: e.target.value,
                                   })
                                 }
-                              >
-                                <option defaultValue>BATT</option>
-                                <option value="CABL">CABL</option>
-                                <option value="CAP">CAP</option>
-                                <option value="CONT">CONT</option>
-                                <option value="CYBR">CYBR</option>
-                                <option value="E3">E3</option>
-                                <option value="ELVH">ELVH</option>
+                                >
+
+                                {productcategory.map((item)=>(
+                                <option  value={item.name}>{item.name}</option>
+                                ))}
+                               
                               </select>
                             </Form.Group>
                           </div>
@@ -360,28 +390,9 @@ const FormWizard = () => {
                                   })
                                 }
                               >
-                                <option defaultValue>IEC 60086-1:2015</option>
-                                <option value="IEC 60086-1:2015">
-                                  IEC 60086-1:2015
-                                </option>
-                                <option value="IEC 60086-2:2015">
-                                  IEC 60086-2:2015
-                                </option>
-                                <option value="IEC 60086-1:2015">
-                                  IEC 60086-1:2015
-                                </option>
-                                <option value="IEC 60086-2:2015">
-                                  IEC 60086-2:2015
-                                </option>
-                                <option value="IEC 60086-3:2015">
-                                  IEC 60086-3:2015
-                                </option>
-                                <option value="IEC 60086-4:2015">
-                                  IEC 60086-4:2015
-                                </option>
-                                <option value="IEC 60086-4:2015">
-                                  IEC 60086-4:2015
-                                </option>
+                                 {Applicable_Standards.map((item)=>(
+                                <option  value={item.name}>{item.name}</option>
+                                ))}
                               </select>
                             </Form.Group>{" "}
                           </div>
@@ -564,10 +575,10 @@ const FormWizard = () => {
                                   })
                                 }
                               >
-                                {/* <option defaultValue>Africa</option> */}
-                                <option value="mm">mm</option>
-                                <option value="cm">cm</option>
-                                <option value="mtr">mtr</option>
+                                 {wxdxh.map((item)=>(
+                                <option  value={item.name}>{item.name}</option>
+                                ))}
+                               
                               </select>
                             </Form.Group>{" "}
                           </div>

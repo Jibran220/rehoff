@@ -38,7 +38,7 @@ const SignUp = () => {
    useEffect(() => {
      if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
     
-      navigate.push("/");
+      navigate.push("/ath");
          
      
  
@@ -95,7 +95,7 @@ const SignUp = () => {
            process.env.REACT_APP_LOCALHOST_KEY,
            JSON.stringify(data.user)
          );
-         navigate.push("/");
+         navigate.push("/ath");
        }
      }
    };

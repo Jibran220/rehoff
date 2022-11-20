@@ -16,6 +16,7 @@ import icon3 from '../../../assets/images/icons/03.png'
 import icon4 from '../../../assets/images/icons/04.png'
 import icon8 from '../../../assets/images/icons/08.png'
 import { BsArrowRightShort } from 'react-icons/bs'
+import FileBase from "react-file-base64";
 
 import icon6 from '../../../assets/images/icons/06.png'
 import icon7 from '../../../assets/images/icons/07.png'
@@ -44,6 +45,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const UserProfile = () => {
+
    const [postData, setPostData] = useState({
       Regulatory_Model_Name: "",
       Product_Name: "",
@@ -60,7 +62,7 @@ const UserProfile = () => {
       TradeMark: "",
       Family: "",
       Market: "Africa",
-  
+
       Overall_Size_of_Equipment: "",
       WebGLShader: "mm",
       Voltage: "",
@@ -77,13 +79,13 @@ const UserProfile = () => {
       DC_mains: "",
       Battery_Powered: "",
       Skilled_person: "",
-  
+
       Non_detachable_Supply_Cord: "",
       Appliance_Coupler: "",
       Direct_plug_in: "",
       Non_detachable_Supply_Cord_B: "",
       Appliance_Coupler_B: "",
-  
+
       Permanent_connection: "",
       Mating_connector: "",
       Movable: "",
@@ -92,7 +94,7 @@ const UserProfile = () => {
       Wall_ceiling_mounted_SRME_rack_mounted: "",
       Hand_held: "",
       Other: "",
-  
+
       Pollution_Degree: "",
       Manufacturer_Specific_Max_Operating_Ambient: "",
       Ingree_Protection_Classification: "",
@@ -102,15 +104,15 @@ const UserProfile = () => {
       Atmospheric_Pressure: "",
       Indoor: "",
       Outdoor: "",
-  
+      
       Copy_of_Marking_Plate: "",
       WarningOrCautionary_Marking: "",
       Fuse_Type: "",
       Fuse_Marking: "",
-  
+
       //complaince report
       Report_Number: "No Option",
-    });
+   });
    const navigate = useHistory();
    const socket = useRef();
    const params = useParams();
@@ -134,15 +136,20 @@ const UserProfile = () => {
    const [currentaUser, setCurrentaUser] = useState(undefined);
    const [product, setproduct] = useState("");
    const [product1, setproduct1] = useState("");
-   const [price, setprice] = useState("");
-   const [quantity, setquantity] = useState("");
+   const [price, setprice] = useState('');
+   const [result, setresult] = useState('')
+   const [quantity, setquantity] = useState('');
    const [sendpo, setsendpo] = useState({
       file: '',
       body: '',
       to: '',
       subject: '',
+      userid: params.id,
    })
-
+   const [postemail, setpostemail] = useState({
+      id: '',
+      file: '',
+   })
    const inputhandeler = (e) => { setsendpo({ ...sendpo, [e.target.name]: e.target.value }) }
 
 
@@ -154,7 +161,7 @@ const UserProfile = () => {
 
    const getcomments = async () => {
       console.log("clclclclclcclcl", params.id)
-      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/commentrouter/search/${params.id}`);
+      let result = await fetch(`http://localhost:5005/commentrouter/search/${params.id}`);
       result = await result.json();
       setcom(result);
    };
@@ -175,25 +182,59 @@ const UserProfile = () => {
       });
 
    }
+   const pdfGenerator4 = () => {
+      AccountShow("Personal")
+      const doc = new jsPDF()
+      doc.html(document.querySelector("#heo"), {
+         callback: function (pdf) {
 
-  
+            pdf.save("mypdf")
+         },
+         x: 10,
+         y: 15,
+         width: 190,
+         windowWidth: 650
 
+      });
+
+   }
+   postemail.id = params.id
+   const handleemail = async (e) => {
+      e.preventDefault();
+      const result = await fetch(`http://localhost:5005/po/sendapprover`, {
+         method: "post",
+         body: JSON.stringify(postemail),
+         headers: { "Content-Type": "application/json" },
+      });
+      // result = await result.json();
+
+      if (result) {
+         alert("Attachment added Succesfully!");
+
+
+      }
+      console.warn(result);
+   };
+   //   for (var i=0; i<10; i++){
+   //    result += datapo.map((tn) => tn.price*tn.quantity)[i];
+   //  }
+
+   
    const sendEmail = async () => {
+
       const formdata = new FormData()
       formdata.append('file', sendpo.file, sendpo.file.name)
       formdata.append('to', sendpo.to)
-      formdata.append('subject', sendpo.subject)
-      formdata.append('body', sendpo.body)
 
-      const result = await axios.post(`https://hjhjkjkjkkjhjhi.herokuapp.com/po`, formdata)
+      const result = await axios.post(`http://localhost:5005/pofinal`, formdata)
 
 
-      if (result.status == 200) { alert("Email sent Succesfully!"); }
+      if (result.status == 200) { alert("Email sent to the Vendor!"); }
 
       console.warn(result);
    };
    const AddComment = async () => {
-      const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/CommentRouter`, {
+      const result = await fetch(`http://localhost:5005/CommentRouter`, {
          method: "post",
          body: JSON.stringify({ comment, userid }),
          headers: { "Content-Type": "application/json" },
@@ -206,7 +247,7 @@ const UserProfile = () => {
       console.warn(result);
    };
    const SendAttachments = async () => {
-      const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/attachments`, {
+      const result = await fetch(`http://localhost:5005/attachments`, {
          method: "post",
          body: JSON.stringify({ userattachments, vendorid }),
          headers: { "Content-Type": "application/json" },
@@ -251,6 +292,7 @@ const UserProfile = () => {
       getcomments();
       getattacments()
       getpo()
+
       // getrfqdetail();
    }, []);
 
@@ -259,7 +301,7 @@ const UserProfile = () => {
       console.log("current_chat", chat);
    };
    const handleSubmit = async () => {
-      const result = fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/commentrouter", {
+      const result = fetch("http://localhost:5005/commentrouter", {
          method: "post",
          body: JSON.stringify({ comment, userid }),
          headers: { "Content-Type": "application/json" },
@@ -274,36 +316,51 @@ const UserProfile = () => {
    };
 
    const getproducts = async () => {
-      console.log("i love toooooooooooooooooooooooooooooooo", params.id)
-      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ/view/${params.id}`);
+      let result = await fetch(`http://localhost:5005/userRFQ/view/${params.id}`);
       result = await result.json();
+
+      setsendpo({ to: result.to });
       setData(result);
       console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", data._id);
 
       let result1 = await fetch(
-         `https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
+         `http://localhost:5005/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
       );
       result1 = await result1.json();
       setData1(result1);
       console.log(data1);
    };
-   console.log(data.map((tn) => tn.rfq_id));
+   console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs",datapo.map((tn) => tn.price*tn.quantity));
+   // setresult(datapo.map((tn) => tn.price*tn.quantity))
+   console.log("mmmmmmmmmmmmmmmmmmkkkkkkkkkkkkkkkkkkkkm", result);
+
    console.log("i love to work", data.map((tn) => tn.rfq_id));
    const getattacments = async () => {
       console.log("clclclclclcclcl", params.id)
-      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/attachments/search/${params.id}`);
+      let result = await fetch(`http://localhost:5005/attachments/search/${params.id}`);
       result = await result.json();
       setatt(result);
       console.log(att)
    };
+   console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs",datapo.map((tn) => tn.price*tn.quantity));
+ 
+    console.log('ccccccccdacassssssssss',result)
+    console.log('ccccccccdacassssssssss',result)
+    console.log('ccccccccdacassssssssss',result)
+    console.log('ccccccccdacassssssssss',result)
+     
    const getpo = async () => {
-      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/poattachments/search/${params.id}`);
+      let result = await fetch(`http://localhost:5005/poattachments/search/${params.id}`);
       result = await result.json();
+      console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs",datapo.map((tn) => tn.price*tn.quantity));
+
       setDatapo(result);
    };
 
    const handleSubmitforpo = async () => {
-      const result = fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/poattachments", {
+   console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs",datapo.map((tn) => tn.price*tn.quantity));
+
+      const result = fetch("http://localhost:5005/poattachments", {
          method: "post",
          body: JSON.stringify({
             product,
@@ -314,6 +371,7 @@ const UserProfile = () => {
          headers: { "Content-Type": "application/json" },
       });
       if (result) {
+         getpo()
          setproduct('')
          setprice('')
          setquantity('')
@@ -323,7 +381,14 @@ const UserProfile = () => {
 
    };
    const [toggler, setToggler] = useState(false);
-
+     useEffect(async () => {if(! localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) navigate.push('/auth/sign-in') }, []);
+    useEffect(() => {
+      if(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)){
+          if (user.username==="Admin1") {navigate.push('/approver')}
+          else if(user.username!=="Admin"){navigate.push('/ath')}
+      }
+      else{
+        navigate.push('/auth/sign-in')}},[])
    return (
       <>
          <FsLightbox
@@ -461,34 +526,205 @@ const UserProfile = () => {
 
                      </Tab.Pane>
                      <Tab.Pane eventKey="second" id="profile-activity">
+
                         <Card>
-                           <Card.Header className="d-flex justify-content-between">
-                              <div className="header-title">
-                                 <h4 className="card-title">Activity</h4>
-                              </div>
-                           </Card.Header>
-                           <Card.Body>
-                              {att.map((asd) => (
-                                 <div className="iq-timeline0 m-0 d-flex align-items-center justify-content-between position-relative">
-                                    <ul className="list-inline p-0 m-0">
-                                       <li>
 
-                                          <div className="timeline-dots timeline-dot1 border-primary text-primary"></div>
-
-                                          <a href={asd.files} download>   <h6 className="float-left mb-1">{asd.title}</h6></a>
+                           <fieldset className={`${show === "A" ? "d-block" : "d-none"}`}>
 
 
-                                          <small className="float-right mt-1">{asd.Dates}</small>
-                                          <div className="d-inline-block w-100">
-                                             <p></p>
+                              <Card>
+                                 <Card.Header className="d-flex justify-content-between">
+                                    <div className="header-title">
+                                       <h4 className="card-title">Activity</h4>
+                                    </div>
+                                 </Card.Header>
+                                 <Card.Body>
+                                    {att.map((asd) => (
+                                       <div className="iq-timeline0 m-0 d-flex align-items-center justify-content-between position-relative">
+                                          <ul className="list-inline p-0 m-0">
+                                             <li>
+
+                                                <div className="timeline-dots timeline-dot1 border-primary text-primary"></div>
+
+                                                <a href={asd.files} download>   <h6 className="float-left mb-1">{asd.title}</h6></a>
+
+
+                                                <small className="float-right mt-1">{asd.Dates}</small>
+
+                                                <div className="d-inline-block w-100">
+                                                   <p> <b><i><u><Link onClick={() => AccountShow("Account")} className="ms-3">{asd.clickhere} </Link></u></i></b></p>
+
+
+                                                </div>
+                                             </li>
+
+                                          </ul>
+                                       </div>
+                                    ))}
+
+                                 </Card.Body>
+                              </Card>
+
+                           </fieldset>
+                           <fieldset className={`${show === "Account" ? "d-block" : "d-none"}`}>
+                              <Card.Header className="d-flex justify-content-between">
+
+
+                              </Card.Header>
+                              <div className="card">
+                                 <div className="card-body">
+                                    <div className="container mb-5 mt-3" id="heo">
+                                       <div className="row d-flex align-items-baseline">
+                                          <div className="col-xl-9">
+                                             <p style={{ color: "#7e8d9f", fontSize: 20 }}>
+                                                Invoice #<strong>  {params.id}</strong>
+                                             </p>
                                           </div>
-                                       </li>
 
-                                    </ul>
+                                          <hr />
+                                       </div>
+                                       <div className="container">
+                                          <div className="col-md-12">
+                                             <div className="text-center">
+                                                <br />
+                                                {/* <p className="pt-0">MDBootstrap.com</p> */}
+                                             </div>
+                                          </div>
+                                          {data.map((item) => (
+
+                                             <div className="row">
+                                                <div className="col-xl-8">
+                                                   <ul className="list-unstyled">
+                                                      <li className="text-muted">
+                                                         To: <span style={{ color: "#5d9fc5" }}>{item.to}</span>
+                                                      </li>
+                                                      <li className="text-muted">
+                                                         Name: <span style={{ color: "#5d9fc5" }}>{item.Name}</span>
+                                                      </li>
+                                                      <li className="text-muted">
+                                                         Issue Date: <span style={{ color: "#5d9fc5" }}>{item.Dates}</span>
+                                                      </li>
+                                                      <li className="text-muted">
+                                                         Phone: <span style={{ color: "#5d9fc5" }}>{item.Work_Phone}</span>
+                                                      </li>
+
+
+                                                   </ul>
+                                                </div>
+                                                <div className="col-xl-4">
+                                                   <p className="text-muted">Invoice</p>
+                                                   <ul className="list-unstyled">
+
+
+                                                      <li className="text-muted">
+                                                         <i className="fas " style={{ color: "#84B0CA" }} />{" "}
+                                                         <span className="me-1 ">Status:</span>
+                                                         <span className="badge bg-warning text-black ">
+                                                            {item.status}
+                                                         </span>
+                                                      </li>
+                                                   </ul>
+                                                </div>
+                                             </div>
+                                          ))}
+                                          <div className="row my-2 mx-1 justify-content-center">
+                                             <table className="table table-striped table-borderless">
+                                                <thead
+                                                   style={{ backgroundColor: "#84B0CA" }}
+                                                   className="text-black"
+                                                >
+                                                   <tr>
+
+                                                      <th scope="col">Description</th>
+                                                      <th scope="col">Qty</th>
+                                                      <th scope="col">Price</th>
+                                                      <th scope="col">Total</th>
+                                                   </tr>
+                                                </thead>
+
+                                                {datapo.map((item) => (
+                                                   <tbody>
+                                                      <tr>
+                                                         <td>{item.product}</td>
+                                                         <td>{item.quantity}</td>
+                                                         <td>{item.price}</td>
+                                                         <td>{price*quantity}</td>
+
+                                                      </tr>
+
+                                                   </tbody>
+                                                ))}
+                                             </table>
+                                          </div>
+                                          <div className="row">
+                                             <div className="col-xl-8">
+                                                <p className="ms-3">Add additional notes and payment information</p>
+                                             </div>
+                                             <div className="col-xl-3">
+
+                                                <p className="text-black float-start">
+                                                   {/* <span className="text-black me-3"> Total</span> */}
+                                                   {/* <span style={{ fontSize: 25 }}>$1221</span> */}
+                                                </p>
+                                             </div>
+                                          </div>
+                                          <hr />
+                                          <div className="row">
+                                             <div className="col-xl-10">
+                                                <p>Thank you for your purchase</p>
+                                             </div>
+
+                                             <div className="col-xl-2">
+
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <Button size="25px" onClick={() => AccountShow("A")} variant="btn btn-primary">back </Button>{' '}
+                                    <Button size="25px" onClick={pdfGenerator4} variant="btn btn-primary">GO </Button>{' '}
                                  </div>
-                              ))}
+                              </div>
 
-                           </Card.Body>
+                           </fieldset>
+                           <fieldset
+                              className={`${show === "Personal" ? "d-block" : "d-none"}`}
+                           >
+                              <Card>
+                                 <Card.Body>
+                                    <div class="file-upload-wrapper">
+
+                                       {/* <Form.Control type="file" id="customFile1" onChange={handleattachments} name="file" /> */}
+
+                                       {data.map((item) => (
+                                          <Form.Group className="form-group">
+                                             <Form.Label htmlFor="exampleInputText1">Email: </Form.Label>
+                                             <Form.Control type="text" id="exampleInputText1" name="to" value={sendpo.to} defaultValue={item.to} onChange={(e) => setsendpo({ ...sendpo, to: e.target.value })} />
+                                          </Form.Group>
+                                       ))}
+
+                                       <Form.Group>
+                                          <Form.Label className="custom-file-input"> Add file</Form.Label>
+                                          <Form.Control type="file" id="customFile1" onChange={handleattachments} name="file" />
+                                       </Form.Group>
+
+                                    </div>
+                                    <br />
+
+                                    <Button variant="btn btn-primary" type="button" onClick={sendEmail}>Send to Vendor</Button>{' '}
+
+
+                                    <button
+                                       type="button"
+                                       name="previous"
+                                       className="btn btn-dark previous action-button-previous float-end me-1"
+                                       value="Previous"
+                                       onClick={() => AccountShow("Account")}
+                                    >
+                                       Back
+                                    </button>
+                                 </Card.Body>
+                              </Card>
+                           </fieldset>
                         </Card>
                      </Tab.Pane >
                      <Tab.Pane eventKey="third" id="profile-friends">
@@ -797,622 +1033,204 @@ const UserProfile = () => {
 
 
 
-                    
-<Card>
-                          
-                            <Card.Body>
-                                   
-                                    
-                                    <fieldset
-                    className={`${show === "A" ? "d-block" : "d-none"}`}
-                  >
-                 
+
+                        <Card>
+
+                           <Card.Body>
 
 
-
-
-
-
-<Card.Header className="d-flex justify-content-between">
-
-   <Card>
-      <Card.Header className="d-flex justify-content-between">
-         <div className="header-title">
-            <h4 className="card-title"> Add Items</h4>
-         </div>
-      </Card.Header>
-      <Card.Body>
-         <Form>
-            <Row>
-               <Col>
-                  <Form.Control type="text" placeholder="Item" value={product} onChange={(e) => { setproduct(e.target.value) }} />
-               </Col>
-               <Col>
-                  <Form.Control type="text" placeholder="Quantity" value={quantity} onChange={(e) => { setquantity(e.target.value) }} />
-               </Col>
-               <Col>
-                  <Form.Control type="text" placeholder="Price" value={price} onChange={(e) => { setprice(e.target.value) }} />
-               </Col>
-            </Row>
-
-            <br />
-            <Row>
-               <Button size="25px" onClick={handleSubmitforpo} variant="btn btn-primary">Add</Button>{' '}
-
-            </Row>
-         </Form>
-      </Card.Body>
-   </Card>
-   <hr />
-</Card.Header>
-<div className="card">
-   <div className="card-body">
-      <div className="container mb-5 mt-3" id="heo">
-         <div className="row d-flex align-items-baseline">
-            <div className="col-xl-9">
-               <p style={{ color: "#7e8d9f", fontSize: 20 }}>
-                  Invoice &gt;&gt; <strong>ID: #123-123</strong>
-               </p>
-            </div>
-
-            <hr />
-         </div>
-         <div className="container">
-            <div className="col-md-12">
-               <div className="text-center">
-                  <br />
-                  {/* <p className="pt-0">MDBootstrap.com</p> */}
-               </div>
-            </div>
-            <div className="row">
-               <div className="col-xl-8">
-                  <ul className="list-unstyled">
-                     <li className="text-muted">
-                        To: <span style={{ color: "#5d9fc5" }}>John Lorem</span>
-                     </li>
-                     <li className="text-muted">
-                        Email: <span style={{ color: "#5d9fc5" }}>John@gmail.com</span>
-                     </li>
-                     <li className="text-muted">
-                        Issue Date: <span style={{ color: "#5d9fc5" }}>3-5-2022</span>
-                     </li>
-                     <li className="text-muted">
-                        Phone: <span style={{ color: "#5d9fc5" }}>352022</span>
-                     </li>
-
-
-                  </ul>
-               </div>
-               <div className="col-xl-4">
-                  <p className="text-muted">Invoice</p>
-                  <ul className="list-unstyled">
-                     <li className="text-muted">
-                        <i className="fas " style={{ color: "#84B0CA" }} />{" "}
-                        <span className="fw-bold">ID:</span>#123-456
-                     </li>
-                     <li className="text-muted">
-                        <i className="fas " style={{ color: "#84B0CA" }} />{" "}
-                        <span className="fw-bold">Creation Date: </span>Jun 23,2021
-                     </li>
-                     <li className="text-muted">
-                        <i className="fas " style={{ color: "#84B0CA" }} />{" "}
-                        <span className="me-1 ">Status:</span>
-                        <span className="badge bg-warning text-black ">
-                           Unpaid
-                        </span>
-                     </li>
-                  </ul>
-               </div>
-            </div>
-            <div className="row my-2 mx-1 justify-content-center">
-               <table className="table table-striped table-borderless">
-                  <thead
-                     style={{ backgroundColor: "#84B0CA" }}
-                     className="text-black"
-                  >
-                     <tr>
-
-                        <th scope="col">Description</th>
-                        <th scope="col">Qty</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Total</th>
-                     </tr>
-                  </thead>
-
-                  {datapo.map((item) => (
-                     <tbody>
-                        <tr>
-                           <td>{item.product}</td>
-                           <td>{item.quantity}</td>
-                           <td>{item.price}</td>
-                           <td>$10</td>
-
-                        </tr>
-
-                     </tbody>
-                  ))}
-               </table>
-            </div>
-            <div className="row">
-               <div className="col-xl-8">
-                  <p className="ms-3">Add additional notes and payment information</p>
-               </div>
-               <div className="col-xl-3">
-
-                  <p className="text-black float-start">
-                     <span className="text-black me-3"> Total</span>
-                     <span style={{ fontSize: 25 }}>$1221</span>
-                  </p>
-               </div>
-            </div>
-            <hr />
-            <div className="row">
-               <div className="col-xl-10">
-                  <p>Thank you for your purchase</p>
-               </div>
-
-               <div className="col-xl-2">
-
-               </div>
-            </div>
-         </div>
-      </div>
-      <Button size="25px" onClick={pdfGenerator} variant="btn btn-primary">GO </Button>{' '}
-   </div>
-</div>
-
-
-
-                 
-                  </fieldset>
-                  <fieldset
-                    className={`${show === "Account" ? "d-block" : "d-none"}`}
-                  >
-                   <div class="file-upload-wrapper">
-  <input type="file" id="input-file-now" class="file-upload" />
-
-</div>
-
-                    <button
-                      type="button"
-                      name="next"
-                      className="btn btn-primary next action-button float-end"
-                      value="Send"
-                      onClick={sendpo}
-                    >
-                      Send
-                    </button>
-                    <button
-                      type="button"
-                      name="previous"
-                      className="btn btn-dark previous action-button-previous float-end me-1"
-                      value="Previous"
-                      onClick={() => AccountShow("A")}
-                    >
-                      Previous
-                    </button>
-                  </fieldset>
-                  <fieldset
-                    className={`${show === "Personal" ? "d-block" : "d-none"}`}
-                  >
-                    <div className="form-card text-start">
-                      <div className="row">
-                        <div className="col-7">
-                          <h3 className="mb-4">Enviromental Information: </h3>
-                        </div>
-                        <div className="col-5">
-                          <h2 className="steps">Step 3 - 4</h2>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div className="form-group">
-                            <label className="form-label">
-                              Pollution Degree:{" "}
-                            </label>
-                            <Form.Check className="d-block">
-                              <Form.Check.Input
-                                className="me-2"
-                                type="radio"
-                                value="P1"
-                                onChange={(e) =>
-                                  setPostData({
-                                    ...postData,
-                                    Pollution_Degree: e.target.value,
-                                  })
-                                }
-                                name="a"
-                                id="flexRadioDefault1"
-                              />
-                              <Form.Check.Label htmlFor="flexRadioDefault1">
-                                P1
-                              </Form.Check.Label>
-                            </Form.Check>
-                            <Form.Check className="d-block">
-                              <Form.Check.Input
-                                className="me-2"
-                                type="radio"
-                                value="P2"
-                                onChange={(e) =>
-                                  setPostData({
-                                    ...postData,
-                                    Pollution_Degree: e.target.value,
-                                  })
-                                }
-                                name="a"
-                                id="flexRadioDefault1"
-                              />
-                              <Form.Check.Label htmlFor="flexRadioDefault1">
-                                P2
-                              </Form.Check.Label>
-                            </Form.Check>
-                            <Form.Check className="d-block">
-                              <Form.Check.Input
-                                className="me-2"
-                                type="radio"
-                                value="P3"
-                                onChange={(e) =>
-                                  setPostData({
-                                    ...postData,
-                                    Pollution_Degree: e.target.value,
-                                  })
-                                }
-                                name="a"
-                                id="flexRadioDefault1"
-                              />
-                              <Form.Check.Label htmlFor="flexRadioDefault1">
-                                P3
-                              </Form.Check.Label>
-                            </Form.Check>{" "}
-                          </div>
-                        </div>
-                        <div className="col-md-4">
-                          <div className="form-group">
-                            <label className="form-label">
-                              Manufacturer Specific Max Operating Ambient: *
-                            </label>
-                            <input
-                              type="number"
-                              className="form-control"
-                              value={
-                                postData.Manufacturer_Specific_Max_Operating_Ambient
-                              }
-                              onChange={(e) =>
-                                setPostData({
-                                  ...postData,
-                                  Manufacturer_Specific_Max_Operating_Ambient:
-                                    e.target.value,
-                                })
-                              }
-                              placeholder="in *C"
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div className="form-group">
-                            <label className="form-label">
-                              Ingree Protection Classification:{" "}
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={postData.Ingree_Protection_Classification}
-                              onChange={(e) =>
-                                setPostData({
-                                  ...postData,
-                                  Ingree_Protection_Classification:
-                                    e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div className="form-group">
-                            <label className="form-label">
-                              Altitude During Operation:{" "}
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={postData.Altitude_During_Operation}
-                              onChange={(e) =>
-                                setPostData({
-                                  ...postData,
-                                  Altitude_During_Operation: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div className="form-group">
-                            <label className="form-label">
-                              Mass Of Equipment (in kg):{" "}
-                            </label>
-                            <input
-                              type="number"
-                              className="form-control"
-                              value={postData.Mass_Of_Equipment}
-                              onChange={(e) =>
-                                setPostData({
-                                  ...postData,
-                                  Mass_Of_Equipment: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div className="form-group">
-                            <label className="form-label">
-                              Relative Humidity (%):{" "}
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={postData.Relative_Humidity}
-                              onChange={(e) =>
-                                setPostData({
-                                  ...postData,
-                                  Relative_Humidity: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div className="form-group">
-                            <label className="form-label">
-                              Atmospheric Pressure [kPa]:{" "}
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={postData.Atmospheric_Pressure}
-                              onChange={(e) =>
-                                setPostData({
-                                  ...postData,
-                                  Atmospheric_Pressure: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div className="form-group">
-                            <label className="form-label">
-                              Indoor or Outdoor:{" "}
-                            </label>
-                            <Form.Check className="d-block">
-                              <Form.Check.Input
-                                className="me-2"
-                                type="checkbox"
-                                value="Indoor"
-                                onChange={(e) =>
-                                  setPostData({
-                                    ...postData,
-                                    Indoor: e.target.value,
-                                  })
-                                }
-                                id="flexCheckDefault"
-                              />
-                              <Form.Check.Label htmlFor="flexCheckDefault">
-                                Indoor
-                              </Form.Check.Label>
-                            </Form.Check>
-                            <Form.Check className="d-block">
-                              <Form.Check.Input
-                                className="me-2"
-                                type="checkbox"
-                                value="Outdoor"
-                                onChange={(e) =>
-                                  setPostData({
-                                    ...postData,
-                                    Outdoor: e.target.value,
-                                  })
-                                }
-                                id="flexCheckDefault"
-                              />
-                              <Form.Check.Label htmlFor="flexCheckDefault">
-                                Outdoor
-                              </Form.Check.Label>
-                            </Form.Check>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      name="next"
-                      className="btn btn-primary next action-button float-end"
-                      value="Submit"
-                      onClick={() => AccountShow("Image")}
-                    >
-                      Next
-                    </button>
-                    <button
-                      type="button"
-                      name="previous"
-                      className="btn btn-dark previous action-button-previous float-end me-1"
-                      value="Previous"
-                      onClick={() => AccountShow("Account")}
-                    >
-                      Previous
-                    </button>
-                  </fieldset>
-                  <fieldset
-                    className={`${show === "Image" ? "d-block" : "d-none"}`}
-                  >
-                    <div className="form-card text-start">
-                      <div className="row">
-                        <div className="col-7">
-                          <h3 className="mb-4">
-                            Marketing And Documentation:{" "}
-                          </h3>
-                        </div>
-                        <div className="col-5">
-                          <h2 className="steps">Step 4 - 4</h2>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-3">
-                          <div className="form-group">
-                            <label className="form-label">
-                              Copy of Marking Plate:{" "}
-                            </label>
-                            <Form.Group>
-                              <Form.Label className="custom-file-input"></Form.Label>
-                              {/* <FileBase
-                                type="file"
-                                multiple={""}
-                                onDone={({ base64 }) =>
-                                  setPostData({
-                                    ...postData,
-                                    Copy_of_Marking_Plate: base64,
-                                  })
-                                }
-                                name="abc"
-                              /> */}
-
-                              {/* <Form.Control  type="file" id="customFile1"/> */}
-                            </Form.Group>{" "}
-                          </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div className="form-group">
-                            <label className="form-label">
-                              Warning/Cautionary Marking:{" "}
-                            </label>
-                            <Form.Group>
-                              <Form.Label className="custom-file-input"></Form.Label>
-                              {/* <FileBase
-                                type="file"
-                                multiple={""}
-                                onDone={({ base64 }) =>
-                                  setPostData({
-                                    ...postData,
-                                    WarningOrCautionary_Marking: base64,
-                                  })
-                                }
-                              /> */}
-                              {/* <Form.Control  type="file" id="customFile1"/> */}
-                            </Form.Group>{" "}
-                          </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div className="form-group">
-                            <label className="form-label">Fuse Type: </label>
-                            <Form.Check className="d-block">
-                              <Form.Check.Input
-                                className="me-2"
-                                type="radio"
-                                value="Replaceable"
-                                onChange={(e) =>
-                                  setPostData({
-                                    ...postData,
-                                    Fuse_Type: e.target.value,
-                                  })
-                                }
-                                name="b"
-                                id="flexRadioDefault1"
-                              />
-                              <Form.Check.Label htmlFor="flexRadioDefault1">
-                                Replaceable
-                              </Form.Check.Label>
-                            </Form.Check>
-                            <Form.Check className="d-block">
-                              <Form.Check.Input
-                                className="me-2"
-                                type="radio"
-                                value="Non-Replaceable"
-                                onChange={(e) =>
-                                  setPostData({
-                                    ...postData,
-                                    Fuse_Type: e.target.value,
-                                  })
-                                }
-                                name="b"
-                                id="flexRadioDefault1"
-                              />
-                              <Form.Check.Label htmlFor="flexRadioDefault1">
-                                Non-Replaceable
-                              </Form.Check.Label>
-                            </Form.Check>
-                            <Form.Check className="d-block">
-                              <Form.Check.Input
-                                className="me-2"
-                                type="radio"
-                                value="None"
-                                onChange={(e) =>
-                                  setPostData({
-                                    ...postData,
-                                    Fuse_Type: e.target.value,
-                                  })
-                                }
-                                name="b"
-                                id="flexRadioDefault1"
-                              />
-                              <Form.Check.Label htmlFor="flexRadioDefault1">
-                                None
-                              </Form.Check.Label>
-                            </Form.Check>{" "}
-                          </div>
-                        </div>
-
-                        <div className="col-md-3">
-                          <div className="form-group">
-                            <label className="form-label">Fuse Marking: </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={postData.Fuse_Marking}
-                              onChange={(e) =>
-                                setPostData({
-                                  ...postData,
-                                  Fuse_Marking: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
-
-                        <div className="col-7"></div>
-                        <hr />
-                        <h3 className="mb-4">Compliance Report: </h3>
-
-                        <div className="col-md-2">
-                          <div className="form-group">
-                            <label className="form-label"> Report Number</label>
-                            <Form.Group className="form-group">
-                              <select
-                                className="form-select mb-3 shadow-none"
-                                value={postData.Report_Number}
-                                onChange={(e) =>
-                                  setPostData({
-                                    ...postData,
-                                    Report_Number: e.target.value,
-                                  })
-                                }
+                              <fieldset
+                                 className={`${show === "A" ? "d-block" : "d-none"}`}
                               >
-                                {/* <option defaultValue>Africa</option> */}
-                                <option value="No Option">No Option</option>
-                              </select>
-                            </Form.Group>{" "}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      name="next"
-                      className="btn btn-primary next action-button float-end"
-                      onClick={handleSubmit}
-                    >
-                      Submit
-                    </button>
-                  </fieldset>
-                               
-                            </Card.Body>
+
+
+
+
+
+
+
+                                 <Card.Header className="d-flex justify-content-between">
+
+                                    <Card>
+                                       <Card.Header className="d-flex justify-content-between">
+                                          <div className="header-title">
+                                             <h4 className="card-title"> Add Items</h4>
+                                          </div>
+                                       </Card.Header>
+                                       <Card.Body>
+                                          <Form>
+                                             <Row>
+                                                <Col>
+                                                   <Form.Control type="text" placeholder="Item" value={product} onChange={(e) => { setproduct(e.target.value) }} />
+                                                </Col>
+                                                <Col>
+                                                   <Form.Control type="text" placeholder="Quantity" value={quantity} onChange={(e) => { setquantity(e.target.value) }} />
+                                                </Col>
+                                                <Col>
+                                                   <Form.Control type="text" placeholder="Price" value={price} onChange={(e) => { setprice(e.target.value) }} />
+                                                </Col>
+                                             </Row>
+
+                                             <br />
+                                             <Row>
+                                                <Button size="25px" onClick={handleSubmitforpo} variant="btn btn-primary">Add</Button>{' '}
+
+                                             </Row>
+                                          </Form>
+                                       </Card.Body>
+                                    </Card>
+                                    <hr />
+                                 </Card.Header>
+                                 <div className="card">
+                                    <div className="card-body">
+                                       <div className="container mb-5 mt-3" id="heo">
+                                          <div className="row d-flex align-items-baseline">
+                                             <div className="col-xl-9">
+                                                <p style={{ color: "#7e8d9f", fontSize: 20 }}>
+                                                   Invoice #<strong> {params.id}</strong>
+                                                </p>
+                                             </div>
+
+                                             <hr />
+                                          </div>
+                                          <div className="container">
+                                             <div className="col-md-12">
+                                                <div className="text-center">
+                                                   <br />
+                                                   {/* <p className="pt-0">MDBootstrap.com</p> */}
+                                                </div>
+                                             </div>
+                                             {data.map((item) => (
+
+                                                <div className="row">
+                                                   <div className="col-xl-8">
+                                                      <ul className="list-unstyled">
+                                                         <li className="text-muted">
+                                                            To: <span style={{ color: "#5d9fc5" }}>{item.to}</span>
+                                                         </li>
+                                                         <li className="text-muted">
+                                                            Name: <span style={{ color: "#5d9fc5" }}>{item.Name}</span>
+                                                         </li>
+                                                         <li className="text-muted">
+                                                            Issue Date: <span style={{ color: "#5d9fc5" }}>{item.Dates}</span>
+                                                         </li>
+                                                         <li className="text-muted">
+                                                            Phone: <span style={{ color: "#5d9fc5" }}>{item.Work_Phone}</span>
+                                                         </li>
+
+
+                                                      </ul>
+                                                   </div>
+                                                   <div className="col-xl-4">
+                                                      <p className="text-muted">Invoice</p>
+                                                      <ul className="list-unstyled">
+
+
+                                                         <li className="text-muted">
+                                                            <i className="fas " style={{ color: "#84B0CA" }} />{" "}
+                                                            <span className="me-1 ">Status:</span>
+                                                            <span className="badge bg-warning text-black ">
+                                                               {item.status}
+                                                            </span>
+                                                         </li>
+                                                      </ul>
+                                                   </div>
+                                                </div>
+                                             ))}
+                                             <div className="row my-2 mx-1 justify-content-center">
+                                                <table className="table table-striped table-borderless">
+                                                   <thead
+                                                      style={{ backgroundColor: "#84B0CA" }}
+                                                      className="text-black"
+                                                   >
+                                                      <tr>
+
+                                                         <th scope="col">Description</th>
+                                                         <th scope="col">Qty</th>
+                                                         <th scope="col">Price</th>
+                                                         <th scope="col">Total</th>
+                                                      </tr>
+                                                   </thead>
+
+                                                   {datapo.map((item) => (
+                                                      <tbody>
+                                                         <tr>
+                                                            <td>{item.product}</td>
+                                                            <td>{item.quantity}</td>
+                                                            <td>{item.price}</td>
+                                                            <td> {item.price*item.quantity}$</td>
+
+                                                         </tr>
+                                                      </tbody>
+                                                   ))}
+                                                </table>
+                                             </div>
+                                             <div className="row">
+                                                <div className="col-xl-8">
+                                                   <p className="ms-3">Add additional notes and payment information</p>
+                                                </div>
+                                                <div className="col-xl-3">
+
+                                                   <p className="text-black float-start">
+                                                      {/* <span className="text-black me-3"> Total</span> */}
+                                                      {/* <span style={{ fontSize: 25 }}>$1221</span> */}
+                                                   </p>
+                                                </div>
+                                             </div>
+                                             <hr />
+                                             <div className="row">
+                                                <div className="col-xl-10">
+                                                   <p>Thank you for your purchase</p>
+                                                </div>
+
+                                                <div className="col-xl-2">
+
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <Button size="25px" onClick={pdfGenerator} variant="btn btn-primary">GO </Button>{' '}
+                                    </div>
+                                 </div>
+
+
+
+
+                              </fieldset>
+                              <fieldset
+                                 className={`${show === "Account" ? "d-block" : "d-none"}`}
+                              >
+                                 <div class="file-upload-wrapper">
+
+                                    {/* <Form.Control type="file" id="customFile1" onChange={handleattachments} name="file" /> */}
+                                    <FileBase type="file" multiple={''} onDone={({ base64 }) => setpostemail({ ...postData, file: base64 })} />
+
+
+                                 </div>
+                                 <br />
+
+                                 <button
+                                    type="button"
+                                    name="next"
+                                    className="btn btn-primary next action-button float-end"
+                                    onClick={handleemail}
+
+                                 >
+                                    Send For Approval
+                                 </button>
+                                 <button
+                                    type="button"
+                                    name="previous"
+                                    className="btn btn-dark previous action-button-previous float-end me-1"
+                                    value="Previous"
+                                    onClick={() => AccountShow("A")}
+                                 >
+                                    Previous
+                                 </button>
+                              </fieldset>
+
+
+                           </Card.Body>
                         </Card>
                      </Tab.Pane >
                   </Tab.Content>
