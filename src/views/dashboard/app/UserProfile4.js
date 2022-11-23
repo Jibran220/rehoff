@@ -17,7 +17,6 @@ import icon4 from '../../../assets/images/icons/04.png'
 import icon8 from '../../../assets/images/icons/08.png'
 import { BsArrowRightShort } from 'react-icons/bs'
 import FileBase from "react-file-base64";
-import { v4 as uuidv4 } from "uuid";
 
 import icon6 from '../../../assets/images/icons/06.png'
 import icon7 from '../../../assets/images/icons/07.png'
@@ -35,9 +34,7 @@ import { jsPDF } from "jspdf";
 import Base64Downloader from 'react-base64-downloader';
 import { io } from "socket.io-client";
 import styled from "styled-components";
-// import {Row,Col,Image,Form,Button,InputGroup,FormControl} from 'react-bootstrap'
-
-import { Row, Col, Image, Form, Nav, Dropdown, Tab, Table, FormControl, InputGroup } from "react-bootstrap";
+import { Row, Col, Image, Form, Nav, Dropdown, Tab, Table } from "react-bootstrap";
 import { useHistory, Link, useParams, useLocation } from "react-router-dom";
 import { BsFillArrowRightSquareFill } from "react-icons/bs";
 import Button from 'react-bootstrap/Button';
@@ -48,7 +45,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const UserProfile = () => {
-   const scrollRef = useRef();
+
    const [postData, setPostData] = useState({
       Regulatory_Model_Name: "",
       Product_Name: "",
@@ -107,7 +104,7 @@ const UserProfile = () => {
       Atmospheric_Pressure: "",
       Indoor: "",
       Outdoor: "",
-
+      
       Copy_of_Marking_Plate: "",
       WarningOrCautionary_Marking: "",
       Fuse_Type: "",
@@ -142,17 +139,6 @@ const UserProfile = () => {
    const [price, setprice] = useState('');
    const [result, setresult] = useState('')
    const [quantity, setquantity] = useState('');
-   /////////////////////////////
-   const [datamessage, setdatamessage] = useState([])
-   const [namem, setnamem] = useState('admin');
-   const [sender, setsender] = useState('admin_id');
-   const [receiver, setreceiver] = useState('vendor_id');
-   const [message, setmessage] = useState('');
-
-   const [rfqID, setrfqID] = useState('rfqid');
-
-   
-   //////////////////////////
    const [sendpo, setsendpo] = useState({
       file: '',
       body: '',
@@ -160,16 +146,10 @@ const UserProfile = () => {
       subject: '',
       userid: params.id,
    })
-   useEffect(() => {
-      scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [datamessage]);
    const [postemail, setpostemail] = useState({
       id: '',
       file: '',
    })
-
-   //////////////////////
-
    const inputhandeler = (e) => { setsendpo({ ...sendpo, [e.target.name]: e.target.value }) }
 
 
@@ -186,11 +166,10 @@ const UserProfile = () => {
       setcom(result);
    };
 
-   const goback = () => { navigate.push(`/dashboard/app/UserProfile3/${params.id}`) }
    const pdfGenerator = () => {
       // AccountShow("Account")
       const doc = new jsPDF()
-      doc.html(document.querySelector("#jibran"), {
+      doc.html(document.querySelector("#heo"), {
          callback: function (pdf) {
 
             pdf.save("mypdf")
@@ -199,16 +178,18 @@ const UserProfile = () => {
          y: 15,
          width: 190,
          windowWidth: 650
-         
+
       });
       navigate.push(`/dashboard/app/UserProfile2/${params.id}`)
-      
-      
+
+
    }
-   const pdfGenerator4 = () => {
-      AccountShow("Personal")
+   const goback = () => {
+    navigate.push(`/dashboard/app/UserProfile3/${params.id}`)
+   }
+    const pdfGenerator4 = () => {
       const doc = new jsPDF()
-      doc.html(document.querySelector("#jibran"), {
+      doc.html(document.querySelector("#heo"), {
          callback: function (pdf) {
 
             pdf.save("mypdf")
@@ -219,6 +200,9 @@ const UserProfile = () => {
          windowWidth: 650
 
       });
+      navigate.push(`/dashboard/app/UserProfile4/${params.id}`)
+
+
 
    }
    postemail.id = params.id
@@ -238,11 +222,13 @@ const UserProfile = () => {
       }
       console.warn(result);
    };
+   //   for (var i=0; i<10; i++){
+   //    result += datapo.map((tn) => tn.price*tn.quantity)[i];
+   //  }
 
-
-
+   
    const sendEmail = async () => {
-
+sendpo.to=data.to
       const formdata = new FormData()
       formdata.append('file', sendpo.file, sendpo.file.name)
       formdata.append('to', sendpo.to)
@@ -250,7 +236,10 @@ const UserProfile = () => {
       const result = await axios.post(`http://localhost:5005/pofinal`, formdata)
 
 
-      if (result.status == 200) { alert("Email sent to the Vendor!"); }
+      if (result.status == 200) {
+         alert("Email sent to the Vendor!")
+         navigate.push(`/dashboard/app/user-profile/${params.id}`)
+          }
 
       console.warn(result);
    };
@@ -279,7 +268,17 @@ const UserProfile = () => {
       }
       console.warn(result);
    };
-
+   // useEffect(async () => {
+   //   if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+   //     navigate("/authv");
+   //   } else {
+   //     setCurrentaUser(
+   //       await JSON.parse(
+   //         localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+   //       )
+   //     );
+   //   }
+   // }, []);
    useEffect(() => {
       if (currentaUser) {
          socket.current = io(host);
@@ -303,7 +302,6 @@ const UserProfile = () => {
       getcomments();
       getattacments()
       getpo()
-      getmessage()
 
       // getrfqdetail();
    }, []);
@@ -330,18 +328,8 @@ const UserProfile = () => {
    const getproducts = async () => {
       let result = await fetch(`http://localhost:5005/userRFQ/view/${params.id}`);
       result = await result.json();
-
-      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", result);
-      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", result._id);
-      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", result.to);
-      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", namem);
-      setnamem(result.name)
-      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", result.status);
-
-      setsendpo({ to: result.to });
       setData(result);
-      console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", result._id);
-      console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", result._id);
+      console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", data._id);
 
       let result1 = await fetch(
          `http://localhost:5005/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
@@ -350,8 +338,9 @@ const UserProfile = () => {
       setData1(result1);
       console.log(data1);
    };
-   console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs", datapo.map((tn) => tn.price * tn.quantity));
-   console.log("mmmmmmmmmmmmmmmmmmkkkkkkkkkkkkkkkkkkkkm", data._id);
+   console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs",datapo.map((tn) => tn.price*tn.quantity));
+   // setresult(datapo.map((tn) => tn.price*tn.quantity))
+   console.log("mmmmmmmmmmmmmmmmmmkkkkkkkkkkkkkkkkkkkkm", result);
 
    console.log("i love to work", data.map((tn) => tn.rfq_id));
    const getattacments = async () => {
@@ -361,42 +350,23 @@ const UserProfile = () => {
       setatt(result);
       console.log(att)
    };
-   console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs", datapo.map((tn) => tn.price * tn.quantity));
-
-   console.log('ccccccccdacassssssssss', result)
-   console.log('ccccccccdacassssssssss', result)
-   console.log('ccccccccdacassssssssss', result)
-   console.log('ccccccccdacassssssssss', result)
-
+   console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs",datapo.map((tn) => tn.price*tn.quantity));
+ 
+    console.log('ccccccccdacassssssssss',result)
+    console.log('ccccccccdacassssssssss',result)
+    console.log('ccccccccdacassssssssss',result)
+    console.log('ccccccccdacassssssssss',result)
+     
    const getpo = async () => {
       let result = await fetch(`http://localhost:5005/poattachments/search/${params.id}`);
       result = await result.json();
-      console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs", datapo.map((tn) => tn.price * tn.quantity));
+      console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs",datapo.map((tn) => tn.price*tn.quantity));
 
       setDatapo(result);
    };
-   const Addmessage = async () => {
-      const result = await fetch(`http://localhost:5005/message`, {
-         method: "post",
-         body: JSON.stringify({ namem, sender, receiver, message, rfqID }),
-         headers: { "Content-Type": "application/json" },
-      });
-      // result = await result.json();
-      if (result) {
-         toast.info("Message Sent Succesfully!");
-
-      }
-      console.warn(result);
-   };
-
-   const getmessage = async () => {
-      let result = await fetch(`http://localhost:5005/message/search/rfqid`);
-      result = await result.json();
-      setdatamessage(result);
-   };
 
    const handleSubmitforpo = async () => {
-      console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs", datapo.map((tn) => tn.price * tn.quantity));
+   console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs",datapo.map((tn) => tn.price*tn.quantity));
 
       const result = fetch("http://localhost:5005/poattachments", {
          method: "post",
@@ -410,11 +380,6 @@ const UserProfile = () => {
       });
       if (result) {
          getpo()
-         getpo()
-         getpo()
-         getpo()
-         getpo()
-         getpo()
          setproduct('')
          setprice('')
          setquantity('')
@@ -424,23 +389,21 @@ const UserProfile = () => {
 
    };
    const [toggler, setToggler] = useState(false);
-   useEffect(async () => { if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) navigate.push('/auth/sign-in') }, []);
-   useEffect(() => {
-      if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-         if (user.username === "Admin1") { navigate.push('/approver') }
-         else if (user.username !== "Admin") { navigate.push('/ath') }
+     useEffect(async () => {if(! localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) navigate.push('/auth/sign-in') }, []);
+    useEffect(() => {
+      if(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)){
+          if (user.username==="Admin1") {navigate.push('/approver')}
+          else if(user.username!=="Admin"){navigate.push('/ath')}
       }
-      else {
-         navigate.push('/auth/sign-in')
-      }
-   }, [])
+      else{
+        navigate.push('/auth/sign-in')}},[])
    return (
       <>
          <FsLightbox
             toggler={toggler}
             sources={[icon4, shap2, icon8, shap4, icon2, shap6, icon5, shap4, icon1]}
          />
-         <Tab.Container defaultActiveKey="first">
+         <Tab.Container defaultActiveKey="second">
             <Row>
                <Col lg="12">
                   <Card>
@@ -556,81 +519,7 @@ const UserProfile = () => {
                               </div>
                            </Card.Body>
                         </Card>
-                        <Card>
-                           <Card.Header className="d-flex align-items-center justify-content-between pb-4">
-                              <div className="header-title">
-                                 <div className="d-flex flex-wrap">
-                                    <div className="media-support-user-img me-3">
-                                       <Image className="rounded-pill img-fluid avatar-60 bg-soft-danger p-1 ps-2" src={chopp} alt="" />
-                                    </div>
-                                    <div className="media-support-info mt-2">
-                                       <h5 className="mb-0">Chat</h5>
-                                       <p className="mb-0 text-primary"></p>
-                                    </div>
-                                 </div>
-                              </div>
-
-                           </Card.Header>
-                           <Card.Body>
-                          
-                           <Container>  
-                           <div className="chat-messages">   {datamessage.map((item) => {
-          return (
-            <div ref={scrollRef} key={uuidv4()}>
-           
-              <div
-                className={`message ${
-                  item.sender == "admin_id" ? "sended" : "recieved"
-                }`}
-              >
-                <div className="content ">
-                  <p>{item.message}</p>
-               
-             
-              </div>
-            </div>
-            </div>
-          );
-        })}
-        </div>  </Container>
-                            
-       
-                              {/* <Form className="comment-text d-flex align-items-center mt-3" >
-                           <Form.Control type="text" className="rounded" placeholder="Type here!" value={message}
-                              onChange={(e) => {
-                                 setmessage(e.target.value);
-                              }} />
-                           <div className="comment-attagement d-flex">
-                              <Link to="#" className="me-2 text-body" onClick={Addmessage}>
-                                 <svg width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path fillRule="evenodd" clipRule="evenodd"
-                                       d="M21.25 16.334V7.665C21.25 4.645 19.111 2.75 16.084 2.75H7.916C4.889 2.75 2.75 4.635 2.75 7.665L2.75 16.334C2.75 19.364 4.889 21.25 7.916 21.25H16.084C19.111 21.25 21.25 19.364 21.25 16.334Z"
-                                       stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path d="M16.0861 12H7.91406" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path d="M12.3223 8.25205L16.0863 12L12.3223 15.748" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
-                                       strokeLinejoin="round" />
-                                 </svg>
-                              </Link>
-
-                           </div>
-                        </Form> */}
-                              <Form action="#">
-                                 <InputGroup className="mb-3">
-                                    <FormControl type="text" placeholder="Type here..." aria-label="Type here..." aria-describedby="basic-addon2" value={message}
-                                       onChange={(e) => {
-                                          setmessage(e.target.value);
-                                       }} />
-                                    <Button type="button" onClick={Addmessage} className="input-group-text btn-primary" id="basic-addon2">
-                                       <svg width="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path d="M21.4274 2.5783C20.9274 2.0673 20.1874 1.8783 19.4974 2.0783L3.40742 6.7273C2.67942 6.9293 2.16342 7.5063 2.02442 8.2383C1.88242 8.9843 2.37842 9.9323 3.02642 10.3283L8.05742 13.4003C8.57342 13.7163 9.23942 13.6373 9.66642 13.2093L15.4274 7.4483C15.7174 7.1473 16.1974 7.1473 16.4874 7.4483C16.7774 7.7373 16.7774 8.2083 16.4874 8.5083L10.7164 14.2693C10.2884 14.6973 10.2084 15.3613 10.5234 15.8783L13.5974 20.9283C13.9574 21.5273 14.5774 21.8683 15.2574 21.8683C15.3374 21.8683 15.4274 21.8683 15.5074 21.8573C16.2874 21.7583 16.9074 21.2273 17.1374 20.4773L21.9074 4.5083C22.1174 3.8283 21.9274 3.0883 21.4274 2.5783Z" fill="currentColor"></path>
-                                          <path opacity="0.4" fillRule="evenodd" clipRule="evenodd" d="M3.01049 16.8079C2.81849 16.8079 2.62649 16.7349 2.48049 16.5879C2.18749 16.2949 2.18749 15.8209 2.48049 15.5279L3.84549 14.1619C4.13849 13.8699 4.61349 13.8699 4.90649 14.1619C5.19849 14.4549 5.19849 14.9299 4.90649 15.2229L3.54049 16.5879C3.39449 16.7349 3.20249 16.8079 3.01049 16.8079ZM6.77169 18.0003C6.57969 18.0003 6.38769 17.9273 6.24169 17.7803C5.94869 17.4873 5.94869 17.0133 6.24169 16.7203L7.60669 15.3543C7.89969 15.0623 8.37469 15.0623 8.66769 15.3543C8.95969 15.6473 8.95969 16.1223 8.66769 16.4153L7.30169 17.7803C7.15569 17.9273 6.96369 18.0003 6.77169 18.0003ZM7.02539 21.5683C7.17139 21.7153 7.36339 21.7883 7.55539 21.7883C7.74739 21.7883 7.93939 21.7153 8.08539 21.5683L9.45139 20.2033C9.74339 19.9103 9.74339 19.4353 9.45139 19.1423C9.15839 18.8503 8.68339 18.8503 8.39039 19.1423L7.02539 20.5083C6.73239 20.8013 6.73239 21.2753 7.02539 21.5683Z" fill="currentColor"></path>
-                                       </svg>
-                                    </Button>
-                                 </InputGroup>
-                              </Form>
-                           </Card.Body>
-                        </Card>
-                        {/* <Container>
+                        <Container>
 
                            <div className="container">
                               <Contacts contacts={contacts} changeChat={handleChatChange} />
@@ -640,7 +529,7 @@ const UserProfile = () => {
                                  <ChatContainer currentChat={currentChat} socket={socket} />
                               )}
                            </div>
-                        </Container> */}
+                        </Container>
 
 
                      </Tab.Pane>
@@ -652,35 +541,38 @@ const UserProfile = () => {
 
 
                               <Card>
-                                 <Card.Header className="d-flex justify-content-between">
-                                    <div className="header-title">
-                                       <h4 className="card-title">Activity</h4>
+                              <Card.Body>
+                                    <div class="file-upload-wrapper">
+
+                                       {/* <Form.Control type="file" id="customFile1" onChange={handleattachments} name="file" /> */}
+
+                                       {data.map((item) => (
+                                          <Form.Group className="form-group">
+                                             <Form.Label htmlFor="exampleInputText1">Email: </Form.Label>
+                                             <Form.Control type="text" id="exampleInputText1" name="to" value={item.to}   onChange={(e) => setsendpo({ ...sendpo, to: e.target.value })} />
+                                          </Form.Group>
+                                       ))}
+
+                                       <Form.Group>
+                                          <Form.Label className="custom-file-input"> Add file</Form.Label>
+                                          <Form.Control type="file" id="customFile1" onChange={handleattachments} name="file" />
+                                       </Form.Group>
+
                                     </div>
-                                 </Card.Header>
-                                 <Card.Body>
-                                    {att.map((asd) => (
-                                       <div className="iq-timeline0 m-0 d-flex align-items-center justify-content-between position-relative">
-                                          <ul className="list-inline p-0 m-0">
-                                             <li>
+                                    <br />
 
-                                                <div className="timeline-dots timeline-dot1 border-primary text-primary"></div>
-
-                                                <a href={asd.files} download>   <h6 className="float-left mb-1">{asd.title}</h6></a>
+                                    <Button variant="btn btn-primary" type="button" onClick={sendEmail}>Send to Vendor</Button>{' '}
 
 
-                                                <small className="float-right mt-1">{asd.Dates}</small>
-
-                                                <div className="d-inline-block w-100">
-                                                   <p> <b><i><u><Link onClick={goback} className="ms-3">{asd.clickhere} </Link></u></i></b></p>
-
-
-                                                </div>
-                                             </li>
-
-                                          </ul>
-                                       </div>
-                                    ))}
-
+                                    <button
+                                       type="button"
+                                       name="previous"
+                                       className="btn btn-dark previous action-button-previous float-end me-1"
+                                       value="Previous"
+                                       onClick={goback}
+                                    >
+                                       Back
+                                    </button>
                                  </Card.Body>
                               </Card>
 
@@ -690,119 +582,7 @@ const UserProfile = () => {
 
 
                               </Card.Header>
-                              <div className="card">
-                                 <div className="card-body">
-                                    <div className="container mb-5 mt-3" id="heo">
-                                       <div className="row d-flex align-items-baseline">
-                                          <div className="col-xl-9">
-                                             <p style={{ color: "#7e8d9f", fontSize: 20 }}>
-                                                Invoice #<strong>  {params.id}</strong>
-                                             </p>
-                                          </div>
-
-                                          <hr />
-                                       </div>
-                                       <div className="container">
-                                          <div className="col-md-12">
-                                             <div className="text-center">
-                                                <br />
-                                                {/* <p className="pt-0">MDBootstrap.com</p> */}
-                                             </div>
-                                          </div>
-                                          {data.map((item) => (
-
-                                             <div className="row">
-                                                <div className="col-xl-8">
-                                                   <ul className="list-unstyled">
-                                                      <li contenteditable="true" className="text-muted">
-                                                         To: <span style={{ color: "#5d9fc5" }}>{item.to}</span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         Name: <span style={{ color: "#5d9fc5" }}>{item.Name}</span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         Issue Date: <span style={{ color: "#5d9fc5" }}>{item.Dates}</span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         Phone: <span style={{ color: "#5d9fc5" }}>{item.Work_Phone}</span>
-                                                      </li>
-
-
-                                                   </ul>
-                                                </div>
-                                                <div className="col-xl-4">
-                                                   <p contenteditable="true" className="text-muted">Invoice</p>
-                                                   <ul className="list-unstyled">
-
-
-                                                      <li contenteditable="true" className="text-muted">
-                                                         <i className="fas " style={{ color: "#84B0CA" }} />{" "}
-                                                         <span className="me-1 ">Status:</span>
-                                                         <span className="badge bg-warning text-black ">
-                                                            {item.status}
-                                                         </span>
-                                                      </li>
-                                                   </ul>
-                                                </div>
-                                             </div>
-                                          ))}
-                                          <div className="row my-2 mx-1 justify-content-center">
-                                             <table className="table table-striped table-borderless">
-                                                <thead
-                                                   style={{ backgroundColor: "#84B0CA" }}
-                                                   className="text-black"
-                                                >
-                                                   <tr>
-
-                                                      <th scope="col">Description</th>
-                                                      <th scope="col">Qty</th>
-                                                      <th scope="col">Price</th>
-                                                      <th scope="col">Total</th>
-                                                   </tr>
-                                                </thead>
-
-                                                {datapo.map((item) => (
-                                                   <tbody>
-                                                      <tr>
-                                                         <td>{item.product}</td>
-                                                         <td>{item.quantity}</td>
-                                                         <td>{item.price}</td>
-                                                         <td>{price * quantity}</td>
-
-                                                      </tr>
-
-                                                   </tbody>
-                                                ))}
-                                             </table>
-                                          </div>
-                                          <div className="row">
-                                             <div className="col-xl-8">
-                                                <p className="ms-3">Add additional notes and payment information</p>
-                                             </div>
-                                             <div className="col-xl-3">
-
-                                                <p className="text-black float-start">
-                                                   {/* <span className="text-black me-3"> Total</span> */}
-                                                   {/* <span style={{ fontSize: 25 }}>$1221</span> */}
-                                                </p>
-                                             </div>
-                                          </div>
-                                          <hr />
-                                          <div className="row">
-                                             <div className="col-xl-10">
-                                                <p>Thank you for your purchase</p>
-                                             </div>
-
-                                             <div className="col-xl-2">
-
-                                             </div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <Button size="25px" onClick={() => AccountShow("A")} variant="btn btn-primary">back </Button>{' '}
-                                    <Button size="25px" onClick={pdfGenerator4} variant="btn btn-primary">GO </Button>{' '}
-                                 </div>
-                              </div>
+                            
 
                            </fieldset>
                            <fieldset
@@ -1202,205 +982,60 @@ const UserProfile = () => {
                                  </Card.Header>
                                  <div className="card">
                                     <div className="card-body">
-                                       <div className="container mb-5 mt-3" id="jibran">
+                                       <div className="container mb-5 mt-3" id="heo">
                                           <div className="row d-flex align-items-baseline">
-                                             <div className="row">
-                                                <div className="col-xl-6">
-                                                   <Image className="theme-color-default-img  img-fluid rounded-pill avatar-100" src={avatars11} alt="profile-pic" />
-                                                   <br />
-                                                   <br />
-
-                                                   {/* <h4 style={{ color: "#7e8d9f", fontSize: 20 }}>
-                                                  <b> INTERTEK TESTING SERVICES INC</b>
-                                                </h4> */}
-                                                   <ul className="list-unstyled">
-
-                                                      <li contenteditable="true" className="text-muted">
-                                                         <h4>  <b> INTERTEK TESTING SERVICES INC</b> </h4><span style={{ color: "#5d9fc5" }}></span>
-                                                      </li>
-                                                   </ul>
-                                                </div>
-                                                <div className="col-xl-6">
-                                                   <br />
-
-                                                   <br />
-                                                   <br />
-                                                   <br />
-                                                   <br />
-
-                                                   <ul className="list-unstyled">
-
-                                                      <li contenteditable="true" className="text-muted">
-                                                         <h5>   Becton, Dickinson and Company  </h5><span style={{ color: "#5d9fc5" }}></span>
-                                                      </li>
-                                                   </ul>
-                                                </div>
+                                             <div className="col-xl-9">
+                                                <p style={{ color: "#7e8d9f", fontSize: 20 }}>
+                                                   Invoice #<strong> {params.id}</strong>
+                                                </p>
                                              </div>
-
-                                             <div className="row">
-                                                <div className="col-xl-7">
-                                                   <ul className="list-unstyled">
-                                                      <i>
-                                                         <li contenteditable="true" className="text-muted">
-                                                            399 US ROUTE 11 INDUSTRIAL PARK  <span style={{ color: "#5d9fc5" }}></span>
-                                                         </li>
-                                                         <li contenteditable="true" className="text-muted">
-                                                            CORTLAND<span style={{ color: "#5d9fc5" }}> </span>
-                                                         </li>
-                                                         <li contenteditable="true" className="text-muted">
-                                                            CORTLAND, NY 13045 <span style={{ color: "#5d9fc5" }}></span>
-                                                         </li>
-                                                      </i>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         Attn: BD Supplier <span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         Phone: +1(800) 967-5352 <span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         Fax: +1 (650) 463-2910 <span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         <br />
-
-                                                         <Card className="mb-0">
-                                                            <Card.Body>
-                                                               <h5 className="card-title">Ship To:</h5>
-                                                               <p className="card-text">    <ul className="list-unstyled">
-                                                                  <i>
-                                                                     <li contenteditable="true" className="text-muted">
-                                                                        Becton, Dickinson and Company  <span style={{ color: "#5d9fc5" }}></span>
-                                                                     </li>
-                                                                     <li contenteditable="true" className="text-muted">
-                                                                        2350 Qume Drive<span style={{ color: "#5d9fc5" }}> </span>
-                                                                     </li>
-                                                                     <li contenteditable="true" className="text-muted">
-                                                                        SAN JOSE, CA 95131-1812 <span style={{ color: "#5d9fc5" }}></span>
-                                                                     </li>
-                                                                     <li contenteditable="true" className="text-muted">
-                                                                        23402 <span style={{ color: "#5d9fc5" }}></span>
-                                                                     </li>
-                                                                     <li contenteditable="true" className="text-muted">
-                                                                        Attn <span style={{ color: "#5d9fc5" }}></span>
-                                                                     </li>
-                                                                     <li contenteditable="true" className="text-muted">
-                                                                        United States  <span style={{ color: "#5d9fc5" }}></span>
-                                                                     </li>
-                                                                  </i>
-
-
-
-                                                               </ul>
-                                                               </p>
-                                                            </Card.Body>
-                                                         </Card><span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <br />
-
-
-                                                   </ul>
-                                                </div>
-                                                <div className="col-xl-5">
-                                                   <ul className="list-unstyled">
-
-                                                      <li contenteditable="true" className="text-muted">
-                                                         PO NUMBER:  6900921615 <span style={{ color: "#5d9fc5" }}></span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         DATE: 11/02/22<span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         PAYMENT TERMS: 1061 Net 90 Days<span style={{ color: "#5d9fc5" }}></span>
-                                                      </li>
-
-                                                      <li contenteditable="true" className="text-muted">
-                                                         SHIPPING TERMS: FCA <span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         CURRENCY: USD<span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         CONTRACT:<span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         CONTACT:<span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         <br />
-                                                         <Card className="mb-0">
-                                                            <Card.Body>
-                                                               <h5 className="card-title">Bill To:</h5>
-                                                               <p className="card-text">    <ul className="list-unstyled">
-                                                                  <i>
-                                                                     <li contenteditable="true" className="text-muted">
-                                                                        Becton, Dickinson, and Company <span style={{ color: "#5d9fc5" }}></span>
-                                                                     </li>
-                                                                     <li contenteditable="true" className="text-muted">
-                                                                        PO Box 5200<span style={{ color: "#5d9fc5" }}> </span>
-                                                                     </li>
-                                                                     <li contenteditable="true" className="text-muted">
-                                                                        Rantoul, IL 61866-5200 <span style={{ color: "#5d9fc5" }}></span>
-                                                                     </li>
-                                                                     <li contenteditable="true" className="text-muted">
-                                                                        Attn: Accounts Payable <span style={{ color: "#5d9fc5" }}></span>
-                                                                     </li>
-                                                                     <li contenteditable="true" className="text-muted">
-                                                                        United States <span style={{ color: "#5d9fc5" }}></span>
-                                                                     </li>
-
-                                                                  </i>
-                                                               </ul>
-                                                               </p>
-                                                            </Card.Body>
-                                                         </Card><span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-
-
-
-
-                                                   </ul>
-                                                </div>
-                                             </div>
-
-
-                                             <div className="row">
-                                                <div className="col-xl-15">
-                                                   <ul className="list-unstyled">
-
-                                                      <li contenteditable="true" className="text-muted">
-                                                         <b><i><u>Note: </u></i> </b>Price as per attached quote # Qu-01308416-0 <span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         <b><i><u>Note: </u></i> </b>FCA - CORTLAND, NY <span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         <b><i><u>Note: </u></i> </b>FedEx# 140212393 ABF<span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         <b>Shipping instructions:</b><span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         Small parcels less than 150 Ibs/70 kg - use BD FedEx acct<span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         Parcels Over 150 Ibs/70kg — Use designated LTL carrier to schedule pick up else contact buyer for shipping instructions - Mohammed.zeeshan@bd.com<span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         <b><i><u>Note: </u></i> </b>***Please confirm by selecting Acknowledge Order or Email- Mohammed.zeeshan@bd.com<span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li contenteditable="true" className="text-muted">
-                                                         *** Please see attached for Instructions on acknowledgements, invoicing and international Shipment.</li>
-                                                   </ul>
-                                                </div>
-                                             </div>
-
-
 
                                              <hr />
                                           </div>
                                           <div className="container">
+                                             <div className="col-md-12">
+                                                <div className="text-center">
+                                                   <br />
+                                                   {/* <p className="pt-0">MDBootstrap.com</p> */}
+                                                </div>
+                                             </div>
+                                             {data.map((item) => (
+
+                                                <div className="row">
+                                                   <div className="col-xl-8">
+                                                      <ul className="list-unstyled">
+                                                         <li className="text-muted">
+                                                            To: <span style={{ color: "#5d9fc5" }}>{item.to}</span>
+                                                         </li>
+                                                         <li className="text-muted">
+                                                            Name: <span style={{ color: "#5d9fc5" }}>{item.Name}</span>
+                                                         </li>
+                                                         <li className="text-muted">
+                                                            Issue Date: <span style={{ color: "#5d9fc5" }}>{item.Dates}</span>
+                                                         </li>
+                                                         <li className="text-muted">
+                                                            Phone: <span style={{ color: "#5d9fc5" }}>{item.Work_Phone}</span>
+                                                         </li>
 
 
+                                                      </ul>
+                                                   </div>
+                                                   <div className="col-xl-4">
+                                                      <p className="text-muted">Invoice</p>
+                                                      <ul className="list-unstyled">
+
+
+                                                         <li className="text-muted">
+                                                            <i className="fas " style={{ color: "#84B0CA" }} />{" "}
+                                                            <span className="me-1 ">Status:</span>
+                                                            <span className="badge bg-warning text-black ">
+                                                               {item.status}
+                                                            </span>
+                                                         </li>
+                                                      </ul>
+                                                   </div>
+                                                </div>
+                                             ))}
                                              <div className="row my-2 mx-1 justify-content-center">
                                                 <table className="table table-striped table-borderless">
                                                    <thead
@@ -1410,8 +1045,6 @@ const UserProfile = () => {
                                                       <tr>
 
                                                          <th scope="col">Description</th>
-
-                                                         <th scope="col">Date</th>
                                                          <th scope="col">Qty</th>
                                                          <th scope="col">Price</th>
                                                          <th scope="col">Total</th>
@@ -1422,64 +1055,18 @@ const UserProfile = () => {
                                                       <tbody>
                                                          <tr>
                                                             <td>{item.product}</td>
-                                                            <td> 2/3/22</td>
                                                             <td>{item.quantity}</td>
                                                             <td>{item.price}</td>
-                                                            <td> {item.price * item.quantity}$</td>
+                                                            <td> {item.price*item.quantity}$</td>
 
                                                          </tr>
                                                       </tbody>
                                                    ))}
-
                                                 </table>
                                              </div>
-                                             <hr />
                                              <div className="row">
-                                                <div className="col-xl-12">
-                                                   <p class="text-center text-danger ">As of <u>January 4, 2021</u>, BD will no longer accept paper or PDF invoices.</p>
-                                                   <ul className="list-unstyled">
-
-                                                      <li className="text-center ">
-                                                         <b>Need help with invoice or you want to make a payment inquiry?</b><span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li className="text-center">
-                                                         <b>Req to Pay Customer Service:</b><span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-
-                                                      <li className="text-center">
-                                                         Monday through Friday<span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li className="text-center">
-                                                         <b>Phone:</b><span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li className="text-center">
-                                                         855-4BD-Help (855-423-4357)<span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li className="text-center">
-                                                         <b>Online:</b><span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li className="text-center">
-                                                         <a >BD.com/Services</a><span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li className="text-center">
-                                                         <b>For Terms & Condition, visit: :</b><span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-                                                      <li className="text-center">
-                                                         North America: <a>PO Terms and Conditions</a><span style={{ color: "#5d9fc5" }}> </span>
-                                                      </li>
-
-                                                   </ul>
-
-
-
-
-
-
-
-
-                                                   <p > This document isa Purchase Order from Becton, Dickinson and Company issued from our new BD BuySmart solution, powered by Coupa. Please process this order the same as you would any other PO from BD. If you have any questions or concems about thi order, please visit our BD Services Store at ww.hs.com/services (registration may be
-                                                      required) oc cll the Reqo-Pay customer servic team a 385-425-4957
-                                                   </p>
+                                                <div className="col-xl-8">
+                                                   <p className="ms-3">Add additional notes and payment information</p>
                                                 </div>
                                                 <div className="col-xl-3">
 
@@ -1491,9 +1078,8 @@ const UserProfile = () => {
                                              </div>
                                              <hr />
                                              <div className="row">
-                                                <div className="col-xl-12">
-                                                   <p>The purchases on this Purchase Order are assumed tobe Taxable for Sales Tax unless an exemption cerfiate hs been provided sepaatly or this transaction
-                                                   </p>
+                                                <div className="col-xl-10">
+                                                   <p>Thank you for your purchase</p>
                                                 </div>
 
                                                 <div className="col-xl-2">
@@ -1505,7 +1091,6 @@ const UserProfile = () => {
                                        <Button size="25px" onClick={pdfGenerator} variant="btn btn-primary">GO </Button>{' '}
                                     </div>
                                  </div>
-
 
 
 
@@ -1844,125 +1429,38 @@ const hello = styled.div`
    color: #969CAD; 
  }                    
 `
-const bn =styled.div`
-
-.chat-messages {
-   padding: 1rem 2rem;
-   display: flex;
-   flex-direction: column;
-   gap: 1rem;
-   overflow: auto;
-   &::-webkit-scrollbar {
-     width: 0.4rem;
-     &-thumb {
-       background-color: #3944bc;
-       width: 0.1rem;
-       border-radius: 0.1rem;
-     }
-   }
-   .message {
-     display: flex;
-     align-items: center;
-     .content {
-       max-width: 40%;
-       overflow-wrap: break-word;
-       padding: 1rem;
-       font-size: 0.9rem;
-       border-radius: 1rem;
-       color: #d1d1d1;
-       @media screen and (min-width: 720px) and (max-width: 1080px) {
-         max-width: 70%;
-       }
-     }
-   }
-   .sended {
-     justify-content: flex-end;
-     .content {
-       background-color: #3a57e8;
-     }
-   }
-   .recieved {
-     justify-content: flex-start;
-     .content {
-       background-color: #3a57e8;
-     }
-   }
-`
 const Container = styled.div`
-  
-display: grid;
-grid-template-rows: 10% 80% 10%;
-color:black;
-gap: 0.1rem;
-overflow: hidden;
-@media screen and (min-width: 720px) and (max-width: 1080px) {
-  grid-template-rows: 15% 70% 15%;
-}
-.chat-header {
+  height: 70vh;
+  width: 35vw;
   display: flex;
-  background-color: white;
-
-
-  justify-content: space-between;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.1rem;
   align-items: center;
-  padding: 0 rem;
-  .user-details {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    .avatar {
-      img {
-        height: 3rem;
-      }
-    }
-    .username {
-      h3 ,h4{
-        color: black;
-      }
+  background-color:  white;
+  .container {
+    height: 65vh;
+    width: 40vw; 
+    background-color: ;
+    display: grid;
+    grid-template-columns: 96%;
+    @media screen and (min-width: 720px) and (max-width: 1080px) {
+      grid-template-columns: 35% 65%;
     }
   }
-}
-.chat-messages {
-  padding: 1rem 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  overflow: auto;
-  &::-webkit-scrollbar {
-    width: 0.4rem;
-    &-thumb {
-      background-color: #3944bc;
-      width: 0.1rem;
-      border-radius: 0.1rem;
-    }
-  }
-  .message {
-    display: flex;
-    align-items: center;
-    .content {
-      max-width: 40%;
-      overflow-wrap: break-word;
-      padding: 1rem;
-      font-size: 0.9rem;
-      border-radius: 1rem;
-      color: #d1d1d1;
-      @media screen and (min-width: 720px) and (max-width: 1080px) {
-        max-width: 70%;
-      }
-    }
-  }
-  .sended {
-    justify-content: flex-end;
-    .content {
-      background-color: #3a57e8;
-    }
-  }
-  .recieved {
-    justify-content: flex-start;
-    .content {
-      background-color: #3a57e8;
-    }
-  }
-}
 `;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

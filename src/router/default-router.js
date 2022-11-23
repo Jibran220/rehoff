@@ -3,6 +3,9 @@ import Index from '../views/dashboard/index'
 import {Switch,Route,useHistory} from 'react-router-dom'
 // user
 import UserProfile from '../views/dashboard/app/user-profile';
+import UserProfile2 from '../views/dashboard/app/UserProfile2';
+import UserProfile3 from '../views/dashboard/app/UserProfile3';
+import UserProfile4 from '../views/dashboard/app/UserProfile4';
 import VendorProfile from '../views/dashboard/app/VendorProfile';
 import UserAdd from '../views/dashboard/app/user-add';
 import UserList from '../views/dashboard/app/user-list';
@@ -67,7 +70,10 @@ const DefaultRouter = () => {
                     <Route path="/" exact component={Index} />
                     <Route path="/dashboard/post" exact component={Post} />
                     {/* user */}
-                    <Route path="/dashboard/app/user-profile/:id"     exact component={UserProfile} />
+                    <Route path="/dashboard/app/user-profile/:id"     exact component={UserProfile} />UserProfile2
+                    <Route path="/dashboard/app/UserProfile2/:id"     exact component={UserProfile2} />
+                    <Route path="/dashboard/app/UserProfile3/:id"     exact component={UserProfile3} />
+                    <Route path="/dashboard/app/UserProfile4/:id"     exact component={UserProfile4} />
                     <Route path="/dashboard/app/VendorProfile/:id"     exact component={VendorProfile} />
                     <Route path="/dashboard/app/user-add"         exact component={UserAdd}/>
                     <Route path="/dashboard/app/user-list"        exact component={UserList}/>
