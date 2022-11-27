@@ -115,7 +115,7 @@ const UserProfile =() =>{
     console.log("clclclclclcclcl",params.id)
     const handleSubmit = async (e) => {
       e.preventDefault();
-      const result = await fetch(`http://localhost:5005/attachments`, {
+      const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/attachments`, {
         method: "post",
         body: JSON.stringify(postData),
         headers: { "Content-Type": "application/json" },
@@ -135,13 +135,13 @@ const UserProfile =() =>{
       navigate.push(`/VendorQuoteLIst/${params.id}`)
     }
     const getproducts = async () => {
-      let result = await fetch(`http://localhost:5005/userRFQ/view/${params.id}`);
+      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ/view/${params.id}`);
       result = await result.json();
       setData(result);
       console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", result._id);
   
       let result1 = await fetch(
-        `http://localhost:5005/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
+        `https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
       );
       result1 = await result1.json();
       setData1(result1);
@@ -151,7 +151,7 @@ const UserProfile =() =>{
     console.log("i love to work",data.map((tn) => tn.rfq_id));
     const getcomments = async () => {
       console.log("clclclclclcclcl",params.id)
-      let result = await fetch(`http://localhost:5005/commentrouter/search/${params.id}`);
+      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/commentrouter/search/${params.id}`);
       result = await result.json();
       setcom(result);
     };
@@ -783,7 +783,7 @@ const Container = styled.div`
 
  
 //   // const AddComment = async () => {
-//   //   const result = await fetch(`http://localhost:5005/CommentRouter`, {
+//   //   const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/CommentRouter`, {
 //   //     method: "post",
 //   //     body: JSON.stringify({ postData }),
 //   //     headers: { "Content-Type": "application/json" },
@@ -795,7 +795,7 @@ const Container = styled.div`
 //   //   console.warn(result);
 //   // };
 //   // const SendAttachments = async () => {
-//   //   const result = await fetch(`http://localhost:5005/userattachments`, {
+//   //   const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userattachments`, {
 //   //     method: "post",
 //   //     body: JSON.stringify({ userattachments,vendorid }),
 //   //     headers: { "Content-Type": "application/json" },
@@ -853,7 +853,7 @@ const Container = styled.div`
 //   console.log("clclclclclcclcl",params.id)
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
-//     const result = await fetch(`http://localhost:5005/attachments`, {
+//     const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/attachments`, {
 //       method: "post",
 //       body: JSON.stringify(postData),
 //       headers: { "Content-Type": "application/json" },
@@ -870,13 +870,13 @@ const Container = styled.div`
 //     console.warn(result);
 //   };
 //   const getproducts = async () => {
-//     let result = await fetch(`http://localhost:5005/userRFQ/view/${params.id}`);
+//     let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ/view/${params.id}`);
 //     result = await result.json();
 //     setData(result);
 //     console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", result._id);
 
 //     let result1 = await fetch(
-//       `http://localhost:5005/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
+//       `https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
 //     );
 //     result1 = await result1.json();
 //     setData1(result1);
@@ -886,7 +886,7 @@ const Container = styled.div`
 //   console.log("i love to work",data.map((tn) => tn.rfq_id));
 //   const getcomments = async () => {
 //     console.log("clclclclclcclcl",params.id)
-//     let result = await fetch(`http://localhost:5005/commentrouter/search/${params.id}`);
+//     let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/commentrouter/search/${params.id}`);
 //     result = await result.json();
 //     setcom(result);
 //   };
@@ -900,7 +900,7 @@ const Container = styled.div`
 
 //   // const getrfqdetail = async () => {
 //   //   let result1 = await fetch(
-//   //     `http://localhost:5005/rfqmanagers/6359625314acd9c45ba7afbb`
+//   //     `https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/6359625314acd9c45ba7afbb`
 //   //   );
 
 //   //   result1 = await result1.json();

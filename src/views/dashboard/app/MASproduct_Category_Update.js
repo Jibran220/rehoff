@@ -60,7 +60,7 @@ const UserProfile = () => {
     const [toggler, setToggler] = useState(false);
 
     const deleteproduct = async (id) => {
-        let result = await fetch(`http://localhost:5005/MASproductCategory/${id} `, {
+        let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/MASproductCategory/${id} `, {
           method: "Delete",});
         result = await result.json();
         if (result) { getproducts(); }
@@ -68,19 +68,19 @@ const UserProfile = () => {
 
       const updateproduct = async ( ) => {
         console.warn(params);
-    let result = await fetch(`http://localhost:5005/MASproductCategory/${params.id}`);
+    let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/MASproductCategory/${params.id}`);
     result = await result.json();
     setname( result.name );
       };
 
     const getproducts = async () => {
-        let result = await fetch(`http://localhost:5005/MASproductCategory`);
+        let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/MASproductCategory`);
         result = await result.json();
         setdata(result)
     };
 
     const handleSubmit = async () => {
-        const result = fetch(`http://localhost:5005/MASproductCategory/${params.id}`, {
+        const result = fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/MASproductCategory/${params.id}`, {
             method: "Put",
             body: JSON.stringify({ name }),
             headers: { "Content-Type": "Application/json" },

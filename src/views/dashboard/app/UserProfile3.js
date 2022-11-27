@@ -161,7 +161,7 @@ const UserProfile = () => {
 
    const getcomments = async () => {
       console.log("clclclclclcclcl", params.id)
-      let result = await fetch(`http://localhost:5005/commentrouter/search/${params.id}`);
+      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/commentrouter/search/${params.id}`);
       result = await result.json();
       setcom(result);
    };
@@ -207,7 +207,7 @@ const UserProfile = () => {
    postemail.id = params.id
    const handleemail = async (e) => {
       e.preventDefault();
-      const result = await fetch(`http://localhost:5005/po/sendapprover`, {
+      const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/po/sendapprover`, {
          method: "post",
          body: JSON.stringify(postemail),
          headers: { "Content-Type": "application/json" },
@@ -232,7 +232,7 @@ const UserProfile = () => {
       formdata.append('file', sendpo.file, sendpo.file.name)
       formdata.append('to', sendpo.to)
 
-      const result = await axios.post(`http://localhost:5005/pofinal`, formdata)
+      const result = await axios.post(`https://hjhjkjkjkkjhjhi.herokuapp.com/pofinal`, formdata)
 
 
       if (result.status == 200) { alert("Email sent to the Vendor!"); }
@@ -240,7 +240,7 @@ const UserProfile = () => {
       console.warn(result);
    };
    const AddComment = async () => {
-      const result = await fetch(`http://localhost:5005/CommentRouter`, {
+      const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/CommentRouter`, {
          method: "post",
          body: JSON.stringify({ comment, userid }),
          headers: { "Content-Type": "application/json" },
@@ -253,7 +253,7 @@ const UserProfile = () => {
       console.warn(result);
    };
    const SendAttachments = async () => {
-      const result = await fetch(`http://localhost:5005/attachments`, {
+      const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/attachments`, {
          method: "post",
          body: JSON.stringify({ userattachments, vendorid }),
          headers: { "Content-Type": "application/json" },
@@ -307,7 +307,7 @@ const UserProfile = () => {
       console.log("current_chat", chat);
    };
    const handleSubmit = async () => {
-      const result = fetch("http://localhost:5005/commentrouter", {
+      const result = fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/commentrouter", {
          method: "post",
          body: JSON.stringify({ comment, userid }),
          headers: { "Content-Type": "application/json" },
@@ -322,7 +322,7 @@ const UserProfile = () => {
    };
 
    const getproducts = async () => {
-      let result = await fetch(`http://localhost:5005/userRFQ/view/${params.id}`);
+      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ/view/${params.id}`);
       result = await result.json();
 
       setsendpo({ to: result.to });
@@ -330,7 +330,7 @@ const UserProfile = () => {
       console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", data._id);
 
       let result1 = await fetch(
-         `http://localhost:5005/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
+         `https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
       );
       result1 = await result1.json();
       setData1(result1);
@@ -343,7 +343,7 @@ const UserProfile = () => {
    console.log("i love to work", data.map((tn) => tn.rfq_id));
    const getattacments = async () => {
       console.log("clclclclclcclcl", params.id)
-      let result = await fetch(`http://localhost:5005/attachments/search/${params.id}`);
+      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/attachments/search/${params.id}`);
       result = await result.json();
       setatt(result);
       console.log(att)
@@ -356,7 +356,7 @@ const UserProfile = () => {
     console.log('ccccccccdacassssssssss',result)
      
    const getpo = async () => {
-      let result = await fetch(`http://localhost:5005/poattachments/search/${params.id}`);
+      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/poattachments/search/${params.id}`);
       result = await result.json();
       console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs",datapo.map((tn) => tn.price*tn.quantity));
 
@@ -366,7 +366,7 @@ const UserProfile = () => {
    const handleSubmitforpo = async () => {
    console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs",datapo.map((tn) => tn.price*tn.quantity));
 
-      const result = fetch("http://localhost:5005/poattachments", {
+      const result = fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/poattachments", {
          method: "post",
          body: JSON.stringify({
             product,

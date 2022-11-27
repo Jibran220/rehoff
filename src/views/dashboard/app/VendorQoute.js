@@ -81,7 +81,7 @@ const UserProfile = () => {
         title: ''
     })
     const handleSubmitforpo = async () => {
-        const result = fetch("http://localhost:5005/clientQuoteproduct", {
+        const result = fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/clientQuoteproduct", {
            method: "post",
            body: JSON.stringify({
             heading,
@@ -109,7 +109,7 @@ setheading('')
   
      };
      const vendorquote = async () => {
-        const result = fetch("http://localhost:5005/clientQuote", {
+        const result = fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/clientQuote", {
            method: "post",
            body: JSON.stringify({
             name,
@@ -169,7 +169,7 @@ setexpirydate('')
       
      }, []);
     const getpo = async () => {
-        let result = await fetch(`http://localhost:5005/clientQuoteproduct/search/${params.id}`);
+        let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/clientQuoteproduct/search/${params.id}`);
         result = await result.json();
         setDatapo(result);
         console.log(result)
@@ -183,7 +183,7 @@ setexpirydate('')
     console.log("clclclclclcclcl", params.id)
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await fetch(`http://localhost:5005/attachments`, {
+        const result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/attachments`, {
             method: "post",
             body: JSON.stringify(postData),
             headers: { "Content-Type": "application/json" },
@@ -201,13 +201,13 @@ setexpirydate('')
         console.warn(result);
     };
     const getproducts = async () => {
-        let result = await fetch(`http://localhost:5005/userRFQ/view/${params.id}`);
+        let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ/view/${params.id}`);
         result = await result.json();
         setData(result);
         console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", result._id);
 
         let result1 = await fetch(
-            `http://localhost:5005/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
+            `https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${data.map((tn) => tn.rfq_id)}`
         );
         result1 = await result1.json();
         setData1(result1);
@@ -217,7 +217,7 @@ setexpirydate('')
     console.log("i love to work", data.map((tn) => tn.rfq_id));
     const getcomments = async () => {
         console.log("clclclclclcclcl", params.id)
-        let result = await fetch(`http://localhost:5005/commentrouter/search/${params.id}`);
+        let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/commentrouter/search/${params.id}`);
         result = await result.json();
         setcom(result);
     };

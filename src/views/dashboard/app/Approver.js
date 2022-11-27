@@ -164,12 +164,12 @@ const UserProfile = () => {
     const [clickhere, setclickhere] = useState('')
     const deletepo = async (id,useid) => {
       
-        let result = await fetch(`http://localhost:5005/po/${id} `, {
+        let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/po/${id} `, {
           method: "Delete",
         });
 console.log('thisssssssssssssss',useid)
 
-          const result12 = await fetch(`http://localhost:5005/attachments`, {
+          const result12 = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/attachments`, {
             method: "post",
             body: JSON.stringify({
                 title,
@@ -186,12 +186,12 @@ console.log('thisssssssssssssss',useid)
       };
       const approvDeletepo = async (id,useid) => {
       
-        let result = await fetch(`http://localhost:5005/po/${id} `, {
+        let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/po/${id} `, {
           method: "Delete",
         });
 console.log('thisssssssssssssss',useid)
 
-          const result12 = await fetch(`http://localhost:5005/attachments`, {
+          const result12 = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/attachments`, {
             method: "post",
             body: JSON.stringify({
                 title:"PO is Approved!!!",
@@ -209,7 +209,7 @@ console.log('thisssssssssssssss',useid)
       };
         const getcomments = async () => {
         console.log("clclclclclcclcl", params.id)
-        let result = await fetch(`http://localhost:5005/CommentForApprover`);
+        let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/CommentForApprover`);
         result = await result.json();
         setcom(result);
     };
@@ -238,7 +238,7 @@ console.log('thisssssssssssssss',useid)
         formdata.append('file', sendpo.file, sendpo.file.name)
 
 
-        const result = await axios.post(`http://localhost:5005/po`, formdata)
+        const result = await axios.post(`https://hjhjkjkjkkjhjhi.herokuapp.com/po`, formdata)
 
 
         if (result.status == 200) { alert("Email sent For the Approval!"); }
@@ -247,7 +247,7 @@ console.log('thisssssssssssssss',useid)
     };
     const [name, setname] = useState('')
     const AddComment = async () => {
-        const result = await fetch(` http://localhost:5005/CommentForApprover`, {
+        const result = await fetch(` https://hjhjkjkjkkjhjhi.herokuapp.com/CommentForApprover`, {
             method: "post",
             body: JSON.stringify({ comment, name }),
             headers: { "Content-Type": "application/json" },
@@ -344,7 +344,7 @@ console.log('thisssssssssssssss',useid)
         navigate.push(`/ApproverAhead/${id}`)
     }
         const getproducts = async () => {
-        let result = await fetch(`http://localhost:5005/po`);
+        let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/po`);
         result = await result.json();
         setData(result);
         console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", data._id);

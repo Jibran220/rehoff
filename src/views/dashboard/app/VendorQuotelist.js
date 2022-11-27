@@ -33,14 +33,14 @@ const UserList =() =>{
   }, []);
 
   const getproducts = async () => {
-    let result = await fetch("http://localhost:5005/clientQuote/search/6366673e846fb7c378905f53");
+    let result = await fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/clientQuote/search/6366673e846fb7c378905f53");
     result = await result.json();
     setData(result);
   };
   console.warn("results", data);
 
   const deleteproduct = async (id) => {
-    let result = await fetch(`http://localhost:5005/products/${id} `, {
+    let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/products/${id} `, {
       method: "Delete",
     });
     result = await result.json();
@@ -69,7 +69,7 @@ const UserList =() =>{
 
       const formdata = new FormData()
       formdata.append('file', sendpo.file, sendpo.file.name)
-      const result = await axios.post(`http://localhost:5005/uploadfile`, formdata)
+      const result = await axios.post(`https://hjhjkjkjkkjhjhi.herokuapp.com/uploadfile`, formdata)
 
       if (result.status == 200) { alert("Email sent to the Vendor!"); }
 
