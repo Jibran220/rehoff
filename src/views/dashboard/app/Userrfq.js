@@ -404,7 +404,7 @@ const Userrfq =() =>{
      <>
        <div className='table-wrapper-scroll-y my-custom-scrollbar'>
          <Row>
-            <Col sm="12">
+            <Col sm="12">'
                <Card>
                   <Card.Header className="d-flex justify-content-between">
                      <div className="header-title">

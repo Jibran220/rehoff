@@ -37,7 +37,7 @@ import { io } from "socket.io-client";
 import styled from "styled-components";
 // import {Row,Col,Image,Form,Button,InputGroup,FormControl} from 'react-bootstrap'
 
-import { Row, Col, Image, Form, Nav, Dropdown, Tab, Table, FormControl, InputGroup } from "react-bootstrap";
+import { Row, Col, Image, Form, Nav, Dropdown, Tab, Table, FormControl, InputGroup ,NavDropdown} from "react-bootstrap";
 import { useHistory, Link, useParams, useLocation } from "react-router-dom";
 import { BsFillArrowRightSquareFill } from "react-icons/bs";
 import Button from 'react-bootstrap/Button';
@@ -148,7 +148,7 @@ const UserProfile = () => {
    const [sender, setsender] = useState('admin_id');
    const [receiver, setreceiver] = useState('vendor_id');
    const [message, setmessage] = useState('');
-
+const [showf, setshowf] = useState(true)
    const [rfqID, setrfqID] = useState('rfqid');
 
    
@@ -160,9 +160,7 @@ const UserProfile = () => {
       subject: '',
       userid: params.id,
    })
-   useEffect(() => {
-      scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [datamessage]);
+  
    const [postemail, setpostemail] = useState({
       id: '',
       file: '',
@@ -185,6 +183,7 @@ const UserProfile = () => {
       result = await result.json();
       setcom(result);
    };
+   const [pdf, setPdf] = useState('')
 
    const goback = () => { navigate.push(`/dashboard/app/UserProfile3/${params.id}`) }
    const pdfGenerator = () => {
@@ -192,7 +191,7 @@ const UserProfile = () => {
       const doc = new jsPDF()
       doc.html(document.querySelector("#jibran"), {
          callback: function (pdf) {
-
+setPdf(pdf)
             pdf.save("mypdf")
          },
          x: 10,
@@ -326,7 +325,10 @@ const UserProfile = () => {
 
       }
    };
-
+const hell=()=>{
+   navigate.push(`/dashboard/special-pages/billing/${params.id}`)
+  
+}
    const getproducts = async () => {
       let result = await fetch(`http://localhost:5005/userRFQ/view/${params.id}`);
       result = await result.json();
@@ -467,14 +469,17 @@ const UserProfile = () => {
                            </div>
                            <Nav as="ul" className="d-flex nav-pills mb-0 text-center profile-tab" data-toggle="slider-tab" id="profile-pills-tab" role="tablist">
                               <Nav.Item as="li">
-                                 <Nav.Link eventKey="first">Feed</Nav.Link>
+                                 <Nav.Link eventKey="first"  >Feed</Nav.Link>
                               </Nav.Item>
                               <Nav.Item as="li">
-                                 <Nav.Link eventKey="second">Activity</Nav.Link>
+                                 <Nav.Link eventKey="second"  >Activity</Nav.Link>
                               </Nav.Item>
 
                               <Nav.Item as="li">
-                                 <Nav.Link eventKey="fourth">P.O</Nav.Link>
+                                 <Nav.Link eventKey="fourth" onClick={hell}>P.O</Nav.Link>
+                              </Nav.Item>
+                              <Nav.Item as="li">
+                                 <Nav.Link eventKey="fifth">Quote</Nav.Link>
                               </Nav.Item>
                            </Nav>
                         </div>
@@ -747,33 +752,97 @@ const UserProfile = () => {
                                              </div>
                                           ))}
                                           <div className="row my-2 mx-1 justify-content-center">
-                                             <table className="table table-striped table-borderless">
-                                                <thead
-                                                   style={{ backgroundColor: "#84B0CA" }}
-                                                   className="text-black"
-                                                >
-                                                   <tr>
-
-                                                      <th scope="col">Description</th>
-                                                      <th scope="col">Qty</th>
-                                                      <th scope="col">Price</th>
-                                                      <th scope="col">Total</th>
-                                                   </tr>
-                                                </thead>
-
-                                                {datapo.map((item) => (
-                                                   <tbody>
-                                                      <tr>
-                                                         <td>{item.product}</td>
-                                                         <td>{item.quantity}</td>
-                                                         <td>{item.price}</td>
-                                                         <td>{price * quantity}</td>
-
-                                                      </tr>
-
-                                                   </tbody>
-                                                ))}
-                                             </table>
+                                          <Row className="">
+                <Col lg="12" className="">
+                    <Card className="rounded">
+                        <Card.Body className="">
+                        <div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3">
+            
+                <table class="table">
+Description                </table>
+            </div> 
+            <div class="col-md-3">
+           
+                <table class="table">
+                DATE                </table>
+            </div> 
+            <div class="col-md-3">
+         
+                <table class="table">
+                QTY                </table>
+            </div> 
+            <div class="col-md-3">
+           
+                <table class="table">
+                PRICE
+                </table>
+            </div>          
+        </div>
+    </div>
+</div>
+ 
+<div class="row">
+    <div class="col-md-12">
+            {datapo.map((item)=>(
+        <div class="row">
+            <div class="col-md-3">
+                     <Form.Group className="mb-3 form-group">
+                     
+                     {item.product}
+                 </Form.Group>
+               
+       
+          </div> 
+               
+            <div class="col-md-3">
+           
+                <table class="table">
+                23-59-5959
+                </table>
+            </div> 
+            <div class="col-md-3">
+         
+                <table class="table">
+                {item.quantity}
+                </table>
+            </div> 
+            <div class="col-md-3">
+           
+                <table class="table">
+                {item.price}
+                </table>
+            </div>  
+        </div>
+                ))}
+                       
+    </div>
+</div>
+                             
+                            <Row>
+                                <Col sm="12">
+                                    <p className="mb-0 mt-4">
+                                        <svg width="30" className="text-primary mb-3 me-2" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect x="-0.757324" y="19.2427" width="28" height="4" rx="2" transform="rotate(-45 -0.757324 19.2427)" fill="currentColor" />
+                                            <rect x="7.72803" y="27.728" width="28" height="4" rx="2" transform="rotate(-45 7.72803 27.728)" fill="currentColor" />
+                                            <rect x="10.5366" y="16.3945" width="16" height="4" rx="2" transform="rotate(45 10.5366 16.3945)" fill="currentColor" />
+                                            <rect x="10.5562" y="-0.556152" width="28" height="4" rx="2" transform="rotate(45 10.5562 -0.556152)" fill="currentColor" />
+                                        </svg>
+                                        It is a long established fact that a reader will be distracted by the readable content of a page
+                                        when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters,
+                                        as opposed to using 'Content here, content here', making it look like readable English.
+                                    </p>
+                                    <div className="d-flex justify-content-center mt-4">
+                                        <button type="button" className="btn btn-primary">Print</button>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
                                           </div>
                                           <div className="row">
                                              <div className="col-xl-8">
@@ -847,149 +916,7 @@ const UserProfile = () => {
                         </Card>
                      </Tab.Pane >
                      <Tab.Pane eventKey="third" id="profile-friends">
-                        <Card>
-                           <Card.Header>
-                              <div className="header-title">
-                                 <h4 className="card-title">Friends</h4>
-                              </div>
-                           </Card.Header>
-                           <Card.Body>
-                              <ul className="list-inline m-0 p-0">
-                                 <li className="d-flex mb-4 align-items-center">
-                                    <Image className="theme-color-default-img  rounded-pill avatar-40" src={avatars11} alt="profile-pic" />
-                                    <Image className="theme-color-purple-img rounded-pill avatar-40" src={avatars22} alt="profile-pic" />
-                                    <Image className="theme-color-blue-img rounded-pill avatar-40" src={avatars33} alt="profile-pic" />
-                                    <Image className="theme-color-green-img rounded-pill avatar-40" src={avatars55} alt="profile-pic" />
-                                    <Image className="theme-color-yellow-img rounded-pill avatar-40" src={avatars66} alt="profile-pic" />
-                                    <Image className="theme-color-pink-img rounded-pill avatar-40" src={avatars44} alt="profile-pic" />
-                                    <div className="ms-3 flex-grow-1">
-                                       <h6>Paul Molive</h6>
-                                       <p className="mb-0">Web Designer</p>
-                                    </div>
-                                    <Dropdown>
-                                       <Dropdown.Toggle as="span" id="dropdownMenuButton9" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                       </Dropdown.Toggle>
-                                       <Dropdown.Menu className="dropdown-menu-end" aria-labelledby="dropdownMenuButton9">
-                                          <Dropdown.Item href="#">Unfollow</Dropdown.Item>
-                                          <Dropdown.Item href="#">Unfriend</Dropdown.Item>
-                                          <Dropdown.Item href="#">block</Dropdown.Item>
-                                       </Dropdown.Menu>
-                                    </Dropdown>
-                                 </li>
-                                 <li className="d-flex mb-4 align-items-center">
-                                    <Image src={avatars5} alt="story-img" className="rounded-pill avatar-40" />
-                                    <div className="ms-3 flex-grow-1">
-                                       <h6>Paul Molive</h6>
-                                       <p className="mb-0">trainee</p>
-                                    </div>
-                                    <Dropdown>
-                                       <Dropdown.Toggle as="span" id="dropdownMenuButton9" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                       </Dropdown.Toggle>
-                                       <Dropdown.Menu className="dropdown-menu-end" aria-labelledby="dropdownMenuButton9">
-                                          <Dropdown.Item href="#">Unfollow</Dropdown.Item>
-                                          <Dropdown.Item href="#">Unfriend</Dropdown.Item>
-                                          <Dropdown.Item href="#">block</Dropdown.Item>
-                                       </Dropdown.Menu>
-                                    </Dropdown>
-                                 </li>
-                                 <li className="d-flex mb-4 align-items-center">
-                                    <Image src={avatars2} alt="story-img" className="rounded-pill avatar-40" />
-                                    <div className="ms-3 flex-grow-1">
-                                       <h6>Anna Mull</h6>
-                                       <p className="mb-0">Web Developer</p>
-                                    </div>
-                                    <Dropdown>
-                                       <Dropdown.Toggle as="span" id="dropdownMenuButton9" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                       </Dropdown.Toggle>
-                                       <Dropdown.Menu className="dropdown-menu-end" aria-labelledby="dropdownMenuButton9">
-                                          <Dropdown.Item href="#">Unfollow</Dropdown.Item>
-                                          <Dropdown.Item href="#">Unfriend</Dropdown.Item>
-                                          <Dropdown.Item href="#">block</Dropdown.Item>
-                                       </Dropdown.Menu>
-                                    </Dropdown>
-                                 </li>
-                                 <li className="d-flex mb-4 align-items-center">
-                                    <Image src={avatars3} alt="story-img" className="rounded-pill avatar-40" />
-                                    <div className="ms-3 flex-grow-1">
-                                       <h6>Paige Turner</h6>
-                                       <p className="mb-0">trainee</p>
-                                    </div>
-                                    <Dropdown>
-                                       <Dropdown.Toggle as="span" id="dropdownMenuButton9" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                       </Dropdown.Toggle>
-                                       <Dropdown.Menu className="dropdown-menu-end" aria-labelledby="dropdownMenuButton9">
-                                          <Dropdown.Item href="#">Unfollow</Dropdown.Item>
-                                          <Dropdown.Item href="#">Unfriend</Dropdown.Item>
-                                          <Dropdown.Item href="#">block</Dropdown.Item>
-                                       </Dropdown.Menu>
-                                    </Dropdown>
-                                 </li>
-                                 <li className="d-flex mb-4 align-items-center">
-                                    <Image src={avatars4} alt="story-img" className="rounded-pill avatar-40" />
-                                    <div className="ms-3 flex-grow-1">
-                                       <h6>Barb Ackue</h6>
-                                       <p className="mb-0">Web Designer</p>
-                                    </div>
-                                    <Dropdown>
-                                       <Dropdown.Toggle as="span" id="dropdownMenuButton9" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                       </Dropdown.Toggle>
-                                       <Dropdown.Menu className="dropdown-menu-end" aria-labelledby="dropdownMenuButton9">
-                                          <Dropdown.Item href="#">Unfollow</Dropdown.Item>
-                                          <Dropdown.Item href="#">Unfriend</Dropdown.Item>
-                                          <Dropdown.Item href="#">block</Dropdown.Item>
-                                       </Dropdown.Menu>
-                                    </Dropdown>
-                                 </li>
-                                 <li className="d-flex mb-4 align-items-center">
-                                    <Image src={avatars5} alt="story-img" className="rounded-pill avatar-40" />
-                                    <div className="ms-3 flex-grow-1">
-                                       <h6>Greta Life</h6>
-                                       <p className="mb-0">Tester</p>
-                                    </div>
-                                    <Dropdown>
-                                       <Dropdown.Toggle as="span" id="dropdownMenuButton9" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                       </Dropdown.Toggle>
-                                       <Dropdown.Menu className="dropdown-menu-end" aria-labelledby="dropdownMenuButton9">
-                                          <Dropdown.Item href="#">Unfollow</Dropdown.Item>
-                                          <Dropdown.Item href="#">Unfriend</Dropdown.Item>
-                                          <Dropdown.Item href="#">block</Dropdown.Item>
-                                       </Dropdown.Menu>
-                                    </Dropdown>
-                                 </li>
-                                 <li className="d-flex mb-4 align-items-center">
-                                    <Image src={avatars3} alt="story-img" className="rounded-pill avatar-40" />                              <div className="ms-3 flex-grow-1">
-                                       <h6>Ira Membrit</h6>
-                                       <p className="mb-0">Android Developer</p>
-                                    </div>
-                                    <Dropdown>
-                                       <Dropdown.Toggle as="span" id="dropdownMenuButton9" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                       </Dropdown.Toggle>
-                                       <Dropdown.Menu className="dropdown-menu-end" aria-labelledby="dropdownMenuButton9">
-                                          <Dropdown.Item href="#">Unfollow</Dropdown.Item>
-                                          <Dropdown.Item href="#">Unfriend</Dropdown.Item>
-                                          <Dropdown.Item href="#">block</Dropdown.Item>
-                                       </Dropdown.Menu>
-                                    </Dropdown>
-                                 </li>
-                                 <li className="d-flex mb-4 align-items-center">
-                                    <Image src={avatars2} alt="story-img" className="rounded-pill avatar-40" />
-                                    <div className="ms-3 flex-grow-1">
-                                       <h6>Pete Sariya</h6>
-                                       <p className="mb-0">Web Designer</p>
-                                    </div>
-                                    <Dropdown>
-                                       <Dropdown.Toggle as="span" id="dropdownMenuButton9" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                                       </Dropdown.Toggle>
-                                       <Dropdown.Menu className="dropdown-menu-end" aria-labelledby="dropdownMenuButton9">
-                                          <Dropdown.Item href="#">Unfollow</Dropdown.Item>
-                                          <Dropdown.Item href="#">Unfriend</Dropdown.Item>
-                                          <Dropdown.Item href="#">block</Dropdown.Item>
-                                       </Dropdown.Menu>
-                                    </Dropdown>
-                                 </li>
-                              </ul>
-                           </Card.Body>
-                        </Card>
+                      
                      </Tab.Pane >
                      <Tab.Pane eventKey="fourth" id="profile-profile">
                         {/* <Card className="rounded" id="hellobhi">
@@ -1398,41 +1325,116 @@ const UserProfile = () => {
 
                                              <hr />
                                           </div>
-                                          <div className="container">
+                                         
 
+ 
+<hr/>
+<Row className="">
+                <Col lg="12" className="">
+                    <Card className="rounded">
+                        <Card.Body className="">
+                        <div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3">
+            
+                <table class="table">
+<b>Description</b>                </table>
+            </div> 
+            <div class="col-md-3">
+           
+                <table class="table">
+               <b> DATE  </b>              </table>
+            </div> 
+            <div class="col-md-2">
+         
+                <table class="table">
+              <b>  QTY  </b>              </table>
+            </div> 
+            <div class="col-md-2">
+           
+                <table class="table">
+              <b>  PRICE</b>
+                </table>
+            </div>       
+            <div class="col-md-2">
+           
+           <table class="table">
+         <b>  Total</b>
+           </table>
+       </div>      
+        </div>
+    </div>
+</div>
+ 
+<div class="row">
+    <div class="col-md-12">
+            {datapo.map((item)=>(
+        <div class="row">
+            <div class="col-md-3">
+                     <Form.Group className="mb-3 form-group">
+                     
+                     {item.product}
+                 </Form.Group>
+               
+       
+          </div> 
+               
+            <div class="col-md-3">
+           
+                <table class="table">
+                23-59-5959
+                </table>
+            </div> 
+            <div class="col-md-2">
+         
+                <table class="table">
+                {item.quantity}
+                </table>
+            </div> 
+            <div class="col-md-2">
+           
+                <table class="table">
+                {item.price}
+                </table>
+            </div>  
+            <div class="col-md-2">
+           
+           <table class="table">
+           {item.price*item.quantity}
+           </table>
+       </div> 
+        </div>
+                ))}
+                       
+    </div>
+</div>
+                             
+                            <Row>
+                                <Col sm="12">
+                                    <p className="mb-0 mt-4">
+                                        <svg width="30" className="text-primary mb-3 me-2" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect x="-0.757324" y="19.2427" width="28" height="4" rx="2" transform="rotate(-45 -0.757324 19.2427)" fill="currentColor" />
+                                            <rect x="7.72803" y="27.728" width="28" height="4" rx="2" transform="rotate(-45 7.72803 27.728)" fill="currentColor" />
+                                            <rect x="10.5366" y="16.3945" width="16" height="4" rx="2" transform="rotate(45 10.5366 16.3945)" fill="currentColor" />
+                                            <rect x="10.5562" y="-0.556152" width="28" height="4" rx="2" transform="rotate(45 10.5562 -0.556152)" fill="currentColor" />
+                                        </svg>
+                                        It is a long established fact that a reader will be distracted by the readable content of a page
+                                        when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters,
+                                        as opposed to using 'Content here, content here', making it look like readable English.
+                                    </p>
+                                    <div className="d-flex justify-content-center mt-4">
+                                        <button type="button" className="btn btn-primary">Print</button>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
 
-                                             <div className="row my-2 mx-1 justify-content-center">
-                                                <table className="table table-striped table-borderless">
-                                                   <thead
-                                                      style={{ backgroundColor: "#84B0CA" }}
-                                                      className="text-black"
-                                                   >
-                                                      <tr>
-
-                                                         <th scope="col">Description</th>
-
-                                                         <th scope="col">Date</th>
-                                                         <th scope="col">Qty</th>
-                                                         <th scope="col">Price</th>
-                                                         <th scope="col">Total</th>
-                                                      </tr>
-                                                   </thead>
-
-                                                   {datapo.map((item) => (
-                                                      <tbody>
-                                                         <tr>
-                                                            <td>{item.product}</td>
-                                                            <td> 2/3/22</td>
-                                                            <td>{item.quantity}</td>
-                                                            <td>{item.price}</td>
-                                                            <td> {item.price * item.quantity}$</td>
-
-                                                         </tr>
-                                                      </tbody>
-                                                   ))}
-
-                                                </table>
-                                             </div>
+                                                
+                                          
                                              <hr />
                                              <div className="row">
                                                 <div className="col-xl-12">
@@ -1500,7 +1502,7 @@ const UserProfile = () => {
 
                                                 </div>
                                              </div>
-                                          </div>
+                                       
                                        </div>
                                        <Button size="25px" onClick={pdfGenerator} variant="btn btn-primary">GO </Button>{' '}
                                     </div>
@@ -1547,8 +1549,84 @@ const UserProfile = () => {
                            </Card.Body>
                         </Card>
                      </Tab.Pane >
+                     <Tab.Pane eventKey="fifth" id="profile-profile">
+
+                     
+                     <Row>
+            <Col sm="12">
+               <Card>
+                
+                  <Card.Body className="px-0">
+                     <div className="table-responsive">
+                        <table id="user-list-table" className="table table-striped" role="grid" data-toggle="data-table">
+                           <thead>
+                              <tr className="ligth">
+                              <th>Name</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Expiry Date</th>
+                        <th> </th>
+                                
+                              </tr>
+                           </thead>
+                           <tbody>
+                          
+                              <tr>
+                              <td> Gohan</td>
+                          <td>Active</td>
+                          <td>2-3-2022 </td>
+                          <td>1-5-2022 </td>
+                          <td><NavDropdown title=" " id="collasible-nav-dropdown">
+                                                            <NavDropdown.Item href="#">View</NavDropdown.Item>
+                                                            <NavDropdown.Item href="#">Download</NavDropdown.Item>
+                                                            <NavDropdown.Item href="#">Update</NavDropdown.Item>
+                                                            <NavDropdown.Item href="#">Delete</NavDropdown.Item>
+                                                         
+                                                        </NavDropdown></td>
+                               
+                              </tr>
+                              <tr>
+                              <td> Goku</td>
+                          <td>Draft</td>
+                          <td>2-3-2022 </td>
+                          <td>1-5-2022 </td>
+                          <td><NavDropdown title="  " id="collasible-nav-dropdown">
+                                                            <NavDropdown.Item href="#">Action</NavDropdown.Item>
+                                                            <NavDropdown.Item href="#">Another action</NavDropdown.Item>
+                                                            <NavDropdown.Item href="#">Something</NavDropdown.Item>
+                                                            <NavDropdown.Divider />
+                                                            <NavDropdown.Item href="#action/3.4">Something else ehere</NavDropdown.Item>
+                                                        </NavDropdown></td>
+                               
+                              </tr> 
+                              <tr>
+                              <td> Jhon</td>
+                          <td>Pending</td>
+                          <td>2-3-2022 </td>
+                          <td>1-5-2022 </td>
+                          <td><NavDropdown title=" " id="collasible-nav-dropdown">
+                                                            <NavDropdown.Item href="#">Action</NavDropdown.Item>
+                                                            <NavDropdown.Item href="#">Another action</NavDropdown.Item>
+                                                            <NavDropdown.Item href="#">Something</NavDropdown.Item>
+                                                            <NavDropdown.Divider />
+                                                            <NavDropdown.Item href="#action/3.4">Something else ehere</NavDropdown.Item>
+                                                        </NavDropdown></td>
+                                
+                               
+                              </tr>  
+                           </tbody>
+                        </table>
+                     </div>
+                  </Card.Body>
+               </Card>
+            </Col>
+         </Row>
+                     </Tab.Pane>
+                     
                   </Tab.Content>
                </Col>
+               {
+    showf?
                <Col lg="3">
                   <Card>
                      <Card.Header>
@@ -1577,6 +1655,7 @@ const UserProfile = () => {
 
 
                </Col>
+               :null}
 
             </Row>
          </Tab.Container>
@@ -1966,3 +2045,5 @@ overflow: hidden;
 }
 `;
 
+//separte tab for vendor
+//add toggle

@@ -7,6 +7,7 @@ import UserProfile2 from '../views/dashboard/app/UserProfile2';
 import UserProfile3 from '../views/dashboard/app/UserProfile3';
 import UserProfile4 from '../views/dashboard/app/UserProfile4';
 import VendorProfile from '../views/dashboard/app/VendorProfile';
+import VendorQoute from '../views/dashboard/app/VendorQoute';
 import UserAdd from '../views/dashboard/app/user-add';
 import UserList from '../views/dashboard/app/user-list';
 import Rfqmanges from '../views/dashboard/app/Rfqmanges';
@@ -70,11 +71,12 @@ const DefaultRouter = () => {
                     <Route path="/" exact component={Index} />
                     <Route path="/dashboard/post" exact component={Post} />
                     {/* user */}
-                    <Route path="/dashboard/app/user-profile/:id"     exact component={UserProfile} />UserProfile2
+                    <Route path="/dashboard/app/user-profile/:id"     exact component={UserProfile} /> 
                     <Route path="/dashboard/app/UserProfile2/:id"     exact component={UserProfile2} />
                     <Route path="/dashboard/app/UserProfile3/:id"     exact component={UserProfile3} />
                     <Route path="/dashboard/app/UserProfile4/:id"     exact component={UserProfile4} />
-                    <Route path="/dashboard/app/VendorProfile/:id"     exact component={VendorProfile} />
+                    <Route path="/dashboard/app/VendorProfile/:id"     exact component={VendorProfile} /> 
+                    <Route path="/dashboard/app/VendorQoute/:id"     exact component={VendorQoute} />
                     <Route path="/dashboard/app/user-add"         exact component={UserAdd}/>
                     <Route path="/dashboard/app/user-list"        exact component={UserList}/>
                     <Route path="/dashboard/app/Rfqmanges"        exact component={Rfqmanges}/>
@@ -105,7 +107,7 @@ const DefaultRouter = () => {
                      <Route path="/dashboard/table/bootstrap-table" exact component={BootstrapTable}/>
                      <Route path="/dashboard/table/table-data"      exact component={TableData}/>
                      {/*special pages */}
-                     <Route path="/dashboard/special-pages/billing" exact component={Billing}/>
+                     <Route path="/dashboard/special-pages/billing/:id" exact component={Billing}/>
                      <Route path="/dashboard/special-pages/kanban" exact component={Kanban}/>
                      <Route path="/dashboard/special-pages/pricing" exact component={Pricing}/>
                      <Route path="/dashboard/special-pages/timeline" exact component={Timeline}/>

@@ -131,6 +131,9 @@ const UserProfile =() =>{
       }
       console.warn(result);
     };
+    const sendQuote=()=>{
+      navigate.push(`/VendorQuoteLIst/${params.id}`)
+    }
     const getproducts = async () => {
       let result = await fetch(`http://localhost:5005/userRFQ/view/${params.id}`);
       result = await result.json();
@@ -187,11 +190,25 @@ const UserProfile =() =>{
                         <span> - {item.Name}</span>
                       ))}                                 </div>
                               </div>
+
+                              {data.map((item) => (
+
+
+
                               <Nav as="ul" className="d-flex nav-pills mb-0 text-center profile-tab" data-toggle="slider-tab" id="profile-pills-tab" role="tablist">
                                  <Nav.Item as="li">
-                                    <Nav.Link eventKey="first">Feed</Nav.Link>
-                                 </Nav.Item>
+                         <Button variant="primary rounded-pill"  onClick={sendQuote}>feed</Button>
+
+                            
+                                 </Nav.Item> 
+                         <br/>
+                              
+                         <Button variant="primary rounded-pill"  onClick={sendQuote}>Quote</Button>
+                                    {/* < Button to={"/dashboard/app/VendorQoute/"+item._id}>Quote</ Button> */}
+                            
+                                 
                               </Nav>
+                               ))}   
                            </div>
                         </Card.Body>
                   </Card>

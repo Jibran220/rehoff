@@ -14,6 +14,8 @@ import BoxedFancy from "../layouts/dashboard/boxed-fancy"
 import Simple from '../layouts/dashboard/simple'
 import Vendor from '../layouts/dashboard/Vendor'
 import Athvend from '../layouts/dashboard/Athvend'
+import VendorQuoteLIst from '../layouts/dashboard/VendorQuoteLIst'
+import VendorQuote from '../layouts/dashboard/VendorQuote'
 import Approver from '../layouts/dashboard/Approver'
 import ApproverAhead from '../layouts/dashboard/ApproverAhead'
 
@@ -24,6 +26,8 @@ const IndexRouters = () => {
             <Route exact path="/" component={Default}></Route>
                 <Route exact path="/ath" component={Vendor}></Route>
                 <Route exact path="/athpro/:id" component={Athvend}></Route>
+                <Route exact path="/athquote/:id" component={VendorQuote}></Route>
+                <Route exact path="/VendorQuoteLIst/:id" component={VendorQuoteLIst}></Route>
                 <Route exact path="/approver" component={Approver}></Route>
                 <Route exact path="/ApproverAhead/:id" component={ApproverAhead}></Route>
 
