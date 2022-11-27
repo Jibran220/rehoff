@@ -10,7 +10,7 @@ import VendorProfile from '../views/dashboard/app/VendorProfile';
 import VendorQoute from '../views/dashboard/app/VendorQoute';
 import UserAdd from '../views/dashboard/app/user-add';
 import UserList from '../views/dashboard/app/user-list';
-import Rfqmanges from '../views/dashboard/app/Rfqmanges';
+import Rfqmanges from '../views/dashboard/indexRFQ';
 import Userrfq from '../views/dashboard/app/Userrfq';
 import MASproduct_Category from '../views/dashboard/app/MASproduct Category';
 import MASproduct_Category_Update from '../views/dashboard/app/MASproduct_Category_Update';

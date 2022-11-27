@@ -1,5 +1,6 @@
 import Card from '../../../components/Card'
 import React, { useEffect, useState } from "react";
+import styled from 'styled-components';
 import {
   useHistory,
   Link,
@@ -21,6 +22,7 @@ import shap6 from '../../../assets/images/shapes/06.png'
 import axios from "axios";
 
 import Button from 'react-bootstrap/Button';
+import { Scrollbar } from 'swiper';
 
 const UserList =() =>{
    let history =useHistory()
@@ -93,9 +95,10 @@ const UserList =() =>{
        <div>
          <Row>
             <Col sm="12">
-               <Card>
-                  <Card.Header className="d-flex justify-content-between">
-                     <div className="header-title">
+            <ScrollBar>
+               <Card className='box'>
+                  <Card.Header className="d-flex justify-content-between box">
+                     <div className="header-title  " >
                     <Button    onClick={asd}       variant="btn btn-primary">Add New <BsArrowRightShort size="25px"/></Button>{' '}
                          </div>
                          <div className="header-title">
@@ -114,11 +117,12 @@ const UserList =() =>{
                                 </Form>
                         
                          </div>
-                         <div className="header-title">
+                         <div className="header-title box">
                          </div>
                   </Card.Header>
                   <Card.Body className="px-0">
-                     <div className="table-responsive">
+                      
+                     <div className="table-responsive ">
                         <table id="user-list-table" className="table table-striped" role="grid" data-toggle="data-table">
                            <thead>
                               <tr className="ligth">
@@ -181,8 +185,10 @@ const UserList =() =>{
                            </tbody>
                         </table>
                      </div>
+                       
                   </Card.Body>
                </Card>
+               </ScrollBar>
             </Col>
          </Row>
       </div>
@@ -192,3 +198,36 @@ const UserList =() =>{
 }
 
 export default UserList;
+
+
+const ScrollBar = styled.div`
+
+#style-2::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+.box{
+
+    box-shadow: 0 50px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    .force-overflow
+}
+{
+	min-height: 430px;
+}
+.scrollbar
+{
+	margin-left: 30px;
+	float: left;
+	height: 380px;
+	width: 910px;
+ 
+	overflow-y: scroll;
+	overflow-x: auto;
+    overflow-x:auto;
+	margin-bottom: 35px;
+}
+
+
+`

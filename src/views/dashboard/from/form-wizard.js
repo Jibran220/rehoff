@@ -90,17 +90,17 @@ useEffect(() => {
       const [wxdxh, setwxdxh] = useState([])
 
       const getproducts = async () => {
-        let result = await fetch(`http://localhost:5005/MASproductCategory`);
+        let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/MASproductCategory`);
         result = await result.json();
         setproductcategory(result)
     };
     const getapplicationstandard = async () => {
-      let result = await fetch(`http://localhost:5005/MASapplicationStandard`);
+      let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/MASapplicationStandard`);
       result = await result.json();
       setApplicable_Standards(result)
   };
   const getwdh = async () => {
-    let result = await fetch(`http://localhost:5005/MAS_WDH`);
+    let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/MAS_WDH`);
     result = await result.json();
     setwxdxh(result)
 };

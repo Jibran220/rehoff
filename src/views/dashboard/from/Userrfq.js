@@ -19,7 +19,7 @@ const Userrfq = () => {
 
   const getproductdetail = async () => {
     console.warn(params);
-    let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers/${params.id}`);
+    let result = await fetch(`http://localhost:5005/rfqmanagers/${params.id}`);
     result = await result.json();
     setData(result);
     Setrfq_name(result.name);
@@ -65,14 +65,18 @@ const Userrfq = () => {
   const [to, Setto] = useState("");
   const [status, Setstatus] = useState("Published");
   const [from, Setfrom] = useState("");
+  const [Month, SetMonth] = useState(new Date().getMonth());
+  
+  const datee=new Date().getMonth()
 
   const handleSubmit = async () => {
     // e.preventDefault();
     // dispatch(createRFQ({ Name, Work_Phone, status }));
     // console.warn(Name, Work_Phone, status);
-    const result = fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ", {
+    const result = fetch("http://localhost:5005/userRFQ", {
       method: "post",
       body: JSON.stringify({
+        Month,
         status,
         rfq_id,
         rfq_name,
@@ -102,6 +106,8 @@ const Userrfq = () => {
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjEuNv1OCegAAAAMSURBVBhXY/jPYAwAAzQBM849AKsAAAAASUVORK5CYII=";
   useEffect(async () => { if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) navigate.push('/auth/sign-in') }, []);
   useEffect(() => {
+    console.log(datee)
+    console.log(Month)
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
       if (user.username === "Admin1") { navigate.push('/approver') }
       else if (user.username !== "Admin") { navigate.push('/ath') }

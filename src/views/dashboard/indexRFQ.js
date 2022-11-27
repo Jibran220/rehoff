@@ -1,8 +1,12 @@
 import React, {useEffect,useState} from 'react'
-import { Row,Col,Dropdown,Button} from 'react-bootstrap'
+import { Row,Col,Dropdown,Button,OverlayTrigger,Tooltip} from 'react-bootstrap'
 import { Link ,useHistory} from 'react-router-dom'
-
+import {MdPersonAddAlt1}from 'react-icons/md' 
+import {BsEye}from 'react-icons/bs' 
+import {BsPlusCircle}from 'react-icons/bs'
 import {bindActionCreators} from "redux"
+import styled from "styled-components";
+ 
 //circular
 import Circularprogressbar from '../../components/circularprogressbar.js'
 
@@ -72,8 +76,61 @@ const mapDispatchToProps = dispatch => ({
 
       
 const Index = (props) => {
-    
+    const [data, setData] = useState([]);
     useEffect(() => {
+      getproducts();
+      getUserRFQCount()
+      getproductsCount()
+      getproductsMonth()
+      getproductsMonthCount()
+    }, []);
+    let history =useHistory()
+  
+    const getproducts = async () => {
+      let result = await fetch("https://hjhjkjkjkkjhjhi.herokuapp.com/rfqmanagers");
+      result = await result.json();
+      setData(result);
+    };
+    const [count, setCount] = useState([])
+    const getproductsCount = async () => {
+        let result = await fetch("http://localhost:5005/rfqmanagers/count");
+        result = await result.json();
+        setCount(result);
+        console.log("the count is : ",result)
+        console.log("the count is : ",count)
+        
+      };
+      const [byMonth, setByMonth] = useState([])
+      const getproductsMonth = async () => {
+        let result = await fetch("http://localhost:5005/rfqmanagers/getThisMonthRecord");
+        result = await result.json();
+        setByMonth(result);
+        console.log('thia is mmmmmmmmmmmmmmmmmmmmmmmmmmmm',result)
+         
+        
+      };
+      const [byMonthCount, setByMonthCount] = useState([])
+
+      const getproductsMonthCount = async () => {
+        let result = await fetch("http://localhost:5005/rfqmanagers/getThisMonthRecordCount");
+        result = await result.json();
+        setByMonthCount(result);
+        console.log('thia is mmmmmmmmmmmmmmmmmmmmmmmmmmmm',result)
+         
+        
+      };
+      const [userrfqCount, setUserrfqCount] = useState([])
+      const getUserRFQCount = async () => {
+        let result = await fetch("http://localhost:5005/userrfq/count");
+        result = await result.json();
+        setUserrfqCount(result);
+       
+        
+      };
+      console.log("the count is : ",count)
+
+    useEffect(() => {
+        console.log('asasdasdasdasdasdasdasdasasdasdasasasassaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',byMonth)
     AOS.init({
         startEvent: 'DOMContentLoaded',
         disable:  function() {
@@ -286,6 +343,7 @@ const Index = (props) => {
         else{
           navigate.push('/auth/sign-in')}},[])
       console.log(user)
+      const Add=()=>{navigate.push('/dashboard/form/Rfqform')}
         return (
             <>
                 <Row>
@@ -308,7 +366,7 @@ const Index = (props) => {
                                         1920: { slidesPerView: 6 },
                                         2040: { slidesPerView: 7 },
                                         2440: { slidesPerView: 8 }
-                                    }} data-aos="fade-up" data-aos-delay="700"
+                                    }} data-aos="fade-down" data-aos-delay="700"
                                 >
                                     <SwiperSlide className="card card-slide" >
                                         <div className="card-body">
@@ -320,7 +378,9 @@ const Index = (props) => {
                                                 </Circularprogressbar>
                                                 <div className="progress-detail">
                                                     <p  className="mb-2">Total No of RFQs</p>
-                                                    <h4 className="counter"><CountUp  start={120} end={560} duration={3}/>K</h4>
+                                                    
+
+                                                    <h4 className="counter"><CountUp  start={0} end={count} duration={3}/></h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -350,7 +410,7 @@ const Index = (props) => {
                                                 </Circularprogressbar>
                                                 <div className="progress-detail">
                                                     <p  className="mb-2">Total No of RFQs Vendor</p>
-                                                    <h4 className="counter">$<CountUp  start={120} end={378} duration={3}/>K</h4>
+                                                    <h4 className="counter"><CountUp  start={0} end={userrfqCount} duration={3}/></h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -430,167 +490,108 @@ const Index = (props) => {
                               
                             </Col>
                             <Col md="12" xl="6">
-                               
+                              
+                          
                             </Col>         
                             <Col md="12" lg="12">
                                 <div className="overflow-hidden card" data-aos="fade-up" data-aos-delay="600">
                                     <div className="flex-wrap card-header d-flex justify-content-between">
                                         <div className="header-title">
                                             <h4 className="mb-2 card-title">Enterprise Clients</h4>
+                                                 
                                             <p className="mb-0">
                                                 <svg className ="me-2" width="24" height="24" viewBox="0 0 24 24">
                                                     <path fill="#3a57e8" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
                                                 </svg>
-                                                15 new acquired this month
+
+                                                {byMonthCount} new acquired this month
                                             </p>            
+                                                 
                                         </div>
-                                    </div>
+                                        {/* <button type="button" name="next" className="outline-light next action-button float-end" value="Next" id='bttn' > <BsPlusCircle  size="30px"/> </button> */}
+                                    
+
+    <OverlayTrigger  placement="left" overlay={
+        <Tooltip >
+            Add new RFQ
+        </Tooltip>
+        }>
+          <Button variant="icon primary float-end" onClick={Add}>
+        <span className="  ">
+        <BsPlusCircle  size="35px"/> 
+        </span>
+    </Button>
+    </OverlayTrigger>
+ </div>
                                     <div className="p-0 card-body">
-                                        <div className="mt-4 table-responsive">
-                                            <table id="basic-table" className="table mb-0 table-striped" role="grid">
-                                                <thead>
+                                    
+                                        
+                                        <div className="col-xl"></div>
+                                        <div className="col-xl"></div>
+                                        <ScrollBar> 
+                                                                                    <div className="mt-4 box table-responsive scrollbar">
+                                            <table id="style-2" className="table box mb-0 table-striped  force-overflow" role="grid">
+                                                <thead  >
                                                     <tr>
-                                                        <th>COMPANIES</th>
-                                                        <th>CONTACTS</th>
-                                                        <th>ORDER</th>
-                                                        <th>COMPLETION</th>
+                                                        <th>Name</th>
+                                                        <th>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                     { 
+                               data.map     ((item) => (
                                                     <tr>
                                                         <td>
                                                             <div className="d-flex align-items-center">
                                                                 <img className="rounded bg-soft-primary img-fluid avatar-40 me-3" src={shapes1} alt="profile"/>
-                                                                <h6>Addidis Sportwear</h6>
+                                                                <h6> <Link to={"/dashboard/app/Userrfq/" + item._id}>
+                              {item.name}
+                            </Link></h6>
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div className="iq-media-group iq-media-group-1">
-                                                                <Link to="#" className="iq-media-1">
-                                                                <div className="icon iq-icon-box-3 rounded-pill">SP</div>
-                                                                </Link>
-                                                                <Link to="#" className="iq-media-1">
-                                                                <div className="icon iq-icon-box-3 rounded-pill">PP</div>
-                                                                </Link>
-                                                                <Link to="#" className="iq-media-1">
-                                                                <div className="icon iq-icon-box-3 rounded-pill">MM</div>
-                                                                </Link>
-                                                            </div>
+                                                        <Link className="btn btn-sm btn-icon text-secondary flex-end"  data-bs-toggle="tooltip" title="Add Vendor" to={"/dashboard/form/Userrfq/"+item._id}      >
+
+< MdPersonAddAlt1 size="30px"/> 
+   
+</Link>{' '}
+                                                        <Link className="btn btn-sm btn-icon text-danger"  data-bs-toggle="tooltip" title="Delete" to="#"      >
+                                                    <span className="btn-inner">
+                                                        <svg width="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                                                            <path d="M19.3248 9.46826C19.3248 9.46826 18.7818 16.2033 18.4668 19.0403C18.3168 20.3953 17.4798 21.1893 16.1088 21.2143C13.4998 21.2613 10.8878 21.2643 8.27979 21.2093C6.96079 21.1823 6.13779 20.3783 5.99079 19.0473C5.67379 16.1853 5.13379 9.46826 5.13379 9.46826" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                                                            <path d="M20.708 6.23975H3.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                                                            <path d="M17.4406 6.23973C16.6556 6.23973 15.9796 5.68473 15.8256 4.91573L15.5826 3.69973C15.4326 3.13873 14.9246 2.75073 14.3456 2.75073H10.1126C9.53358 2.75073 9.02558 3.13873 8.87558 3.69973L8.63258 4.91573C8.47858 5.68473 7.80258 6.23973 7.01758 6.23973" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                                                        </svg>
+                                                    </span>
+                                                </Link>
+                                                <Link className="btn btn-sm btn-icon text-secondary flex-end"  data-bs-toggle="tooltip" title="View" to="#"      >
+
+< BsEye size="20px"/> 
+   
+</Link>{' '}
+<Link className="btn btn-sm btn-icon text-primary flex-end" data-bs-toggle="tooltip" title="Edit User" to="#"     >
+                                                    <span className="btn-inner">
+                                                        <svg width="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" >
+                                                            <path d="M11.4925 2.78906H7.75349C4.67849 2.78906 2.75049 4.96606 2.75049 8.04806V16.3621C2.75049 19.4441 4.66949 21.6211 7.75349 21.6211H16.5775C19.6625 21.6211 21.5815 19.4441 21.5815 16.3621V12.3341" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                                                            <path fillRule="evenodd" clipRule="evenodd" d="M8.82812 10.921L16.3011 3.44799C17.2321 2.51799 18.7411 2.51799 19.6721 3.44799L20.8891 4.66499C21.8201 5.59599 21.8201 7.10599 20.8891 8.03599L13.3801 15.545C12.9731 15.952 12.4211 16.181 11.8451 16.181H8.09912L8.19312 12.401C8.20712 11.845 8.43412 11.315 8.82812 10.921Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                                                            <path d="M15.1655 4.60254L19.7315 9.16854" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                                                        </svg>
+                                                    </span>
+                                                </Link>
+                                    
+
                                                         </td>
-                                                        <td>$14,000</td>
-                                                        <td>
-                                                            <div className="mb-2 d-flex align-items-center">
-                                                                <h6>60%</h6>
-                                                            </div>
-                                                            <Progress softcolors="primary" color="primary" className="shadow-none w-100" value={60} minvalue={0} maxvalue={100} style={{height: "4px"}} />
-                                                        </td>
+                                                         
+                                                        {/* <td>$14,000</td>// no of vendors in this rfq */}
+                                                        
                                                     </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div className="d-flex align-items-center">
-                                                                <img className="rounded bg-soft-primary img-fluid avatar-40 me-3" src={shapes5} alt="profile"/>
-                                                                <h6>Netflixer Platforms</h6>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div className="iq-media-group iq-media-group-1">
-                                                                <Link to="#" className="iq-media-1">
-                                                                <div className="icon iq-icon-box-3 rounded-pill">SP</div>
-                                                                </Link>
-                                                                <Link to="#" className="iq-media-1">
-                                                                <div className="icon iq-icon-box-3 rounded-pill">PP</div>
-                                                                </Link>
-                                                            </div>
-                                                        </td>
-                                                        <td>$30,000</td>
-                                                        <td>
-                                                            <div className="mb-2 d-flex align-items-center">
-                                                                <h6>25%</h6>
-                                                            </div>
-                                                          <Progress softcolors="primary" color="primary" className="shadow-none w-100" value={25} minvalue={0} maxvalue={100} style={{height: "4px"}} />
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div className="d-flex align-items-center">
-                                                                <img className="rounded bg-soft-primary img-fluid avatar-40 me-3" src={shapes2} alt="profile"/>
-                                                                <h6>Shopifi Stores</h6>
-                                                            </div>
-                                                        </td>
-                                                        <td>                                 
-                                                            <div className="iq-media-group iq-media-group-1">
-                                                                <Link to="#" className="iq-media-1">
-                                                                <div className="icon iq-icon-box-3 rounded-pill">PP</div>
-                                                                </Link>
-                                                                <Link to="#" className="iq-media-1">
-                                                                <div className="icon iq-icon-box-3 rounded-pill">TP</div>
-                                                                </Link>
-                                                            </div>
-                                                        </td>
-                                                        <td>$8,500</td>
-                                                        <td>
-                                                            <div className="mb-2 d-flex align-items-center">
-                                                                <h6>100%</h6>
-                                                            </div>
-                                                         <Progress softcolors="success" color="success" className="shadow-none w-100" value={100} minvalue={0} maxvalue={100} style={{height: "4px"}} />
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div className="d-flex align-items-center">
-                                                                <img className="rounded bg-soft-primary img-fluid avatar-40 me-3" src={shapes3} alt="profile"/>
-                                                                <h6>Bootstrap Technologies</h6>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div className="iq-media-group iq-media-group-1">
-                                                                <Link  to="#" className="iq-media-1">
-                                                                <div className="icon iq-icon-box-3 rounded-pill">SP</div>
-                                                                </Link>
-                                                                <Link to="#" className="iq-media-1">
-                                                                <div className="icon iq-icon-box-3 rounded-pill">PP</div>
-                                                                </Link>
-                                                                <Link to="#" className="iq-media-1">
-                                                                <div className="icon iq-icon-box-3 rounded-pill">MM</div>
-                                                                </Link>
-                                                                <Link to="#" className="iq-media-1">
-                                                                <div className="icon iq-icon-box-3 rounded-pill">TP</div>
-                                                                </Link>
-                                                            </div>
-                                                        </td>
-                                                        <td>$20,500</td>
-                                                        <td>
-                                                            <div className="mb-2 d-flex align-items-center">
-                                                                <h6>100%</h6>
-                                                            </div>
-                                                    <Progress softcolors="success" color="success" className="shadow-none w-100" value={100} minvalue={0} maxvalue={100} style={{height: "4px"}} />
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div className="d-flex align-items-center">
-                                                                <img className="rounded bg-soft-primary img-fluid avatar-40 me-3" src={shapes4} alt="profile"/>
-                                                                <h6>Community First</h6>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div className="iq-media-group iq-media-group-1">
-                                                                <Link to="#" className="iq-media-1">
-                                                                <div className="icon iq-icon-box-3 rounded-pill">MM</div>
-                                                                </Link>
-                                                            </div>
-                                                        </td>
-                                                        <td>$9,800</td>
-                                                        <td>
-                                                            <div className="mb-2 d-flex align-items-center">
-                                                                <h6>75%</h6>
-                                                            </div>
-                                                               <Progress softcolors="primary" color="primary" className="shadow-none w-100" value={75} minvalue={0} maxvalue={100} style={{height: "4px"}} />
-                                                        </td>
-                                                    </tr>
+                               )) }
+                                               
+                                                   
                                                 </tbody>
                                             </table>
                                         </div>
+                                        </ScrollBar>
                                     </div>
                                 </div>
                             </Col>
@@ -603,7 +604,7 @@ const Index = (props) => {
                              
                             </Col>
                             <Col md="12">
-                                <div className="card" data-aos="fade-up" data-aos-delay="600">
+                                <div className="card" data-aos="fade-left" data-aos-delay="600">
                                     <div className="flex-wrap card-header d-flex justify-content-between">
                                         <div className="header-title">
                                             <h4 className="mb-2 card-title">Activity overview</h4>
@@ -615,43 +616,25 @@ const Index = (props) => {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="card-body">
+
+    
+    
+    <div className="card-body">
+{
+                                        byMonth.map ((item)=>(
                                         <div className="mb-2 d-flex profile-media align-items-top">
                                             <div className="mt-1 profile-dots-pills border-primary"></div>
                                             <div className="ms-4">
-                                                <h6 className="mb-1 ">$2400, Purchase</h6>
-                                                <span className="mb-0">11 JUL 8:10 PM</span>
+                                                <h6 className="mb-1 ">{item.name}</h6>
+                                                {/* <span className="mb-0">11 JUL 8:10 PM</span> */}
                                             </div>
                                         </div>
-                                        <div className="mb-2 d-flex profile-media align-items-top">
-                                            <div className="mt-1 profile-dots-pills border-primary"></div>
-                                            <div className="ms-4">
-                                                <h6 className="mb-1 ">New order #8744152</h6>
-                                                <span className="mb-0">11 JUL 11 PM</span>
-                                            </div>
-                                        </div>
-                                        <div className="mb-2 d-flex profile-media align-items-top">
-                                            <div className="mt-1 profile-dots-pills border-primary"></div>
-                                            <div className="ms-4">
-                                                <h6 className="mb-1 ">Affiliate Payout</h6>
-                                                <span className="mb-0">11 JUL 7:64 PM</span>
-                                            </div>
-                                        </div>
-                                        <div className="mb-2 d-flex profile-media align-items-top">
-                                            <div className="mt-1 profile-dots-pills border-primary"></div>
-                                            <div className="ms-4">
-                                                <h6 className="mb-1 ">New user added</h6>
-                                                <span className="mb-0">11 JUL 1:21 AM</span>
-                                            </div>
-                                        </div>
-                                        <div className="mb-1 d-flex profile-media align-items-top">
-                                            <div className="mt-1 profile-dots-pills border-primary"></div>
-                                            <div className="ms-4">
-                                                <h6 className="mb-1 ">Product added</h6>
-                                                <span className="mb-0">11 JUL 4:50 AM</span>
-                                            </div>
-                                        </div>
+))
+ 
+}
                                     </div>
+                                    
+                                    
                                 </div>
                             </Col>
                         </Row>
@@ -662,3 +645,45 @@ const Index = (props) => {
     }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Index)
+ 
+ const ButtonRight = styled.div`
+ 
+ .right {
+    position: absolute;
+    right: 0px;
+    width: 300px;
+    border: 3px solid #73AD21;
+    padding: 10px;
+  }
+  `
+ const ScrollBar = styled.div`
+
+#style-2::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+.box{
+
+    box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    .force-overflow
+}
+{
+	min-height: 430px;
+}
+.scrollbar
+{
+	margin-left: 30px;
+	float: left;
+	height: 380px;
+	width: 910px;
+ 
+	overflow-y: scroll;
+	overflow-x: auto;
+    overflow-x:auto;
+	margin-bottom: 35px;
+}
+
+
+`

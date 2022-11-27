@@ -171,48 +171,85 @@ const FormWizard = () => {
                                 </div>
                             </Card.Header>
                             <Card.Body>
-                           
+                             
+                                    <Row>
+                                        <Col>
+                                        <Form.Check className="form-check form-switch form-check-inline">
+                                        <FormCheck.Input type="checkbox" id="switch2" defaultChecked   onClick={()=>setshowf(!showf )} />
+                                        <FormCheck.Label className=" pl-2" htmlFor="switch2">Medical Safety</FormCheck.Label>
+                                    </Form.Check>
+                                        </Col>
+                                        <br/>
+
+                                        <Col>
+                                        <Form.Check className="form-check form-switch form-check-inline">
+                                        <FormCheck.Input type="checkbox" id="switch2" defaultChecked   onClick={()=>setshowf(!showf1 )} />
+                                        <FormCheck.Label className=" pl-2" htmlFor="switch2">Medical EMC</FormCheck.Label>
+                                    </Form.Check>
+                                        </Col>
+                                        <br/>
+                                        <Col>
+                                        <Form.Check className="form-check form-switch form-check-inline">
+                                        <FormCheck.Input type="checkbox" id="switch2" defaultChecked   onClick={()=>setshowf(!showf2 )} />
+                                        <FormCheck.Label className=" pl-2" htmlFor="switch2">Assurance Services</FormCheck.Label>
+                                    </Form.Check>
+                                        </Col>
+                                        
+                                    </Row>
+                                 <br/>
+                                 <Row>
+                                        <Col>
+                                        <Form.Check className="form-check form-switch form-check-inline">
+                                        <FormCheck.Input type="checkbox" id="switch2" defaultChecked   onClick={()=>setshowf(!showf3 )} />
+                                        <FormCheck.Label className=" pl-2" htmlFor="switch2">Home Healthcare</FormCheck.Label>
+                                    </Form.Check>
+                                        </Col>
+                                        <br/>
+
+                                        <Col>
+                                        <Form.Check className="form-check form-switch form-check-inline">
+                                        <FormCheck.Input type="checkbox" id="switch2" defaultChecked   onClick={()=>setshowf(!showf4 )} />
+                                        <FormCheck.Label className=" pl-2" htmlFor="switch2">Medical Safety</FormCheck.Label>
+                                    </Form.Check>
+                                        </Col>
+                                        <br/>
+                                        <Col>
+                                        <Form.Check className="form-check form-switch form-check-inline">
+                                        <FormCheck.Input type="checkbox" id="switch2" defaultChecked   onClick={()=>setshowf(!showf5 )} />
+                                        <FormCheck.Label className=" pl-2" htmlFor="switch2">Medical Safety</FormCheck.Label>
+                                    </Form.Check>
+                                        </Col>
+                                        
+                                    </Row>
+                                     
+                                    <br/>
+                                 <Row>
+                                        <Col>
+                                        <Form.Check className="form-check form-switch form-check-inline">
+                                        <FormCheck.Input type="checkbox" id="switch2" defaultChecked   onClick={()=>setshowf(!showf6 )} />
+                                        <FormCheck.Label className=" pl-2" htmlFor="switch2">Medical Safety</FormCheck.Label>
+                                    </Form.Check>
+                                        </Col>
+                                        <br/>
+
+                                        <Col>
+                                        <Form.Check className="form-check form-switch form-check-inline">
+                                        <FormCheck.Input type="checkbox" id="switch2" defaultChecked   onClick={()=>setshowf(!showf7 )} />
+                                        <FormCheck.Label className=" pl-2" htmlFor="switch2">Medical Safety</FormCheck.Label>
+                                    </Form.Check>
+                                        </Col>
+                                        <br/>
+                                        <Col>
+                                        <Form.Check className="form-check form-switch form-check-inline">
+                                        <FormCheck.Input type="checkbox" id="switch2" defaultChecked   onClick={()=>setshowf(!showf8 )} />
+                                        <FormCheck.Label className=" pl-2" htmlFor="switch2">Medical Safety</FormCheck.Label>
+                                    </Form.Check>
+                                        </Col>
+                                        
+                                    </Row>
  
                                       
-                                     <div className="bd-example">
-                                    <Form.Check className="form-check form-switch form-check-inline">
-                                        <FormCheck.Input type="checkbox" id="switch1"  onClick={()=>setshowf(!showf )} />
-                                        <FormCheck.Label className=" pl-2" htmlFor="switch1">Medical Safety</FormCheck.Label>
-                                    </Form.Check>
-                                    <div className="form-check form-switch form-check-inline">
-                                        <FormCheck.Input type="checkbox" id="switch1" onClick={()=>setshowf1(!showf1 )}/>
-                                        <FormCheck.Label className=" pl-2" htmlFor="switch1">Medical EMC</FormCheck.Label>
-                                    </div>
-                                    <div className="form-check form-switch form-check-inline">
-                                        <FormCheck.Input type="checkbox" id="switch1" onClick={()=>setshowf2(!showf2 )}/>
-                                        <FormCheck.Label className=" pl-2" htmlFor="switch1">Assurance Services</FormCheck.Label>
-                                    </div>
-                                    <div className="form-check form-switch form-check-inline">
-                                        <FormCheck.Input type="checkbox" id="switch1" onClick={()=>setshowf3(!showf3 )}/>
-                                        <FormCheck.Label className=" pl-2" htmlFor="switch1">Home Healthcare</FormCheck.Label>
-                                    </div>
-                                    <div className="form-check form-switch form-check-inline">
-                                        <FormCheck.Input type="checkbox" id="switch1" onClick={()=>setshowf4(!showf4 )}/>
-                                        <FormCheck.Label className=" pl-2" htmlFor="switch1">Laser Safety</FormCheck.Label>
-                                    </div>
-                                    <div className="form-check form-switch form-check-inline">
-                                        <FormCheck.Input type="checkbox" id="switch1" onClick={()=>setshowf5(!showf5 )}/>
-                                        <FormCheck.Label className=" pl-2" htmlFor="switch1">Infusion Pump</FormCheck.Label>
-                                    </div>
-                                    <div className="form-check form-switch form-check-inline">
-                                        <FormCheck.Input type="checkbox" id="switch1" onClick={()=>setshowf6(!showf6 )}/>
-                                        <FormCheck.Label className=" pl-2" htmlFor="switch1">Ultrasound Probe</FormCheck.Label>
-                                    </div>
-                                    <div className="form-check form-switch form-check-inline">
-                                        <FormCheck.Input type="checkbox" id="switch1" onClick={()=>setshowf7(!showf7 )}/>
-                                        <FormCheck.Label className=" pl-2" htmlFor="switch1">X-Ray</FormCheck.Label>
-                                    </div>
-                                    <div className="form-check form-switch form-check-inline">
-                                        <FormCheck.Input type="checkbox" id="switch1" onClick={()=>setshowf8(!showf8 )}/>
-                                        <FormCheck.Label className=" pl-2" htmlFor="switch1">EMS Environment</FormCheck.Label>
-                                    </div>
-                                 
-                                    </div>
+                                    
                                  
                                       
                                     <br/>
