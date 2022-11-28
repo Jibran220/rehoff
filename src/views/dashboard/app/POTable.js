@@ -27,6 +27,7 @@ import {
    BrowserRouter,
    Route,
    Routes,
+   useParams,
 } from "react-router-dom";
 import { ExternalLink } from "react-external-link";
 import { BsArrowRightShort } from 'react-icons/bs'
@@ -45,6 +46,7 @@ import { Scrollbar } from 'swiper';
 
 const UserList = () => {
    let history = useHistory()
+   let params =useParams
 
    const [data, setData] = useState([]);
    useEffect(() => {
@@ -85,7 +87,7 @@ const UserList = () => {
       setsendpo({ ...sendpo, file: e.target.files[0] })
       console.log("==", sendpo.file, "===", sendpo.file.name)
    };
-
+const sendtothepo=()=>{navigate.push(`/dashboard/special-pages/billing/${params.id}`)}
    const sendEmail = async () => {
 
       const formdata = new FormData()
@@ -150,7 +152,7 @@ const UserList = () => {
                                             Add new P.O
                                         </Tooltip>
                                     }>
-                                        <Button variant="icon primary float-end"  >
+                                        <Button variant="icon primary float-end"  onClick={sendtothepo}>
                                             <span className="  ">
                                                 <BsPlusCircle size="35px" /> Generate PO
                                             </span>
@@ -247,11 +249,11 @@ const UserList = () => {
                                                                 
                                                            
                                                                 <td>
-                                                                <Link className="btn btn-sm btn-icon text-secondary flex-end" data-bs-toggle="tooltip" title="Add Vendor" to={"/dashboard/form/Userrfq/" + item._id}      >
+                                                                {/* <Link className="btn btn-sm btn-icon text-secondary flex-end" data-bs-toggle="tooltip" title="Add Vendor" to={"/dashboard/form/Userrfq/" + item._id}      >
 
 < BiMailSend size="30px" />
 
-</Link>{' '}
+</Link>{' '} */}
                                                                     <Link className="btn btn-sm btn-icon text-danger" data-bs-toggle="tooltip" title="Delete" to="#"      >
                                                                         <span className="btn-inner">
                                                                             <svg width="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
