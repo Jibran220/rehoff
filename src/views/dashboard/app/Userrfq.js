@@ -312,7 +312,7 @@
 
 
 
-
+import styled from 'styled-components';
 
 
 import Card from '../../../components/Card'
@@ -335,8 +335,11 @@ import shap3 from '../../../assets/images/shapes/03.png'
 import shap4 from '../../../assets/images/shapes/04.png'
 import shap5 from '../../../assets/images/shapes/05.png'
 import shap6 from '../../../assets/images/shapes/06.png'
-
-
+import AOS from 'aos'
+ 
+import 'swiper/swiper-bundle.min.css'
+import 'swiper/components/navigation/navigation.scss';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const Userrfq =() =>{
   
@@ -344,7 +347,9 @@ const Userrfq =() =>{
   const params = useParams();
   const [data, setData] = useState([]);
   const [color, setcolor] = useState("");
-   
+  useEffect(() => {
+    AOS.init();
+ }, [])
     
   useEffect(() => {
     getproductdetail();
@@ -402,7 +407,8 @@ const Userrfq =() =>{
         navigate.push('/auth/sign-in')}},[])
   return(
      <>
-       <div className='table-wrapper-scroll-y my-custom-scrollbar'>
+       <div className=' ' data-aos="fade-up"
+            data-aos-duration="2000" >
          <Row>
             <Col sm="12">'
                <Card>
@@ -412,7 +418,10 @@ const Userrfq =() =>{
                      </div>
                   </Card.Header>
                   <Card.Body className="px-0">
-                     <div className="table-responsive">
+                  <ScrollBar>
+                                       <div className="table-responsive">
+                     <Scrollbars style={{ width: 1530, height: 600 }} thumbMinSize={200}>
+
                         <table id="user-list-table" className="table table-striped" role="grid" data-toggle="data-table">
                            <thead>
                               <tr className="ligth">
@@ -485,7 +494,10 @@ const Userrfq =() =>{
                               </tr>))}
                            </tbody>
                         </table>
+                        </Scrollbars>
                      </div>
+                     </ScrollBar>
+
                   </Card.Body>
                </Card>
             </Col>
@@ -497,3 +509,35 @@ const Userrfq =() =>{
 }
 
 export default Userrfq;
+
+const ScrollBar = styled.div`
+
+#style-2::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+.box{
+
+    box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    .force-overflow
+}
+{
+	min-height: 430px;
+}
+.scrollbar
+{
+	margin-left: 30px;
+	float: left;
+	height: 380px;
+	width: 910px;
+ 
+	overflow-y: scroll;
+	overflow-x: auto;
+    overflow-x:auto;
+	margin-bottom: 35px;
+}
+
+
+`

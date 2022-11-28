@@ -36,7 +36,8 @@ import Base64Downloader from 'react-base64-downloader';
 import { io } from "socket.io-client";
 import styled from "styled-components";
 // import {Row,Col,Image,Form,Button,InputGroup,FormControl} from 'react-bootstrap'
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import { Row, Col, Image, Form, Nav, Dropdown, Tab, Table, FormControl, InputGroup ,NavDropdown} from "react-bootstrap";
 import { useHistory, Link, useParams, useLocation } from "react-router-dom";
 import { BsFillArrowRightSquareFill } from "react-icons/bs";
@@ -48,6 +49,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const UserProfile = () => {
+   useEffect(() => {
+      AOS.init();
+   }, [])
    const scrollRef = useRef();
    const [postData, setPostData] = useState({
       Regulatory_Model_Name: "",
@@ -326,7 +330,7 @@ setPdf(pdf)
       }
    };
 const hell=()=>{
-   navigate.push(`/dashboard/special-pages/billing/${params.id}`)
+   navigate.push(`/dashboard/app/POTable/${params.id}`)
   
 }
    const getproducts = async () => {
@@ -363,6 +367,10 @@ const hell=()=>{
       setatt(result);
       console.log(att)
    };
+   const HideLeftRight=()=>{
+      
+      // setshowf(!showf) 
+   }
    console.log("kasaslkslasklaklalksjlajsljaslkjasjlkajs", datapo.map((tn) => tn.price * tn.quantity));
 
    console.log('ccccccccdacassssssssss', result)
@@ -479,14 +487,15 @@ const hell=()=>{
                                  <Nav.Link eventKey="fourth" onClick={hell}>P.O</Nav.Link>
                               </Nav.Item>
                               <Nav.Item as="li">
-                                 <Nav.Link eventKey="fifth">Quote</Nav.Link>
+                                 <Nav.Link eventKey="seventh" onClick={HideLeftRight}>Quote</Nav.Link>
                               </Nav.Item>
                            </Nav>
                         </div>
                      </Card.Body>
                   </Card>
                </Col>
-               <Col lg="3" className="col-lg-3">
+               <Col lg="3" className="col-lg-3" data-aos="fade-right"
+            data-aos-duration="800" >
                   <Card>
                      <Card.Header>
                         <div className="header-title">
@@ -529,8 +538,14 @@ const hell=()=>{
                      </Card.Body>
                   </Card>
 
-               </Col>
-               <Col lg="6">
+               </Col> 
+
+
+               
+
+
+               <Col lg="6" data-aos="fade-up"
+            data-aos-duration="800">
                   <Tab.Content className="profile-content">
                      <Tab.Pane eventKey="first" id="profile-feed">
                         <Card>
@@ -649,11 +664,14 @@ const hell=()=>{
 
 
                      </Tab.Pane>
+
                      <Tab.Pane eventKey="second" id="profile-activity">
 
                         <Card>
 
                            <fieldset className={`${show === "A" ? "d-block" : "d-none"}`}>
+                     <div  data-aos="fade-up"
+            data-aos-duration="800">
 
 
                               <Card>
@@ -688,7 +706,7 @@ const hell=()=>{
 
                                  </Card.Body>
                               </Card>
-
+</div>
                            </fieldset>
                            <fieldset className={`${show === "Account" ? "d-block" : "d-none"}`}>
                               <Card.Header className="d-flex justify-content-between">
@@ -914,7 +932,10 @@ Description                </table>
                               </Card>
                            </fieldset>
                         </Card>
+                  
+
                      </Tab.Pane >
+                   
                      <Tab.Pane eventKey="third" id="profile-friends">
                       
                      </Tab.Pane >
@@ -1625,9 +1646,11 @@ Description                </table>
                      
                   </Tab.Content>
                </Col>
+               
                {
     showf?
-               <Col lg="3">
+               <Col lg="3" data-aos="fade-left"
+            data-aos-duration="800">
                   <Card>
                      <Card.Header>
                         <div className="header-title">
@@ -1656,7 +1679,7 @@ Description                </table>
 
                </Col>
                :null}
-
+             
             </Row>
          </Tab.Container>
       </>

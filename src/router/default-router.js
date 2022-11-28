@@ -8,6 +8,7 @@ import UserProfile3 from '../views/dashboard/app/UserProfile3';
 import UserProfile4 from '../views/dashboard/app/UserProfile4';
 import VendorProfile from '../views/dashboard/app/VendorProfile';
 import VendorQoute from '../views/dashboard/app/VendorQoute';
+import POTable from '../views/dashboard/app/POTable';
 import UserAdd from '../views/dashboard/app/user-add';
 import UserList from '../views/dashboard/app/user-list';
 import Rfqmanges from '../views/dashboard/indexRFQ';
@@ -77,6 +78,7 @@ const DefaultRouter = () => {
                     <Route path="/dashboard/app/UserProfile4/:id"     exact component={UserProfile4} />
                     <Route path="/dashboard/app/VendorProfile/:id"     exact component={VendorProfile} /> 
                     <Route path="/dashboard/app/VendorQoute/:id"     exact component={VendorQoute} />
+                    <Route path="/dashboard/app/POTable/:id"     exact component={POTable} />
                     <Route path="/dashboard/app/user-add"         exact component={UserAdd}/>
                     <Route path="/dashboard/app/user-list"        exact component={UserList}/>
                     <Route path="/dashboard/app/Rfqmanges"        exact component={Rfqmanges}/>
