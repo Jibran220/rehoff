@@ -333,6 +333,11 @@ const hell=()=>{
    navigate.push(`/dashboard/app/POTable/${params.id}`)
   
 }
+const hell1=()=>{
+   navigate.push(`/dashboard/app/QuoteTable/${params.id}`)
+  
+}
+  
    const getproducts = async () => {
       let result = await fetch(`https://hjhjkjkjkkjhjhi.herokuapp.com/userRFQ/view/${params.id}`);
       result = await result.json();
@@ -487,7 +492,7 @@ const hell=()=>{
                                  <Nav.Link eventKey="fourth" onClick={hell}>P.O</Nav.Link>
                               </Nav.Item>
                               <Nav.Item as="li">
-                                 <Nav.Link eventKey="seventh" onClick={HideLeftRight}>Quote</Nav.Link>
+                                 <Nav.Link eventKey="seventh" onClick={ hell1}>Quote</Nav.Link>
                               </Nav.Item>
                            </Nav>
                         </div>

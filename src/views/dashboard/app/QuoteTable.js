@@ -89,7 +89,7 @@ const UserList = () => {
       setsendpo({ ...sendpo, file: e.target.files[0] })
       console.log("==", sendpo.file, "===", sendpo.file.name)
    };
-const sendtothepo=()=>{navigate.push(`/dashboard/special-pages/billing/${params.id}`)}
+const sendtothepo=()=>{navigate.push(`/dashboard/app/Invoice/${params.id}`)}
    const sendEmail = async () => {
 
       const formdata = new FormData()
@@ -137,7 +137,7 @@ const sendtothepo=()=>{navigate.push(`/dashboard/special-pages/billing/${params.
                             <div className="overflow-hidden card" data-aos="fade-up" data-aos-delay="600">
                                 <div className="flex-wrap card-header d-flex justify-content-between">
                                     <div className="header-title">
-                                        <h4 className="mb-2 card-title">Purchase Order List</h4>
+                                        <h4 className="mb-2 card-title">User Quotes</h4>
 
                                         <p className="mb-0">
                                             
@@ -156,7 +156,7 @@ const sendtothepo=()=>{navigate.push(`/dashboard/special-pages/billing/${params.
                                     }>
                                         <Button variant="icon primary float-end"  onClick={sendtothepo}>
                                             <span className="  ">
-                                                <BsPlusCircle size="35px" /> Generate PO
+                                                <BsPlusCircle size="35px" /> Generate Invoice
                                             </span>
                                         </Button>
                                     </OverlayTrigger>
