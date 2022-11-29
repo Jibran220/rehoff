@@ -49,7 +49,12 @@ const UserList = () => {
    let params =useParams()
    const navigate = useHistory();
 
+const onclick=()=>{
+    let p =document.getElementById('#asd')
+    const result1=p.textContent
+console.log("this is from li (khsakete hain)",result1)
 
+}
    const [data, setData] = useState([]);
    useEffect(() => {
       getproducts();

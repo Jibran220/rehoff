@@ -13,8 +13,14 @@ import { useHistory, useParams } from "react-router-dom";
 import { jsPDF } from "jspdf";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import styled from "styled-components";
+import $ from 'jquery';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
+import { borderColor } from "@mui/system";
 const Billing = () => {
     const params = useParams()
+  const [from, Setfrom] = useState("");
+
     const navigate = useHistory()
 
     const [product, setproduct] = useState("");
@@ -27,9 +33,16 @@ const Billing = () => {
     const [pdf1, setPdf1] = useState('')
     const [datapo, setDatapo] = useState([]);
     const [data, setData] = useState([]);
-const [showbottom, setShowbottom] = useState(false)
+    const [showbottom, setShowbottom] = useState(false)
+    const onclick = () => {
+        console.log(from)
+        let Pas = document.getElementById('#asd')
+        const result1 = Pas.innerText
+        console.log("this is from li (khsakete hain)", result1)
 
-
+    }
+    
+ 
     const handleSubmitforpo = async () => {
         const result = await fetch("http://localhost:5005/poattachments", {
             method: "post",
@@ -65,7 +78,7 @@ const [showbottom, setShowbottom] = useState(false)
         TradeMark: "",
         Family: "",
         Market: "Africa",
-  
+
         Overall_Size_of_Equipment: "",
         WebGLShader: "mm",
         Voltage: "",
@@ -82,13 +95,13 @@ const [showbottom, setShowbottom] = useState(false)
         DC_mains: "",
         Battery_Powered: "",
         Skilled_person: "",
-  
+
         Non_detachable_Supply_Cord: "",
         Appliance_Coupler: "",
         Direct_plug_in: "",
         Non_detachable_Supply_Cord_B: "",
         Appliance_Coupler_B: "",
-  
+
         Permanent_connection: "",
         Mating_connector: "",
         Movable: "",
@@ -97,7 +110,7 @@ const [showbottom, setShowbottom] = useState(false)
         Wall_ceiling_mounted_SRME_rack_mounted: "",
         Hand_held: "",
         Other: "",
-  
+
         Pollution_Degree: "",
         Manufacturer_Specific_Max_Operating_Ambient: "",
         Ingree_Protection_Classification: "",
@@ -107,18 +120,18 @@ const [showbottom, setShowbottom] = useState(false)
         Atmospheric_Pressure: "",
         Indoor: "",
         Outdoor: "",
-  
+
         Copy_of_Marking_Plate: "",
         WarningOrCautionary_Marking: "",
         Fuse_Type: "",
         Fuse_Marking: "",
-  
+
         //complaince report
         Report_Number: "No Option",
-     });
+    });
     const handleemail = async (e) => {
         e.preventDefault();
-        const result =  await fetch(`http://localhost:5005/po/sendapprover`, {
+        const result = await fetch(`http://localhost:5005/po/sendapprover`, {
             method: "post",
             body: JSON.stringify(postemail),
             headers: { "Content-Type": "application/json" },
@@ -137,6 +150,8 @@ const [showbottom, setShowbottom] = useState(false)
         getpo()
         getpo()
         getpo()
+        from
+        console.log(from)
         getproducts()
     }, []);
 
@@ -153,7 +168,7 @@ const [showbottom, setShowbottom] = useState(false)
 
                 setPdf1(doc.output())
                 console.warn("asasa", pdf);
-               setShowbottom(!showbottom ) 
+                setShowbottom(!showbottom)
 
 
             },
@@ -263,24 +278,23 @@ const [showbottom, setShowbottom] = useState(false)
                                                 <h5>  <b> INTERTEK TESTING SERVICES INC</b> </h5><span style={{ color: "#5d9fc5" }}></span>
                                                 <ul className="list-unstyled">
                                                     <i>
-                                                        <li contenteditable="true" className="text-muted">
-                                                            399 US ROUTE 11 INDUSTRIAL PARK  <span style={{ color: "#5d9fc5" }}></span>
+                                                        <li contenteditable="true" className="text-muted" >
+                                                        <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='39US ROUTE 11 INDUSTRIAL PARK    CORTLAND CORTLAND, NY 13045 '   style={{ width: 200 ,outline:'none',border:0,color:'grey'   }}/>
+                                                            
                                                         </li>
-                                                        <li contenteditable="true" className="text-muted">
-                                                            CORTLAND<span style={{ color: "#5d9fc5" }}> </span>
-                                                        </li>
-                                                        <li contenteditable="true" className="text-muted">
-                                                            CORTLAND, NY 13045 <span style={{ color: "#5d9fc5" }}></span>
-                                                        </li>
+                                                        
                                                     </i>
                                                     <li contenteditable="true" className="text-muted">
-                                                        Attn: BD Supplier <span style={{ color: "#5d9fc5" }}> </span>
+                                                          <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='Attn: Jibran '   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                                     </li>
                                                     <li contenteditable="true" className="text-muted">
-                                                        Phone: +1(800) 967-5352 <span style={{ color: "#5d9fc5" }}> </span>
+                                                    <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='Phone: +1(800) 967-5352 '   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                                     </li>
                                                     <li contenteditable="true" className="text-muted">
-                                                        Fax: +1 (650) 463-2910 <span style={{ color: "#5d9fc5" }}> </span>
+                                                    <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='Fax: +1 (650) 463-2910 '   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                                     </li>
                                                     <li contenteditable="true" className="text-muted">
                                                         <br />
@@ -290,22 +304,20 @@ const [showbottom, setShowbottom] = useState(false)
                                                         <p className="card-text">    <ul className="list-unstyled">
                                                             <i>
                                                                 <li contenteditable="true" className="text-muted">
-                                                                    Becton, Dickinson and Company  <span style={{ color: "#5d9fc5" }}></span>
+                                                    <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='Becton, Dickinson and Company  2350 Qume Drive  SAN JOSE, CA 95131-1812  23402 '   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
+                                                                     
+                                                                </li>
+                                                                 
+                                                                 
+                                                                
+                                                                <li contenteditable="true" className="text-muted">
+                                                                <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='Attn: Jibran '   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                                                 </li>
                                                                 <li contenteditable="true" className="text-muted">
-                                                                    2350 Qume Drive<span style={{ color: "#5d9fc5" }}> </span>
-                                                                </li>
-                                                                <li contenteditable="true" className="text-muted">
-                                                                    SAN JOSE, CA 95131-1812 <span style={{ color: "#5d9fc5" }}></span>
-                                                                </li>
-                                                                <li contenteditable="true" className="text-muted">
-                                                                    23402 <span style={{ color: "#5d9fc5" }}></span>
-                                                                </li>
-                                                                <li contenteditable="true" className="text-muted">
-                                                                    Attn <span style={{ color: "#5d9fc5" }}></span>
-                                                                </li>
-                                                                <li contenteditable="true" className="text-muted">
-                                                                    United States  <span style={{ color: "#5d9fc5" }}></span>
+                                                                <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='United State '   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                                                 </li>
                                                             </i>
 
@@ -325,32 +337,41 @@ const [showbottom, setShowbottom] = useState(false)
                                             <div className="col-xl">
                                                 <br />
                                                 <br />
+
                                                 <h5>   Becton, Dickinson and Company  </h5><span style={{ color: "#5d9fc5" }}></span>
 
                                                 <br />
                                                 <ul className="list-unstyled">
 
                                                     <li contenteditable="true" className="text-muted">
-                                                        PO NUMBER:  6900921615 <span style={{ color: "#5d9fc5" }}></span>
+                                                    <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='PO NUMBER:  6900921615 '   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                                     </li>
                                                     <li contenteditable="true" className="text-muted">
-                                                        DATE: 11/02/22<span style={{ color: "#5d9fc5" }}> </span>
+                                                    <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='DATE: 11/02/22 '   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
+                                                       
                                                     </li>
                                                     <li contenteditable="true" className="text-muted">
-                                                        PAYMENT TERMS: 1061 Net 90 Days<span style={{ color: "#5d9fc5" }}></span>
+                                                    <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='PAYMENT TERMS: 1061 Net 90 Days '   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                                     </li>
 
                                                     <li contenteditable="true" className="text-muted">
-                                                        SHIPPING TERMS: FCA <span style={{ color: "#5d9fc5" }}> </span>
+                                                    <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='SHIPPING TERMS: FCA '   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                                     </li>
                                                     <li contenteditable="true" className="text-muted">
-                                                        CURRENCY: USD<span style={{ color: "#5d9fc5" }}> </span>
+                                                    <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='CURRENCY: USD'   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                                     </li>
                                                     <li contenteditable="true" className="text-muted">
-                                                        CONTRACT:<span style={{ color: "#5d9fc5" }}> </span>
+                                                    <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='CONTRACT:'   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                                     </li>
                                                     <li contenteditable="true" className="text-muted">
-                                                        CONTACT:<span style={{ color: "#5d9fc5" }}> </span>
+                                                    <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='CONTACT'   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                                     </li>
                                                     <li contenteditable="true" className="text-muted">
                                                         <br />
@@ -359,19 +380,19 @@ const [showbottom, setShowbottom] = useState(false)
                                                         <p className="card-text">    <ul className="list-unstyled">
                                                             <i>
                                                                 <li contenteditable="true" className="text-muted">
-                                                                    Becton, Dickinson, and Company <span style={{ color: "#5d9fc5" }}></span>
+                                                    <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='Becton, Dickinson, and Company  PO Box 5200  Rantoul, IL 61866-5200'   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
+                                                                </li>
+                                                              
+                                                               
+                                                                <li contenteditable="true" className="text-muted">
+                                                                <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='Accounts Payable '   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
+                                                                  
                                                                 </li>
                                                                 <li contenteditable="true" className="text-muted">
-                                                                    PO Box 5200<span style={{ color: "#5d9fc5" }}> </span>
-                                                                </li>
-                                                                <li contenteditable="true" className="text-muted">
-                                                                    Rantoul, IL 61866-5200 <span style={{ color: "#5d9fc5" }}></span>
-                                                                </li>
-                                                                <li contenteditable="true" className="text-muted">
-                                                                    Attn: Accounts Payable <span style={{ color: "#5d9fc5" }}></span>
-                                                                </li>
-                                                                <li contenteditable="true" className="text-muted">
-                                                                    United States <span style={{ color: "#5d9fc5" }}></span>
+                                                                <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue='United States'   style={{ width: 200 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                                                 </li>
 
                                                             </i>
@@ -395,28 +416,34 @@ const [showbottom, setShowbottom] = useState(false)
                                         <ul className="list-unstyled">
 
                                             <li contenteditable="true" className="text-muted">
-                                                <b><i><u>Note: </u></i> </b>Price as per attached quote # Qu-01308416-0 <span style={{ color: "#5d9fc5" }}> </span>
+                                            <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue= 'Note: Price as per attached quote # Qu-01308416-0'  style={{ width: 1000 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                             </li>
                                             <li contenteditable="true" className="text-muted">
-                                                <b><i><u>Note: </u></i> </b>FCA - CORTLAND, NY <span style={{ color: "#5d9fc5" }}> </span>
+                                            <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue= 'Note: FCA - CORTLAND, NY'  style={{ width: 1000 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                             </li>
                                             <li contenteditable="true" className="text-muted">
-                                                <b><i><u>Note: </u></i> </b>FedEx# 140212393 ABF<span style={{ color: "#5d9fc5" }}> </span>
+                                            <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue= 'Note: FedEx# 140212393 ABF'  style={{ width: 1000 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                             </li>
                                             <li contenteditable="true" className="text-muted">
+
                                                 <b>Shipping instructions:</b><span style={{ color: "#5d9fc5" }}> </span>
                                             </li>
                                             <li contenteditable="true" className="text-muted">
-                                                Small parcels less than 150 Ibs/70 kg - use BD FedEx acct<span style={{ color: "#5d9fc5" }}> </span>
+                                            <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue= 'Small parcels less than 150 Ibs/70 kg - use BD FedEx acct  Parcels Over 150 Ibs/70kg — Use designated LTL carrier to schedule pick up else contact buyer for shipping instructions - Mohammed.zeeshan@bd.com'  style={{ width: 1000 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
+                                            </li>
+                                            
+                                            <li contenteditable="true" className="text-muted">
+                                            <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue= 'Note: ***Please confirm by selecting Acknowledge Order or Email- Mohammed.zeeshan@bd.com'  style={{ width: 1000 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
                                             </li>
                                             <li contenteditable="true" className="text-muted">
-                                                Parcels Over 150 Ibs/70kg — Use designated LTL carrier to schedule pick up else contact buyer for shipping instructions - Mohammed.zeeshan@bd.com<span style={{ color: "#5d9fc5" }}> </span>
-                                            </li>
-                                            <li contenteditable="true" className="text-muted">
-                                                <b><i><u>Note: </u></i> </b>***Please confirm by selecting Acknowledge Order or Email- Mohammed.zeeshan@bd.com<span style={{ color: "#5d9fc5" }}> </span>
-                                            </li>
-                                            <li contenteditable="true" className="text-muted">
-                                                *** Please see attached for Instructions on acknowledgements, invoicing and international Shipment.</li>
+                                            <TextareaAutosize className="textarea" aria-label="empty textarea" defaultValue= 'Note: *** Please see attached for Instructions on acknowledgements, invoicing and international Shipment.'  style={{ width: 1000 ,paddingBottom: ' -1px',outline:'none',border:0,color:'grey'   }}/>
+
+                                                </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -502,11 +529,28 @@ const [showbottom, setShowbottom] = useState(false)
                                 <hr />
                                 <div className="row">
                                     <div className="col-xl-12">
-                                        <p class="text-center text-danger ">As of <u>January 4, 2021</u>, BD will no longer accept paper or PDF invoices.</p>
+                                        <p class="text-center text-danger " id="asd">As of <u>January 4, 2021</u>, BD will no longer accept paper or PDF invoices.</p>
                                         <ul className="list-unstyled">
 
-                                            <li className="text-center ">
-                                                <b>Need help with invoice or you want to make a payment inquiry?</b><span style={{ color: "#5d9fc5" }}> </span>
+                                            <li className="text-left  field-group">
+                                                <TextBox>
+                                                    <textarea type='text' className="textarea" id="asd" />
+                                                    <input type='textarea' id="asd" value={from}
+                            onChange={(e) => {
+                              Setfrom(e.target.value)}}/>
+                                                    <p><strong>Solution with span:</strong> <span class="textarea" role="textbox" contenteditable></span></p>
+                                                    {/* <b>Need help with invoice or you want to make a payment inquiry?</b><span style={{ color: "#5d9fc5" }}> </span> */}
+                                                    <div role="textbox" contenteditable="true"   value={from}
+                            onChange={(e) => {
+                              Setfrom(e.target.value);
+                            }}></div>
+                                                <TextareaAutosize
+                                                className="textarea"
+      aria-label="empty textarea"
+      placeholder="Empty"
+      style={{ width: 200 ,outline:'none',border:0,color:'grey'   }}
+    />
+                                                </TextBox>
                                             </li>
                                             <li className="text-center">
                                                 <b>Req to Pay Customer Service:</b><span style={{ color: "#5d9fc5" }}> </span>
@@ -571,29 +615,29 @@ const [showbottom, setShowbottom] = useState(false)
 
                         </Card.Body>
                     </Card>
-                    {showbottom?
-                    <>
-                    <div class="file-upload-wrapper">
+                    {showbottom ?
+                        <>
+                            <div class="file-upload-wrapper">
 
-                        {/* <Form.Control type="file" id="customFile1" onChange={handleattachments} name="file" /> */}
-                        <FileBase type="file" multiple={''} onDone={({ base64 }) => setpostemail({ ...postemail, file: base64 })} />
-                        <FileBase type="file" multiple={''} onDone={({ base64 }) => setpostemail({ ...postData, file: base64 })} />
+                                {/* <Form.Control type="file" id="customFile1" onChange={handleattachments} name="file" /> */}
+                                <FileBase type="file" multiple={''} onDone={({ base64 }) => setpostemail({ ...postemail, file: base64 })} />
+                                <FileBase type="file" multiple={''} onDone={({ base64 }) => setpostemail({ ...postData, file: base64 })} />
 
 
-                    </div>
-                    <br />
+                            </div>
+                            <br />
 
-                    <button
-                        type="button"
-                        name="next"
-                        className="btn btn-primary next action-button float-end"
-                        onClick={handleemail}
+                            <button
+                                type="button"
+                                name="next"
+                                className="btn btn-primary next action-button float-end"
+                                onClick={handleemail}
 
-                    >
-                        Send For Approval
-                    </button></>:null
+                            >
+                                Send For Approval
+                            </button></> : null
                     }
-                   
+
                 </Col>
             </Row>
             <ToastContainer />
@@ -602,3 +646,71 @@ const [showbottom, setShowbottom] = useState(false)
 }
 
 export default Billing
+
+const TextBox = styled.div`
+ 
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #292929;
+    font-family: 'Open Sans',sans-serif;
+}
+.field-group{
+    width: 600px;
+    position: relative;
+    padding-top: 15px;
+}
+.input-field{
+    border: 1px solid #2b3553;
+border-radius: .4285rem;
+}
+
+.textarea {
+     
+  box-sizing: border-box;
+  display: flex;
+  overflow:hidden;
+   
+  overflow:hidden
+}
+.input-label{
+    display: block;
+    position: absolute;
+    top: 0;
+    font-size: 1em;
+    color: #999999;
+    text-transform: uppercase;
+    transition: 0.3s ease;
+}
+.input-field::placeholder{
+    color: transparent;
+}
+.input-field:placeholder-shown ~ .input-label{
+    font-size: 2em;
+    top: 20px;
+}
+.input-field:focus{
+    border-color: #e14eca !important;
+}
+.input-field:focus ~ .input-label{
+    display: block;
+    position: absolute;
+    border-bottom: 1px solid #3b3b3b;
+    top: 0;
+    font-size: 1em;
+    color: #ef5a03;
+}
+ 
+
+
+`
